@@ -9,20 +9,8 @@
     "f_cpu": "64000000L",
     "hwids": [
       [
-        "0x239A",
-        "0x8029"
-      ],
-      [
-        "0x239A",
-        "0x0029"
-      ],
-      [
-        "0x239A",
-        "0x002A"
-      ],
-      [
-        "0x239A",
-        "0x802A"
+        "0x1a86",
+        "0x7523"
       ]
     ],
     "usb_product": "E73-TBB nRF52832 development board",
@@ -58,7 +46,7 @@
     "maximum_size": 524288,
     "require_upload_port": true,
     "speed": 115200,
-    "protocol": "jlink",
+    "protocol": "nrfutil",
     "protocols": [
       "jlink",
       "nrfjprog",
