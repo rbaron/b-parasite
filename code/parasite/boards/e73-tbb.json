@@ -1,0 +1,73 @@
+{
+  "build": {
+    "arduino":{
+      "ldscript": "nrf52_xxaa.ld"
+    },
+    "core": "nRF5",
+    "cpu": "cortex-m4",
+    "extra_flags": "-DNRF52832_XXAA -DNRF52",
+    "f_cpu": "64000000L",
+    "hwids": [
+      [
+        "0x239A",
+        "0x8029"
+      ],
+      [
+        "0x239A",
+        "0x0029"
+      ],
+      [
+        "0x239A",
+        "0x002A"
+      ],
+      [
+        "0x239A",
+        "0x802A"
+      ]
+    ],
+    "usb_product": "E73-TBB nRF52832 development board",
+    "mcu": "nrf52832",
+    "variant": "Generic",
+    "bsp": {
+      "name": "Ebyte"
+    },
+    "softdevice": {
+      "sd_flags": "-DS132",
+      "sd_name": "s132",
+      "sd_version": "6.1.1",
+      "sd_fwid": "0x00B7"
+    },
+    "zephyr": {
+       "variant": "E73-TBB"
+    }
+  },
+  "connectivity": [
+    "bluetooth"
+  ],
+  "debug": {
+    "jlink_device": "nRF52832_xxAA",
+    "svd_path": "nrf52.svd"
+  },
+  "frameworks": [
+    "arduino",
+    "zephyr"
+  ],
+  "name": "E73-TBB nRF52832 development board",
+  "upload": {
+    "maximum_ram_size": 65536,
+    "maximum_size": 524288,
+    "require_upload_port": true,
+    "speed": 115200,
+    "protocol": "jlink",
+    "protocols": [
+      "jlink",
+      "nrfjprog",
+      "nrfutil",
+      "stlink",
+      "cmsis-dap",
+      "blackmagic"
+    ]
+  },
+  "url": "https://www.ebyte.com/en/product-view-news.aspx?id=889",
+  "vendor": "Ebyte"
+}
