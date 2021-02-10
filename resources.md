@@ -94,5 +94,13 @@ if self.board_config(board).get("build.bsp.name",
                     "package"] = "framework-arduinoadafruitnrf52"
 ```
 
+## What does each line in the linker mean?
+* [The most commented linker script in the world](https://github.com/theacodes/Winterbloom_Castor_and_Pollux/blob/main/firmware/scripts/samd21g18a.ld)
+
 ### Memory layout
 The [SoftDevice S132 spec](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fsds_s112%2FSDS%2Fs1xx%2Fmem_usage%2Fmem_resource_map_usage.html&anchor=mem_resource_map_usage) specifies the layout as the soft device begins at addr 0x0 and the application code comes after it, at the address `APP_CODE_BASE`.
+
+# PWM
+* [HardwarePWM.cpp](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/a86fd9f36c88db96f676cead1e836377a37c7b05/cores/nRF5/HardwarePWM.cpp#L112) by Adafruit is a good reference. [Servo.c](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/libraries/Servo/src/nrf52/Servo.cpp#L154) uses it.
+* [nrf52832 pwm spec](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.nrf52832.ps.v1.1%2Fpwm.html)
+* [nrf5 SDK PWM reference](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v11.0.0%2Fgroup__nrf__pwm__hal.html) HAL => Hardware Abstraction Layer?
