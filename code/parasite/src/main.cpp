@@ -5,12 +5,13 @@
 constexpr int kLED1Pin = 17;
 constexpr int kLED2Pin = 18;
 constexpr int kPWMPin = 19;
+constexpr double kPWMFrequency = 500000;
 
 void setup() {
   Serial.begin(9600);
   pinMode(kLED1Pin, OUTPUT);
   pinMode(kLED2Pin, OUTPUT);
-  parasite::SetupSquareWave(kPWMPin);
+  parasite::SetupSquareWave(kPWMFrequency, kPWMPin);
 }
 
 void loop() {

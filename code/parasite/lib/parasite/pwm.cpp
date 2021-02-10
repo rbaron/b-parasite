@@ -14,20 +14,21 @@ namespace {
 
 // No scaling. The PWM counter will increase with a frequency of 16MHz.
 constexpr unsigned long kPWMFrequencyPrescale = PWM_PRESCALER_PRESCALER_DIV_1;
-// In conjunction with the PWM clock frequency, kPWMMaxCounter defines the
-// frequency of the square wave.
-constexpr int kPWMMaxCounter = 32;
-// Since we want a duty cycle of 0.5, we flip the PVM output when the counter
-// reaches kPWMMaxCounter / 2/;
-constexpr int kPWMFlipCount = kPWMMaxCounter;
-
 }  // namespace
 
-void SetupSquareWave(int pin_number) {
+void SetupSquareWave(double frequency, int pin_number) {
+  // In conjunction with the PWM clock frequency, kPWMMaxCounter defines the
+  // frequency of the square wave.
+  const int max_count = 16e6 / frequency;
+
+  // Since we want a duty cycle of 0.5, we flip the PVM output when the counter
+  // reaches kPWMMaxCounter / 2/;
+  const int flip_at_count = max_count / 2;
+
   HwPWM0.addPin(pin_number);
   HwPWM0.setClockDiv(PWM_PRESCALER_PRESCALER_DIV_1);
-  HwPWM0.setMaxValue(kPWMMaxCounter);
-  HwPWM0.writePin(pin_number, kPWMFlipCount);
+  HwPWM0.setMaxValue(max_count);
+  HwPWM0.writePin(pin_number, flip_at_count);
   HwPWM0.begin();
 }
 
