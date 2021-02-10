@@ -9,5 +9,6 @@ namespace parasite {
 // I am particularly proud of how well I resisted making this "generic"
 // and "reusable".
 void SetupSquareWave(int pin_number);
+
 }  // namespace parasite
 #endif  // _PARASITE_PWM_H_
