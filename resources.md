@@ -51,3 +51,48 @@ Upgrading target on /dev/cu.usbserial-14330 with DFU package /Users/rbaron/dev/p
 Activating new firmware
 Device programmed.
 ```
+
+# Linking
+In [platformio-core/tools/pioplatform.py](https://github.com/platformio/platformio-core/blob/9c20ab81cb68f1ffb7a8cac22ce95c4c797643ec/platformio/builder/tools/pioplatform.py#L130):
+```Python
+if "build.ldscript" in board_config:
+    env.Replace(LDSCRIPT_PATH=board_config.get("build.ldscript"))
+```
+In [platformio-core/platformio.py](https://github.com/platformio/platformio-core/blob/9c20ab81cb68f1ffb7a8cac22ce95c4c797643ec/platformio/builder/tools/platformio.py#L65):
+```Python
+# append into the beginning a main LD script
+if env.get("LDSCRIPT_PATH") and not any("-Wl,-T" in f for f in env["LINKFLAGS"]):
+    env.Prepend(LINKFLAGS=["-T", env.subst("$LDSCRIPT_PATH")])
+```
+The `-T` flag expects a path to a linker script, as per [`ld` docs](https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html).
+
+Frameworks, such as the `nordicnrf52`, contain [boards definitions](https://github.com/platformio/platform-nordicnrf52/blob/develop/boards/adafruit_feather_nrf52832.json#L4) that specify the `ldscript`.
+
+1. For the [adafruit_feather_nrf52832](https://github.com/platformio/platform-nordicnrf52/blob/develop/boards/adafruit_feather_nrf52832.json#L4) board, we have:
+
+```
+"arduino":{
+  "ldscript": "nrf52832_s132_v6.ld"
+},
+```
+Which is defined [here](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/cores/nRF5/linker/nrf52832_s132_v6.ld).
+
+2. For the [nrf52_dk](https://github.com/platformio/platform-nordicnrf52/blob/develop/boards/nrf52_dk.json#L4), we have:
+```
+"arduino":{
+  "ldscript": "nrf52_xxaa.ld"
+},
+```
+Which is the most common linker script, and is part of the nordic official SDK, it seems, available [here](https://github.com/NordicSemiconductor/nrfx/blob/master/mdk/nrf52_xxaa.ld). For reference, check out the linker for the [Adafruit nRF52 Bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader/blob/master/linker/nrf52.ld). Here you can see the [memory map](https://learn.adafruit.com/bluefruit-nrf52-feather-learning-guide/hathach-memory-map) of the nRF52 Feather.
+
+## Same platform, different framework
+Both the Feather nRF52832 and the Generic boards above point to the same platform, the [nordicnrf52](). Inside this platorm, there's a switch for selecting which framework to use, based on the board name, [here](https://github.com/platformio/platform-nordicnrf52/blob/develop/platform.py#L38):
+```Python
+if self.board_config(board).get("build.bsp.name",
+                                            "nrf5") == "adafruit":
+                self.frameworks["arduino"][
+                    "package"] = "framework-arduinoadafruitnrf52"
+```
+
+### Memory layout
+The [SoftDevice S132 spec](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fsds_s112%2FSDS%2Fs1xx%2Fmem_usage%2Fmem_resource_map_usage.html&anchor=mem_resource_map_usage) specifies the layout as the soft device begins at addr 0x0 and the application code comes after it, at the address `APP_CODE_BASE`.
