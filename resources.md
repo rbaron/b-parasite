@@ -8,6 +8,10 @@
 
 # Articles
 * Great article about using Rust and Apache Mynewt, but also covers J-Link, ST-Link, openocd, unlocking the nrf52. [Link on medium](https://medium.com/@ly.lee/coding-nrf52-with-rust-and-apache-mynewt-on-visual-studio-code-9521bcba6004)
+*
+# nrf command line utilities
+* [nrfjprog](https://www.nordicsemi.com/Software-and-tools/Development-Tools/nRF-Command-Line-Tools) Used for programming hex files using the J-Link programmer.
+* [nrfutil](https://github.com/NordicSemiconductor/pc-nrfutil) Used for [DFU](https://en.wikipedia.org/wiki/USB#Device_Firmware_Upgrade) - device firmware update - via the USB port. No J-Link. This is what Adafruit uses for uploading code via USB. This is "higher level" and requires a pre-existing bootloader in the nrf52 chip that understands DFU. The [Adafruit_nRF52_Bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader) is such a bootloader, which we can burn using nrfjprog + J-Link once. Adafruit has its own version, [`adafruit-nrfutil`](https://github.com/adafruit/Adafruit_nRF52_nrfutil).
 
 # SWD vs. Bootloader vs. DFU
 * How `nrfutil` is used in the platformio nordicnrf52 package: [link](https://github.com/platformio/platform-nordicnrf52/blob/develop/builder/main.py#L319)
@@ -18,6 +22,18 @@
 1. `$ brew cask install nordic-nrf-command-line-tools` -> Didn't work. I had to manually install the pkgs from [nordic](https://www.nordicsemi.com/Software-and-tools/Development-Tools/nRF-Command-Line-Tools/Download)
 1. `pip install intelhex`
 1. `PATH=$PATH:/Users/rbaron/.platformio/packages/framework-arduinoadafruitnrf52/tools/adafruit-nrfutil/macos make BOARD=feather_nrf52840_express all`
+
+## Burning our custom bootloader
+The error I was making was using a non-softdevice bootloader. The following works:
+```bash
+# Compile
+$ PATH=$PATH:/Users/rbaron/.platformio/packages/framework-arduinoadafruitnrf52/tools/adafruit-nrfutil/macos make BOARD=e73_tbb all
+
+# Flash (make sure you use the _s132_ hex file)
+$ JAVA_HOME=/Users/rbaron/homebrew/Cellar/openjdk/15.0.1 nrfjprog --program _build/build-e73_tbb/e73_tbb_bootloader-0.4.0-2-g4ba802d_s132_6.1.1.hex --sectoranduicrerase -f nrf52 --reset
+```
+
+Now we can drop the JLink and use the USB serial for uploading/monitoring.
 
 ## Uploading with nrfutil
 ```
@@ -35,5 +51,3 @@ Upgrading target on /dev/cu.usbserial-14330 with DFU package /Users/rbaron/dev/p
 Activating new firmware
 Device programmed.
 ```
-
-It flashes okay, but the program doesn't seem to run - the leds don't flash.

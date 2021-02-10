@@ -4,13 +4,13 @@ constexpr int kLED1Pin = 17;
 constexpr int kLED2Pin = 18;
 
 void setup() {
+  Serial.begin(9600);
   pinMode(kLED1Pin, OUTPUT);
   pinMode(kLED2Pin, OUTPUT);
-  // Serial.begin(9600);
 }
 
 void loop() {
-  // Serial.print("Hello, world\n");
+  Serial.print("Hello, world\n");
   digitalWrite(kLED1Pin, LOW);
   digitalWrite(kLED2Pin, LOW);
   delay(1000);
