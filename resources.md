@@ -140,4 +140,9 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
 # Battery monitoring
 * Good post on how to measure lipo batteries: [link](https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/measuring-lithium-battery-voltage-with-nrf52#:~:text=To%20reduce%20the%20leakage%20current,of%2040%20us%2C%20see%20here.)
 
+# BLE
+* BLE examples for platformio with nordicnrf52 platform: [link](https://github.com/platformio/platform-nordicnrf52/tree/master/examples)
+* [BLEPeripheral](https://github.com/sandeepmistry/arduino-BLEPeripheral) seems to be a popular library choice
+* [nrf5 BLE examples](https://devzone.nordicsemi.com/nordic/short-range-guides/b/bluetooth-low-energy/posts/ble-advertising-a-beginners-tutorial) are way more complicated than I need for now
+
 # OTA
