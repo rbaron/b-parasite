@@ -104,3 +104,40 @@ The [SoftDevice S132 spec](https://infocenter.nordicsemi.com/index.jsp?topic=%2F
 * [HardwarePWM.cpp](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/a86fd9f36c88db96f676cead1e836377a37c7b05/cores/nRF5/HardwarePWM.cpp#L112) by Adafruit is a good reference. [Servo.c](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/libraries/Servo/src/nrf52/Servo.cpp#L154) uses it.
 * [nrf52832 pwm spec](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.nrf52832.ps.v1.1%2Fpwm.html)
 * [nrf5 SDK PWM reference](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v11.0.0%2Fgroup__nrf__pwm__hal.html) HAL => Hardware Abstraction Layer?
+
+# Analog to digital converter (ADC)
+* In nrf52-land, the ADC is called [SSADC](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Fgroup__nrf__adc.html)
+* Example in the sdk: in `examples/peripheral/saadc/main.c`
+* [Docs from Adafruit](https://learn.adafruit.com/bluefruit-nrf52-feather-learning-guide/nrf52-adc). It uses Arduino's `analogRead`.
+
+## Resoultion
+The default resolution is 10 bits (1024 values),
+
+## Reference value
+ The default reference is an internally supplied 3.6V. It seems like we woulld only be able to read values up to 3.6V. This might be enough if we're using a CR2032 coin cell, but might not if we use a LiPo (4.2V fully charged).
+
+**Question**: what happens if Vcc < 3.6?
+
+There is a possibility of using Vcc as a reference. Then I imagine 0 -> 0V; 1024 -> Vcc. This might be exactly what we want:
+In a PWM positive pulse, our RC_parasitic will rise to 0.63Vcc in R*C_para time. If we use Vcc as a reference for the ADC, I think we "cancel out" the Vcc factor.
+
+* How adafruit uses the Vcc reference: [link](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/cores/nRF5/wiring_analog_nRF52.c#L76)
+* How arduino-nRF5 uses the Vcc refenrece: [link](https://github.com/sandeepmistry/arduino-nRF5/blob/master/cores/nRF5/wiring_analog_nRF52.c#L98)
+
+So in Arduino land, using AR_VDD4 does all we need: use nrf's SAADC_CH_CONFIG_REFSEL_VDD1_4 (Vcc/4 ref) and a gain of 4 (SAADC_CH_CONFIG_GAIN_Gain1_4).
+While connected via USB, with:
+```
+analogReference(AR_VDD4);
+int sens_val = analogRead(kSensAnalogPin);
+```
+I'm getting ~680 when in the air; ~65 while holding the sensor. The default resolution is 10 bits, so 1024 -> 3.3V. On the scope, I'm reading the sensor output value to be 2.16V. This matches the value I'm reading: 1024/3.3 * 2.15 = 667. Nice.
+
+# Battery
+* [CR2032 datasheet](https://data.energizer.com/pdfs/cr2032.pdf)
+  * 235 mAh (from 3.0V to 2.0V)
+  * Typical discharge current: 0.19 mA -> 1200 hours
+
+# Battery monitoring
+* Good post on how to measure lipo batteries: [link](https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/measuring-lithium-battery-voltage-with-nrf52#:~:text=To%20reduce%20the%20leakage%20current,of%2040%20us%2C%20see%20here.)
+
+# OTA
