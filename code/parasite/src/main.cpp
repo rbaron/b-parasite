@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-// #include "ble.h"
-#include "pwm.h"
+#include "parasite/pwm.h"
+#include "parasite/ble.h"
 
-#include "nrf_sdh_ble.h"
+#include <bluefruit.h>
 
 constexpr int kLED1Pin = 17;
 constexpr int kLED2Pin = 18;
@@ -12,22 +12,30 @@ constexpr int kSensAnalogPin = 4;  // AIN2
 constexpr int kDischargeEnablePin = 16;
 constexpr double kPWMFrequency = 500000;
 
-// static void ble_stack_init(void) {
-//   ret_code_t err_code;
+char manufacturer_data[] = {
+  0x01,
+  0x02,
+  0x03,
+};
 
-//   err_code = nrf_sdh_enable_request();
-//   APP_ERROR_CHECK(err_code);
+constexpr int kManufacturerDataLen = 3;
 
-//   // Configure the BLE stack using the default settings.
-//   // Fetch the start address of the application RAM.
-//   uint32_t ram_start = 0;
-//   err_code = nrf_sdh_ble_default_cfg_set(APP_BLE_CONN_CFG_TAG, &ram_start);
-//   APP_ERROR_CHECK(err_code);
+void setupAdvertising() {
+  Bluefruit.begin(1, 1);
+  Bluefruit.setName("Parasite");
+}
 
-//   // Enable BLE stack.
-//   err_code = nrf_sdh_ble_enable(&ram_start);
-//   APP_ERROR_CHECK(err_code);
-// }
+void updateAdvertisingData(int moisture_level) {
+  manufacturer_data[2] = moisture_level & 0xff;
+  manufacturer_data[1] = 0xff;
+  Bluefruit.Advertising.stop();
+  Bluefruit.Advertising.clearData();
+  Bluefruit.Advertising.addName();
+  Bluefruit.Advertising.addManufacturerData(manufacturer_data, kManufacturerDataLen);
+  Bluefruit.Advertising.setInterval(32, 244);  // in unit of 0.625 ms
+  Bluefruit.Advertising.setFastTimeout(30);    // number of seconds in fast mode
+  Bluefruit.Advertising.start(0);  // 0 = Don't stop advertising after n seconds
+}
 
 void setup() {
   Serial.begin(9600);
@@ -37,11 +45,18 @@ void setup() {
   digitalWrite(kDischargeEnablePin, HIGH);
 
   analogReference(AR_VDD4);
+
+  setupAdvertising();
+  // Bluefruit.Advertising.start();
+
+  // ble.setConnectable(false);
+  // ble.addLocalAttribute();
 }
 
 void loop() {
   int sens_val = analogRead(kSensAnalogPin);
   Serial.printf("Val: %d\n", sens_val);
   digitalToggle(kLED1Pin);
+  updateAdvertisingData(sens_val);
   delay(500);
 }

@@ -142,7 +142,50 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
 
 # BLE
 * BLE examples for platformio with nordicnrf52 platform: [link](https://github.com/platformio/platform-nordicnrf52/tree/master/examples)
-* [BLEPeripheral](https://github.com/sandeepmistry/arduino-BLEPeripheral) seems to be a popular library choice
 * [nrf5 BLE examples](https://devzone.nordicsemi.com/nordic/short-range-guides/b/bluetooth-low-energy/posts/ble-advertising-a-beginners-tutorial) are way more complicated than I need for now
+* How the alternative firmware for the xiaomi temp sensor works: [link](https://github.com/atc1441/ATC_MiThermometer)
+  * The MCU is a [Telink TLSR8251](http://wiki.telink-semi.cn/doc/ds/DS_TLSR8251-E_Datasheet%20for%20Telink%20BLE+IEEE802.15.4%20Multi-Standard%20Wireless%20SoC%20TLSR8251.pdf)
+  * Deep sleep current is 1-2uA
+  * It sends an _advertisement packet_ every 1 minute with the MAC, temperature, humidity and battery level
+  * [main](https://github.com/atc1441/ATC_MiThermometer/blob/master/ATC_Thermometer/main.c)
+  * [main_loop](https://github.com/atc1441/ATC_MiThermometer/blob/916cef7db24977ec187e68ab6e718b7b7a4988e6/ATC_Thermometer/app.c#L76)
+  * [advertisement_data](https://github.com/atc1441/ATC_MiThermometer/blob/master/ATC_Thermometer/ble.c#L39) definition
+  * [set_adv_data](https://github.com/atc1441/ATC_MiThermometer/blob/master/ATC_Thermometer/ble.c#L178) - where the temp, humidity and batt levels are encoded into the advertisement data
+* How the xiaomi BLE temp sensor works in ESPHome: [link](https://github.com/esphome/esphome/blob/5c86f332b269fd3e4bffcbdf3359a021419effdd/esphome/components/xiaomi_lywsd03mmc/xiaomi_lywsd03mmc.cpp)
+* [How advertisement works YouTube video](https://www.youtube.com/watch?v=CJcLabp42b4) by nordic
+  * In your case:
+    * GAP role: broadcaster
+    * Advertisement type: legacy ADV_NONCONN_IND (non-connectable broadcast)
+    * Advertising data starts at 22:17
+      * The payload might contain 37 bytes in the classic/legacy protocol:
+        * addr (6 bytes) (either public or random)
+          * Public has privacy concerns
+          * Random can be static or private (resolvable or non-resolvable)
+        * data (31 bytes)
+    * The 31 bytes of advertisement data can be split into structures
+      * Each structure has a length (1 byte), a type (n bytes) and data (remaining bytes)
+      * Examples of structures are service UUID, local name, manufacturer specific data
+      * Manufacturer specific data is usually the way to transmit data in the advertisement packet
+        * Requires a company id. Check out the [list](https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers). Adafruit has the 0x0822.
+* [BLEPeripheral](https://github.com/sandeepmistry/arduino-BLEPeripheral) seems to be a popular library choice
+  * [setManufacturerData](https://github.com/sandeepmistry/arduino-BLEPeripheral/blob/161a4163f565be3cd5b62bbc59f0c2b522d82b02/src/BLEPeripheral.h#L72) is probably what we want
+  * It seems to be highly geared towards nrf51 SOCs, although it mentions support for some nrf52 ones
+* [Adafruit_nRF52_Arduino](https://github.com/adafruit/Adafruit_nRF52_Arduino)
+  * [BLEAdvertising guide](https://learn.adafruit.com/bluefruit-nrf52-feather-learning-guide/bleadvertising)
+    * [BLEAdvertising.h](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/libraries/Bluefruit52Lib/src/BLEAdvertising.h#L87)
+* Can we update the manufaturer advertising data dynamically?
+  * [Hint on devzone.nordicsemi.com](https://devzone.nordicsemi.com/f/nordic-q-a/11217/adc-values-in-advertising-data-dynamically-changing)
+
+# Central BLE
+The "central" BLE will be responsible for listening to parasite's BLE broadcasts and parsing its manufacturer's data.
+One idea is to use ESPHome for this, for example like the xiaomi sensor does:
+* [Xiaomi component's parse_device](https://github.com/esphome/esphome/blob/dev/esphome/components/xiaomi_lywsd03mmc/xiaomi_lywsd03mmc.cpp#L19)
+* [esp32_ble_tracker calls all registered parse_devices()](https://github.com/esphome/esphome/blob/dev/esphome/components/esp32_ble_tracker/esp32_ble_tracker.cpp#L68)
+* [Setting up the development environment for ESPHome](https://esphome.io/guides/contributing.html#setting-up-development-environment)
+
+Question: parasite will advertise a _lot_ of packets in short bursts. How is this data "deduplicated"? I imagine ESPHome won't parse all the packets and forward them to MQTT.
 
 # OTA
+
+# Measuring current consumption
+* Good [issue](https://github.com/atc1441/ATC_MiThermometer/issues/134) on the xiaomi sensor tracker
