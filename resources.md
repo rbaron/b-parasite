@@ -175,8 +175,18 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
     * [BLEAdvertising.h](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/libraries/Bluefruit52Lib/src/BLEAdvertising.h#L87)
 * Can we update the manufaturer advertising data dynamically?
   * [Hint on devzone.nordicsemi.com](https://devzone.nordicsemi.com/f/nordic-q-a/11217/adc-values-in-advertising-data-dynamically-changing)
+* What MAC address to use?
+  * Public
+  * Random
 
-# Central BLE
+## Packing values into the advertising packet
+### Soil humidity
+If there's room, I'd like to pack the raw analog-to-digital value and a percentage.
+* Values for the ADC are 10 bit (0-1023). So we could use 10 bits for this. For simplicity, I'll keep this byte-aligned and use 16 bits (2 bytes) for this. It means
+  I'll have to scale [0, 2^10) to [0-2^16) (and back in the hub).
+* Percentage values are floating points, but we don't have nearly as much precision for justifying 32/64 bits. Even using integers in [0-100] would be fine. I'll splurge and use two bytes here as well. It means I'll have to scale [0, 1.0] to [0, 2^16) and back in the hub.
+
+# Central BLE (hub)
 The "central" BLE will be responsible for listening to parasite's BLE broadcasts and parsing its manufacturer's data.
 One idea is to use ESPHome for this, for example like the xiaomi sensor does:
 * [Xiaomi component's parse_device](https://github.com/esphome/esphome/blob/dev/esphome/components/xiaomi_lywsd03mmc/xiaomi_lywsd03mmc.cpp#L19)

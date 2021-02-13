@@ -1,0 +1,22 @@
+{
+  "storage_version": 1,
+  "name": "parahub",
+  "comment": null,
+  "esphome_version": "1.17.0-dev",
+  "src_version": 1,
+  "arduino_version": "espressif32@1.12.4",
+  "address": null,
+  "esp_platform": "ESP32",
+  "board": "lolin32",
+  "build_path": "parahub",
+  "firmware_bin_path": "parahub/.pioenvs/parahub/firmware.bin",
+  "loaded_integrations": [
+    "esp32_ble_tracker",
+    "esphome",
+    "logger",
+    "parasite",
+    "ruuvi_ble",
+    "sensor",
+    "xiaomi_ble"
+  ]
+}

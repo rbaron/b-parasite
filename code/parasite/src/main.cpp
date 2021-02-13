@@ -1,9 +1,10 @@
 #include <Arduino.h>
-
-#include "parasite/pwm.h"
-#include "parasite/ble.h"
-
 #include <bluefruit.h>
+
+#include <cstring>
+
+#include "parasite/ble.h"
+#include "parasite/pwm.h"
 
 constexpr int kLED1Pin = 17;
 constexpr int kLED2Pin = 18;
@@ -13,16 +14,25 @@ constexpr int kDischargeEnablePin = 16;
 constexpr double kPWMFrequency = 500000;
 
 char manufacturer_data[] = {
-  0x01,
-  0x02,
-  0x03,
+    0x01,
+    0x02,
+    0x03,
 };
 
 constexpr int kManufacturerDataLen = 3;
 
+ble_gap_addr_t kGAPAddr{
+    1,
+    BLE_GAP_ADDR_TYPE_RANDOM_STATIC,
+    // This is the "reverse" order in comparison that the colon-separated
+    // human-readable MAC addresses.
+    {0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
+};
+
 void setupAdvertising() {
   Bluefruit.begin(1, 1);
   Bluefruit.setName("Parasite");
+  Bluefruit.setAddr(&kGAPAddr);
 }
 
 void updateAdvertisingData(int moisture_level) {
@@ -31,7 +41,8 @@ void updateAdvertisingData(int moisture_level) {
   Bluefruit.Advertising.stop();
   Bluefruit.Advertising.clearData();
   Bluefruit.Advertising.addName();
-  Bluefruit.Advertising.addManufacturerData(manufacturer_data, kManufacturerDataLen);
+  Bluefruit.Advertising.addManufacturerData(manufacturer_data,
+                                            kManufacturerDataLen);
   Bluefruit.Advertising.setInterval(32, 244);  // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(30);    // number of seconds in fast mode
   Bluefruit.Advertising.start(0);  // 0 = Don't stop advertising after n seconds
@@ -47,10 +58,6 @@ void setup() {
   analogReference(AR_VDD4);
 
   setupAdvertising();
-  // Bluefruit.Advertising.start();
-
-  // ble.setConnectable(false);
-  // ble.addLocalAttribute();
 }
 
 void loop() {

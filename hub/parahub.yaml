@@ -1,0 +1,39 @@
+esphome:
+  name: parahub
+  platform: ESP32
+  board: lolin32
+
+  #mqtt:
+  #  broker: raspberrypi
+  #  username: mqttuser
+  #  password: !secret mqtt_password
+
+esp32_ble_tracker:
+
+    #switch:
+    #  - platform: gpio
+    #    name: "Builtin LED"
+    #    pin:
+    #      number: 5
+    #      inverted: yes
+
+sensor:
+  - platform: parasite
+    #mac_address: "01:02:03:04:05:06"
+    mac_address: "06:05:04:03:02:01"
+    # Doesn't matter.
+    humidity:
+      name: "Parasite humidity"
+
+      #wifi:
+      #  ssid: !secret wifi_ssid
+      #  password: !secret wifi_password
+
+      #captive_portal:
+
+# Enable logging
+logger:
+    #level: VERY_VERBOSE
+
+    #ota:
+    #  password: !secret ota_password
