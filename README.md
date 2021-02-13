@@ -2,8 +2,9 @@
 A low power soil moisture sensor based on the nRF52840.
 
 # TODO
-* Implement BLE advertising with moisture, battery level
+* Implement battery level monitoring
 * Figure out how to calibrate the ADC when running from different voltages, as the battery discharges
+* Experiment with different TX power / battery tradeoff. Since we'll be deepsleeping most of the time, maybe we can get away with a lot of TX power.
 * Implement deep sleep
 * Measure current in deep sleep
 * Measure current in operation (ADC + BLE adversiting)
@@ -15,6 +16,7 @@ A low power soil moisture sensor based on the nRF52840.
 * Design new board using the nrf52 instead of esp32
 
 # Done
+* Implement BLE advertising with moisture
 * Implement ADC for the parasitic capacitor; check out air/water range (using protoboard)
 * Simple PWM square wave generator
 * Hook square wave generator to the protoboard sensor circuit

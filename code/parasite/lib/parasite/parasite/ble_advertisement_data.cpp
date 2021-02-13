@@ -8,4 +8,4 @@ void BLEAdvertisementData::SetRawSoilMoisture(int raw_soil_moisture) {
   data_[kRawSoilMoistureOffset + 1] = packed_value & 0xff;
 }
 
-}
+}  // namespace parasite

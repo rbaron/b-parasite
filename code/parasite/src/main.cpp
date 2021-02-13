@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include <bluefruit.h>
 
 #include <cstring>
+#include <vector>
 
 #include "parasite/ble.h"
 #include "parasite/ble_advertisement_data.h"
@@ -14,53 +14,44 @@ constexpr int kSensAnalogPin = 4;  // AIN2
 constexpr int kDischargeEnablePin = 16;
 constexpr double kPWMFrequency = 500000;
 
-ble_gap_addr_t kGAPAddr{
-    1,
-    BLE_GAP_ADDR_TYPE_PUBLIC,
-    // This is the "reverse" order in comparison that the colon-separated
-    // human-readable MAC addresses.
-    {0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
-};
+const parasite::MACAddr kMACAddr = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
+parasite::BLEAdvertiser advertiser(kMACAddr);
 
-void setupAdvertising() {
-  Bluefruit.begin(1, 1);
-  Bluefruit.setName("Parasite");
-  Bluefruit.setAddr(&kGAPAddr);
-}
-
-void updateAdvertisingData(int moisture_level) {
+void updateAdvertisingData(parasite::BLEAdvertiser *advertiser,
+                           int moisture_level) {
   parasite::BLEAdvertisementData data;
   data.SetRawSoilMoisture(moisture_level);
-  Bluefruit.Advertising.stop();
-  Bluefruit.Advertising.clearData();
-  Bluefruit.Advertising.setData(data.GetRawData(), data.GetDataLen());
-  Bluefruit.Advertising.setInterval(32, 244);  // in unit of 0.625 ms
-  Bluefruit.Advertising.setFastTimeout(30);    // number of seconds in fast mode
-  Bluefruit.Advertising.start(0);  // 0 = Don't stop advertising after n seconds
+
+  advertiser->SetData(data);
+
+  if (!advertiser->IsRunning()) {
+    advertiser->Start();
+  }
 }
 
 void setup() {
   Serial.begin(9600);
+
   pinMode(kLED1Pin, OUTPUT);
   pinMode(kDischargeEnablePin, OUTPUT);
+
+  // Activate the PWM signal.
   parasite::SetupSquareWave(kPWMFrequency, kPWMPin);
+
+  // Enable fast discharge cycle.
   digitalWrite(kDischargeEnablePin, HIGH);
 
+  // We setup the analog reference to be VDD. This allows us to cancel out
+  // the effect of the battery discharge across time, since the RC circuit
+  // also depends linearly on VDD.
+  // TODO(rbaron): empirically prove/disprove this.
   analogReference(AR_VDD4);
-
-  setupAdvertising();
-
-  Serial.println("Will advertise with MAC:");
-  for (const auto byte : kGAPAddr.addr) {
-    Serial.printf("0x%02x ", byte);
-  }
-  Serial.println();
 }
 
 void loop() {
   int sens_val = analogRead(kSensAnalogPin);
   Serial.printf("Val: %d\n", sens_val);
   digitalToggle(kLED1Pin);
-  updateAdvertisingData(sens_val);
+  updateAdvertisingData(&advertiser, sens_val);
   delay(500);
 }
