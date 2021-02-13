@@ -46,7 +46,7 @@ void setupAdvertising() {
 
 void updateAdvertisingData(int moisture_level) {
   uint16_t packed_raw_moisture = moisture_level;
-  advertisement_data[kRawSoilMoistureOffset] = packed_raw_moisture >> 1;
+  advertisement_data[kRawSoilMoistureOffset] = packed_raw_moisture >> 8;
   advertisement_data[kRawSoilMoistureOffset + 1] = packed_raw_moisture & 0xff;
   // manufacturer_data[1] = 0xff;
   Bluefruit.Advertising.stop();
