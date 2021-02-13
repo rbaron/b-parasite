@@ -151,6 +151,11 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
   * [main_loop](https://github.com/atc1441/ATC_MiThermometer/blob/916cef7db24977ec187e68ab6e718b7b7a4988e6/ATC_Thermometer/app.c#L76)
   * [advertisement_data](https://github.com/atc1441/ATC_MiThermometer/blob/master/ATC_Thermometer/ble.c#L39) definition
   * [set_adv_data](https://github.com/atc1441/ATC_MiThermometer/blob/master/ATC_Thermometer/ble.c#L178) - where the temp, humidity and batt levels are encoded into the advertisement data
+  * They don't use manufacturer data. They use a custom UUID service (0x181a).
+  * Using the manufacturer data requires a SIG membership for getting the manufacturer ID (first two bytes in the manufacturer data)
+  * Using the service data also requires applying for a 16-bit (2 byte) ID from SIG ([link](https://www.bluetooth.com/specifications/assigned-numbers/))
+  * Aha! I think we can use the 0x181a service UUID (the same one the alternative xiaomi firmware uses). This service is reserved for "Environmental Sensors". Check out the offical assigned numbers list [here](https://btprodspecificationrefs.blob.core.windows.net/assigned-values/16-bit%20UUID%20Numbers%20Document.pdf).
+    * We can use the SERVICE_DATA (int 16) in the BLE advertisement packet to pack service data for the UUID 0x181a.
 * How the xiaomi BLE temp sensor works in ESPHome: [link](https://github.com/esphome/esphome/blob/5c86f332b269fd3e4bffcbdf3359a021419effdd/esphome/components/xiaomi_lywsd03mmc/xiaomi_lywsd03mmc.cpp)
 * [How advertisement works YouTube video](https://www.youtube.com/watch?v=CJcLabp42b4) by nordic
   * In your case:
@@ -176,8 +181,8 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
 * Can we update the manufaturer advertising data dynamically?
   * [Hint on devzone.nordicsemi.com](https://devzone.nordicsemi.com/f/nordic-q-a/11217/adc-values-in-advertising-data-dynamically-changing)
 * What MAC address to use?
-  * Public
-  * Random
+  * Public - might have some security implications, since BLE can be used for tracking
+  * Random - safer, since its random, but it "breaks" our MAC-addr based Hub config
 
 ## Packing values into the advertising packet
 ### Soil humidity
