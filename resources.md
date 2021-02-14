@@ -213,3 +213,29 @@ Question: parasite will advertise a _lot_ of packets in short bursts. How is thi
 
 # Measuring current consumption
 * Good [issue](https://github.com/atc1441/ATC_MiThermometer/issues/134) on the xiaomi sensor tracker
+
+# Data persistence
+* Adafruit has a internal filesystem implementation. See [example](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/libraries/InternalFileSytem/examples/Internal_ReadWrite/Internal_ReadWrite.ino). Here's the [library implementation](https://github.com/adafruit/Adafruit_nRF52_Arduino/tree/master/libraries/InternalFileSytem/src/flash)
+* Adafruit's [LittleFS](https://github.com/adafruit/Adafruit_nRF52_Arduino/tree/master/libraries/Adafruit_LittleFS)
+* Examples of using [fstorage](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Flib_fstorage.html) from nordic: [link](https://github.com/NordicPlayground/nRF5-flash-storage-examples).
+* Example from the SDK: `flashwrite` in examples\peripheral\flashwrite
+* [sd_flash_write](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.s132.api.v3.0.0%2Fgroup___n_r_f___s_o_c___f_u_n_c_t_i_o_n_s.html)
+
+Questions:
+* What addresses are safe to write to? We need to avoid:
+  * Bootloader
+  * SoftDevice
+  * Application
+  * More sections?
+
+# Deep sleep
+* [Adafruit_nRF52_Arduino](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/cores/nRF5/wiring.h#L34) has a waitForEvent function, which internally calls [sd_app_evt_wait](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/cores/nRF5/wiring.c#L101).
+* System ON/OFF. System ON mode is a power saving mode in which the RTCounters are active, so they can emit events for waking up the CPU. System off has no RTC active.
+* the RTC COMPARE event can be used to wake up. See the examples/peripheral/rtc.
+* [app_timer on nordicsemi](https://devzone.nordicsemi.com/f/nordic-q-a/46031/need-a-30-second-interrupt---using-rtc)
+* [Adafruit_nRF52_Arduino issue](https://github.com/adafruit/Adafruit_nRF52_Arduino/issues/165)
+  * `delay()` calls waitForEvent?
+  * [suspendLoop](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/libraries/Bluefruit52Lib/examples/Peripheral/beacon/beacon.ino#L60) can probably save energy when no deep sleep is used.
+
+# Arduino specifics
+* How `main` works by calling `setup` and `loop`. [Link for Adafruit](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/main.cpp#L74), [link for arduino-nrf5](https://github.com/sandeepmistry/arduino-nRF5/blob/master/cores/nRF5/main.cpp#L27). Or: why dropping the `setup` and `loop` doesn't work directly, as they do with ESP32.

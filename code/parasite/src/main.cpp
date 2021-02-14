@@ -24,6 +24,8 @@ parasite::BatteryMonitor batt_monitor(kBattAnalogPin);
 parasite::SoilMonitor soil_monitor(kSoilMonitorAirVal, kSoilMonitorWaterVal,
                                    kSoilAnalogPin);
 
+SoftwareTimer timer;
+
 void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
                            const parasite::soil_reading_t& soil_reading,
                            double battery_voltage) {
@@ -40,9 +42,10 @@ void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
   }
 }
 
+void timer_cb(TimerHandle_t timer_handle) { Serial.println("timer!"); }
+
 void setup() {
   Serial.begin(9600);
-
   pinMode(kLED1Pin, OUTPUT);
   pinMode(kDischargeEnablePin, OUTPUT);
 
@@ -51,6 +54,12 @@ void setup() {
 
   // Enable fast discharge cycle.
   digitalWrite(kDischargeEnablePin, HIGH);
+
+  timer.begin(5000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
+  timer.start();
+
+  // waitForEvent();
+  // suspendLoop();
 }
 
 void loop() {
@@ -61,9 +70,5 @@ void loop() {
   Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
                 100 * soil_reading.parcent);
 
-  digitalToggle(kLED1Pin);
-
   updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
-
-  delay(500);
 }
