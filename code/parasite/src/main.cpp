@@ -25,10 +25,13 @@ parasite::SoilMonitor soil_monitor(kSoilMonitorAirVal, kSoilMonitorWaterVal,
                                    kSoilAnalogPin);
 
 void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
-                           const parasite::soil_reading_t& soil_reading) {
+                           const parasite::soil_reading_t& soil_reading,
+                           double battery_voltage) {
   parasite::BLEAdvertisementData data;
 
-  data.SetRawSoilMoisture(soil_reading.raw);
+  data.SetSoilMoistureRaw(soil_reading.raw);
+  data.SetSoilMoisturePercent(soil_reading.parcent);
+  data.SetBatteryVoltage(battery_voltage);
 
   advertiser->SetData(data);
 
@@ -51,8 +54,8 @@ void setup() {
 }
 
 void loop() {
-  double batt_voltage = batt_monitor.Read();
-  Serial.printf("Batt voltage: %f\n", batt_voltage);
+  double battery_voltage = batt_monitor.Read();
+  Serial.printf("Batt voltage: %f\n", battery_voltage);
 
   parasite::soil_reading_t soil_reading = soil_monitor.Read();
   Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
@@ -60,7 +63,7 @@ void loop() {
 
   digitalToggle(kLED1Pin);
 
-  updateAdvertisingData(&advertiser, soil_reading);
+  updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
 
   delay(500);
 }
