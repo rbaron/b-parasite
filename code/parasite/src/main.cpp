@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
 #include <cstring>
-#include <vector>
 
+#include "parasite/adc.h"
 #include "parasite/ble.h"
 #include "parasite/ble_advertisement_data.h"
 #include "parasite/pwm.h"
@@ -10,22 +10,25 @@
 constexpr int kLED1Pin = 17;
 constexpr int kLED2Pin = 18;
 constexpr int kPWMPin = 19;
-constexpr int kSensAnalogPin = 4;  // AIN2
+constexpr int kSoilAnalogPin = 4;  // AIN2
 constexpr int kBattAnalogPin = 3;  // AIN3
 constexpr int kDischargeEnablePin = 16;
 constexpr double kPWMFrequency = 500000;
-
-constexpr double kBattDividerR1 = 1470;
-constexpr double kBattDividerR2 = 470;
-constexpr double kBattDividerFactor = (kBattDividerR1 + kBattDividerR2) / kBattDividerR2;
+constexpr int kSoilMonitorAirVal = 680;
+constexpr int kSoilMonitorWaterVal = 60;
 
 const parasite::MACAddr kMACAddr = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
 parasite::BLEAdvertiser advertiser(kMACAddr);
 
-void updateAdvertisingData(parasite::BLEAdvertiser *advertiser,
-                           int moisture_level) {
+parasite::BatteryMonitor batt_monitor(kBattAnalogPin);
+parasite::SoilMonitor soil_monitor(kSoilMonitorAirVal, kSoilMonitorWaterVal,
+                                   kSoilAnalogPin);
+
+void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
+                           const parasite::soil_reading_t& soil_reading) {
   parasite::BLEAdvertisementData data;
-  data.SetRawSoilMoisture(moisture_level);
+
+  data.SetRawSoilMoisture(soil_reading.raw);
 
   advertiser->SetData(data);
 
@@ -48,25 +51,16 @@ void setup() {
 }
 
 void loop() {
-  // With a gain of 1/2, we can read the range of [0, 1.2V].
-  // I'm using a voltage divider with R1 = 1470, R2 470, so
-  // We can read 0 - ~5V.
-  // This seems to be working okay, but I need to investigate if making it
-  // stiffer (lower R1 and R2) work better.
-  analogOversampling(32);
-  analogReference(AR_INTERNAL_1_2);
-  int batt_val = analogRead(kBattAnalogPin);
-  double v_in = 1.2 * batt_val / (1<<10);
-  double batt_voltage = kBattDividerFactor * v_in;
-  Serial.printf("Batt val: %d, voltage: %f\n", batt_val, batt_voltage);
+  double batt_voltage = batt_monitor.Read();
+  Serial.printf("Batt voltage: %f\n", batt_voltage);
 
-  // We setup the analog reference to be VDD. This allows us to cancel out
-  // the effect of the battery discharge across time, since the RC circuit
-  // also depends linearly on VDD.
-  analogReference(AR_VDD4);
-  int sens_val = analogRead(kSensAnalogPin);
-  // Serial.printf("Moisture val: %d\n", sens_val);
+  parasite::soil_reading_t soil_reading = soil_monitor.Read();
+  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
+                100 * soil_reading.parcent);
+
   digitalToggle(kLED1Pin);
-  updateAdvertisingData(&advertiser, sens_val);
+
+  updateAdvertisingData(&advertiser, soil_reading);
+
   delay(500);
 }
