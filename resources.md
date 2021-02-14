@@ -139,6 +139,15 @@ I'm getting ~680 when in the air; ~65 while holding the sensor. The default reso
 
 # Battery monitoring
 * Good post on how to measure lipo batteries: [link](https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/measuring-lithium-battery-voltage-with-nrf52#:~:text=To%20reduce%20the%20leakage%20current,of%2040%20us%2C%20see%20here.)
+We have a choice of using different references when using the analog-to-digital converter. For measuing the peak of the RC charging circuit, it makes sense to use VCC as the reference, as the rise in the RC is proportional to VCC.
+For battery monitoring, we need an absolute reference. Luckily, we can use the internal reference of 0.6V. To increase the range of values, we can combine this with a gain parameter. This is what the arduino-nrf5 does in [wiring_analog_nRF52.c](https://github.com/sandeepmistry/arduino-nRF5/blob/master/cores/nRF5/wiring_analog_nRF52.c#L92).
+With a gain of 1/2, we could read the absolute range of [0, 1.2V]. Since we're interested in the max value of roughly 4.2 (fully charged LiPo, or alternatively 3.0V for a CR2032 coin cell), we can use a voltage divider with R1 = 1470 kOhm and R2 = 470kOhm. This would give us a range of [0, ~5V].
+This seems to be working okay, but I need to investigate if making it stiffer (lower R1 and R2) improves the accuracy. With higher resistor values, we minimize the quiescent current, but increase the source impedance. Even hooking up the oscilloscope changes the reading value.
+
+## Ideas for improvement:
+* Decrease the impedance of the voltage divider, but somehow use a mcu-controlled switch so we don't pay the current price when the MCU is sleeping (which is most of the time). [This stackexchange answer](https://electronics.stackexchange.com/a/64491) mentions a similar approach
+* Use even larger resistor values and attach a capacitor across R2, as suggested by [this answer](https://www.eevblog.com/forum/projects/battery-monitoring-voltage-divider/msg2524116/#msg2524116). We can reach nanoamps of current, which is negligible in this design. Question: does the capacitor self leak? If so, we'd need to be constantly pumping charges into it. How significant is this effect? If we do oversampling, the capacitor probably won't charge in time for multiple fast measurements. But the capacitor might act like a filter itself, negating the need for oversampling.
+  * [This post on jeelabs.org](https://jeelabs.org/wp-content/uploads/2013/05/16/measuring-the-battery-without-draining-it/) also does some experiments with a capacitor across R2.
 
 # BLE
 * BLE examples for platformio with nordicnrf52 platform: [link](https://github.com/platformio/platform-nordicnrf52/tree/master/examples)
