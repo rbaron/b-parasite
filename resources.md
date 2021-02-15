@@ -236,6 +236,52 @@ Questions:
 * [Adafruit_nRF52_Arduino issue](https://github.com/adafruit/Adafruit_nRF52_Arduino/issues/165)
   * `delay()` calls waitForEvent?
   * [suspendLoop](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/master/libraries/Bluefruit52Lib/examples/Peripheral/beacon/beacon.ino#L60) can probably save energy when no deep sleep is used.
+  * [More on power consumption](https://github.com/adafruit/Adafruit_nRF52_Arduino/issues/165#issuecomment-407288522). where @hathach mentions that the `delay()` actually uses [`waitForEvent`](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/wiring.c#L84), which itself calls
+* [Loopless / low power examples](https://github.com/adafruit/Adafruit_nRF52_Arduino/pull/262) pull request on Adafruit_nRF52_Arduino
+  * They use the SoftwareTimer, which
 
+* The example in examples/peripheral/rtc is straight-forward: initialize RTC and set up the TICK and COMPARE0 event. The TICK event is triggered on every clock cycle. The COMPARE0 only when the counter reaches a specified value.
+  * It uses the nrf_drv_rtc.h header, which doesn't seem to be included in the Arduino core implementaton
+  * There's a similar one in Arduino called [nrfx/hal/nrf_rtc.h](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/nordic/nrfx/hal/nrf_rtc.h). It seems to use the same call to `nrf_rtc_cc_set` under the hood.
+  * [nrfx](https://github.com/NordicSemiconductor/nrfx) is "a standalone set of drivers for peripherals present in Nordic Semiconductor's SoCs".
+
+* The [RTC driver](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Fgroup__nrfx.html) has some interesting functions:
+  * nrfx_rtc_cc_set
+  * nrfx_rtc_tick_disable
+* Interrupt handlers are registered in the NVIC (nested vectored interrupt controller)
+
+*[wolfssl](https://fossies.org/linux/wolfssl/wolfcrypt/src/port/arm/cryptoCell.c) uses the functions I'm thinking of using.
+
+* Reminders:
+  * RTC0 and RTC1 might be in use. Try using RTC2
+  * Initialize the low frequency clock LFCLKSRC
+  * Disable the TICK interrupt
+  * Set up an IRQ (callback) [example from nordic forum](https://devzone.nordicsemi.com/f/nordic-q-a/52923/rtc-interrupt-handler-not-working)
+  * Set up the COMPARE[0] event/interrupt
+  * Disable LFCLKSTARTED interrupt? [link from nordic forum](https://devzone.nordicsemi.com/f/nordic-q-a/70091/early-wake-up-from-power-clock-irq-when-using-rtc-to-wake-up)
+  * FPU (floating point interrupts) also might trigger the interrupt. Important thread from [nordic](https://devzone.nordicsemi.com/f/nordic-q-a/23242/single-float-division-causing-7x-higher-current-draw)
+  * Doesn't work with C++?? [devzone](https://devzone.nordicsemi.com/f/nordic-q-a/13465/nvic-registered-interrupt-doesn-t-work)
+
+## Deep Sleep with SoftwareTimer
+This is a FreeRTOS scheduled task. It seems to work, but by default it wasn't. I had to increase the FreeRTOS timer stack size, as hinted in [this GitHub issue](https://github.com/adafruit/Adafruit_nRF52_Arduino/issues/188)], in ~/.platformio/packages/framework-arduinoadafruitnrf52/cores/nRF5/freertos/config/FreeRTOSConfig.h.
+
+* Issues
+  * nrfx_clock_init is not linked by default in platformio. Is there a more conventional way of using this?
+  * freeRTOS on Adafruit_nRF52_Arduino uses the RTC. [link](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/freertos/config/FreeRTOSConfig.h)
 # Arduino specifics
 * How `main` works by calling `setup` and `loop`. [Link for Adafruit](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/main.cpp#L74), [link for arduino-nrf5](https://github.com/sandeepmistry/arduino-nRF5/blob/master/cores/nRF5/main.cpp#L27). Or: why dropping the `setup` and `loop` doesn't work directly, as they do with ESP32.
+
+## FreeRTOS
+* [Low Power Support or tickless idle](https://www.freertos.org/low-power-tickless-rtos.html)
+* [Adafruit use of freeRTOS for scheduling the loop() function in Arduino](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/main.cpp#L94)
+* [Adafruit's SoftwareTimer](https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/utility/SoftwareTimer.cpp) also uses freeRTOS tasks
+* How/where is freeRTOS implemented for nrf52?
+  * [Adafruit_nRF52_Arduino/cores/nRF5/freertos/](https://github.com/adafruit/Adafruit_nRF52_Arduino/tree/4d703b6f38262775863a16a603c12aa43d249f04/cores/nRF5/freertos)
+* [FreeRTOS support in nordic SDK](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.0.0%2Fnrf_freertos_example.html)
+  * examples/blinky_freertos
+  * examples/blinky_rtc_freertos
+
+# Nordic specifics
+* HAL vs. Drivers
+  * [Great answer on nordic forum](https://devzone.nordicsemi.com/f/nordic-q-a/5964/nrf_dvr_xxx-vs-nrf_xxx)
+  * HAL are lower-level. They provide some functions for accessing registers. Drivers are higher level, and usually use the HAL functions. Drivers can be used with or without SoftDevices.

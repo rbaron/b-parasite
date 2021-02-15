@@ -42,7 +42,29 @@ void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
   }
 }
 
-void timer_cb(TimerHandle_t timer_handle) { Serial.println("timer!"); }
+/*
+ * * WARNING *
+ * To get this callback to work, I had to increase the freeRTOS timer stack in
+ * ~/.platformio/packages/framework-arduinoadafruitnrf52/cores/nRF5/freertos/config/FreeRTOSConfig.h
+ * #define configTIMER_TASK_STACK_DEPTH                             (1024)
+ */
+void timer_cb(TimerHandle_t timer_handle) {
+  Serial.println("timer!");
+  digitalToggle(kLED1Pin);
+
+  double battery_voltage = batt_monitor.Read();
+  Serial.printf("Batt voltage: %f\n", battery_voltage);
+
+  parasite::soil_reading_t soil_reading = soil_monitor.Read();
+  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
+                100 * soil_reading.parcent);
+
+  updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
+  delay(1000);
+  advertiser.Stop();
+
+  // TODO(rbaron): stop PWM; stop everything to save battery.
+}
 
 void setup() {
   Serial.begin(9600);
@@ -55,20 +77,12 @@ void setup() {
   // Enable fast discharge cycle.
   digitalWrite(kDischargeEnablePin, HIGH);
 
-  timer.begin(5000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
+  timer.begin(2000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
   timer.start();
 
-  // waitForEvent();
-  // suspendLoop();
+  // Suspend the loop task. Under the hood this is a freeRTOS task set up
+  // by the Adafruit_nNRF52_Arduino package.
+  suspendLoop();
 }
 
-void loop() {
-  double battery_voltage = batt_monitor.Read();
-  Serial.printf("Batt voltage: %f\n", battery_voltage);
-
-  parasite::soil_reading_t soil_reading = soil_monitor.Read();
-  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
-                100 * soil_reading.parcent);
-
-  updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
-}
+void loop() {}
