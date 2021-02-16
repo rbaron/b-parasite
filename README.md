@@ -12,7 +12,7 @@ A low power soil moisture sensor based on the nRF52840.
 * Implement ADC for battery monitoring
 * Figure out a way for people to configure the device with a custom name. Idea: BLE service (this is what my [hacked xiaomi temp sensor](https://github.com/atc1441/ATC_MiThermometer) does)
 * Figure out how OTA works (if at all) over BLE
-* Design new board using the nrf52 instead of esp32
+* Design new board using the nrf52840 (E73-C) instead of esp32
 
 # Done
 * Implement battery level monitoring

@@ -285,3 +285,46 @@ This is a FreeRTOS scheduled task. It seems to work, but by default it wasn't. I
 * HAL vs. Drivers
   * [Great answer on nordic forum](https://devzone.nordicsemi.com/f/nordic-q-a/5964/nrf_dvr_xxx-vs-nrf_xxx)
   * HAL are lower-level. They provide some functions for accessing registers. Drivers are higher level, and usually use the HAL functions. Drivers can be used with or without SoftDevices.
+
+
+# nRF52840
+I've started using a standalone nrf52840 module (e73-2g4m08s1c), since I want a barebones module to test power consumption. This chip is very similar to the nrf52832, except it has built-in usb support!
+
+## Adafruit bootloader
+The bootloader is different. It has one extra feature: double resetting puts the chip into DFU/CDC mode. I actually verified that it shows up as a mass storage device on my mac!
+
+## Questions
+* Booting in DFU/CDC creates a new serial device in /dev/cu.usbmodem*. What about when the application is running? How does Serial.print() work? How can I read those?
+  * framework-arduinoadafruitnrf52/cores/nRF5/TinyUSB/Adafruit_TinyUSB_ArduinoCore/Adafruit_USBD_CDC.h likely has the answer and it uses TinyUSB.
+* Reset button seems to be "configurable" to use pin 0.18. Do I need to pre-configure it or will resetting work with Adafruit's bootloader for putting it into flash mode by quickly resetting it twice?
+  * In the [ItsyBitsy schematic](https://cdn-learn.adafruit.com/assets/assets/000/087/158/original/adafruit_products_schem.png?1579387035), it seems like the reset switch simply pulls P0.18 to gnd.
+  *
+## Power input
+  * When connected to USB, VBUS is 5V
+  * The datasheet mentions 1.7V - 5.5V supply voltage
+  * But there are two supply pins (page 79):
+    * VDD handles 1.7 - 3.6V
+    * VDDH handles 2.5 - 5.5V
+  * So, when connecting to USB, do I need to bridge VBUS and VDDH high?
+    * (page 65): "As a consequence, VBUS and either VDDH or VDD supplies are required for USB peripheral operation"
+
+
+## Bluetooth
+I got basic sketches working on the barebones e73c breakout, except the ones running bluetooth.
+I was able to deviry that the program hands exactly when it reaches the Bluefruit.begin() function.
+Googling suggests that it's missing a low frequency oscillating crystal.
+
+Details on oscillator on page 84.
+
+### How to enable the internal synthetic one?
+In [arduino-nRF5](https://github.com/sandeepmistry/arduino-nRF5/blob/master/boards.txt#L49) there is a menu in which we can select:
+- Crystal (-DUSE_LFXO)
+- RC (-DUSE_LFRC)
+- Synthetic (-DUSE_LFSYNT)
+
+Changing the following on framework-arduinoadafruitnrf52/variants/feather_nrf52840_express/variant.h made it work:
+```C
+// #define USE_LFXO      // Board uses 32khz crystal for LF
+#define USE_LFRC    // Board uses RC for LF
+```
+
