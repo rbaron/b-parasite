@@ -16,20 +16,24 @@ namespace {
 constexpr unsigned long kPWMFrequencyPrescale = PWM_PRESCALER_PRESCALER_DIV_1;
 }  // namespace
 
-void SetupSquareWave(double frequency, int pin_number) {
-  // In conjunction with the PWM clock frequency, kPWMMaxCounter defines the
+SquareWaveGenerator::SquareWaveGenerator(double frequency, int pin_number)
+    : frequency_(frequency), pin_number_(pin_number) {
+  // In conjunction with the PWM clock frequency, max_count defines the
   // frequency of the square wave.
   const int max_count = 16e6 / frequency;
 
   // Since we want a duty cycle of 0.5, we flip the PVM output when the counter
-  // reaches kPWMMaxCounter / 2;
+  // reaches max_count / 2;
   const int flip_at_count = max_count / 2;
 
   HwPWM0.addPin(pin_number);
   HwPWM0.setClockDiv(kPWMFrequencyPrescale);
   HwPWM0.setMaxValue(max_count);
   HwPWM0.writePin(pin_number, flip_at_count);
-  HwPWM0.begin();
 }
+
+void SquareWaveGenerator::Start() { HwPWM0.begin(); }
+
+void SquareWaveGenerator::Stop() { HwPWM0.stop(); }
 
 }  // namespace parasite

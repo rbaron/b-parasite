@@ -10,5 +10,16 @@ namespace parasite {
 // and reusable.
 void SetupSquareWave(double frequency, int pin_number);
 
+class SquareWaveGenerator {
+ public:
+  SquareWaveGenerator(double frequency, int pin_number);
+  void Start();
+  void Stop();
+
+ private:
+  double frequency_;
+  int pin_number_;
+};
+
 }  // namespace parasite
 #endif  // _PARASITE_PWM_H_

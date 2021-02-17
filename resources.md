@@ -132,6 +132,18 @@ int sens_val = analogRead(kSensAnalogPin);
 ```
 I'm getting ~680 when in the air; ~65 while holding the sensor. The default resolution is 10 bits, so 1024 -> 3.3V. On the scope, I'm reading the sensor output value to be 2.16V. This matches the value I'm reading: 1024/3.3 * 2.15 = 667. Nice.
 
+The Vcc voltage seems to have an impact though (with nrf52840):
+Vcc = 3.5 => Moisture Air: 668; Hand: 65
+Vcc = 3.0 => Moisture Air: 640; Hand: 53
+Vcc = 2.5 => Moisture Air: 605; Hand: 32
+Vcc = 2.0 => Moisture Air: 547; Hand: 23
+
+Possible issues:
+* Fast discharging circuit is not fully open with lower voltage?
+
+Possible fixes:
+* Hack a software interpolation
+
 # Battery
 * [CR2032 datasheet](https://data.energizer.com/pdfs/cr2032.pdf)
   * 235 mAh (from 3.0V to 2.0V)
