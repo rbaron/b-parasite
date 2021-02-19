@@ -15,8 +15,6 @@ constexpr int kSoilAnalogPin = 21;       // P0.31, AIN7
 constexpr int kBattAnalogPin = 15;       // P0.05, AIN3
 constexpr int kDischargeEnablePin = 16;  // P0.30;
 constexpr double kPWMFrequency = 500000;
-constexpr int kSoilMonitorAirVal = 680;
-constexpr int kSoilMonitorWaterVal = 60;
 
 // parasite::SquareWaveGenerator square_wave_generator(kPWMFrequency, kPWMPin);
 
@@ -24,8 +22,7 @@ const parasite::MACAddr kMACAddr = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
 parasite::BLEAdvertiser advertiser(kMACAddr);
 
 parasite::BatteryMonitor batt_monitor(kBattAnalogPin);
-parasite::SoilMonitor soil_monitor(kSoilMonitorAirVal, kSoilMonitorWaterVal,
-                                   kSoilAnalogPin);
+parasite::SoilMonitor soil_monitor(kSoilAnalogPin);
 
 SoftwareTimer timer;
 
@@ -54,25 +51,24 @@ void updateAdvertisingData(parasite::BLEAdvertiser* advertiser,
 void timer_cb(TimerHandle_t timer_handle) {
   parasite::SquareWaveGenerator square_wave_generator(kPWMFrequency, kPWMPin);
 
-  digitalToggle(kLED1Pin);
-
-  square_wave_generator.Start();
-  digitalWrite(kDischargeEnablePin, HIGH);
-
-  parasite::soil_reading_t soil_reading = soil_monitor.Read();
-  // Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
-  //               100 * soil_reading.parcent);
-
-  square_wave_generator.Stop();
-  digitalWrite(kDischargeEnablePin, LOW);
+  // digitalToggle(kLED1Pin);
 
   double battery_voltage = batt_monitor.Read();
-  // Serial.printf("Batt voltage: %f\n", battery_voltage);
+  Serial.printf("Batt voltage: %f\n", battery_voltage);
+
+  digitalWrite(kDischargeEnablePin, HIGH);
+  square_wave_generator.Start();
+  delay(10);
+  parasite::soil_reading_t soil_reading = soil_monitor.Read(battery_voltage);
+  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
+                100 * soil_reading.parcent);
+  square_wave_generator.Stop();
+  digitalWrite(kDischargeEnablePin, LOW);
 
   updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
 
   // Keep adversiting for 1 second.
-  delay(1000);
+  delay(500);
 
   advertiser.Stop();
 
@@ -81,10 +77,14 @@ void timer_cb(TimerHandle_t timer_handle) {
 
 void setup() {
   Serial.begin(9600);
-  pinMode(kLED1Pin, OUTPUT);
+  // pinMode(kLED1Pin, OUTPUT);
   pinMode(kDischargeEnablePin, OUTPUT);
 
-  timer.begin(2000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
+  // digitalWrite(kDischargeEnablePin, HIGH);
+  // parasite::SquareWaveGenerator square_wave_generator(kPWMFrequency,
+  // kPWMPin); square_wave_generator.Start();
+
+  timer.begin(1000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
   timer.start();
 
   // Suspend the loop task. Under the hood this is a freeRTOS task set up

@@ -19,15 +19,11 @@ struct soil_reading_t {
 
 class SoilMonitor {
  public:
-  explicit SoilMonitor(int air_val, int water_val, int pin)
-      : air_val_(air_val), water_val_(water_val), pin_(pin) {}
+  explicit SoilMonitor(int pin) : pin_(pin) {}
 
-  soil_reading_t Read();
+  soil_reading_t Read(double vdd);
 
  private:
-  // Referencce values for estimating the soil moisture percentage.
-  const int air_val_, water_val_;
-
   // Pin the analog signal is connected to.
   const int pin_;
 };

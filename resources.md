@@ -140,9 +140,13 @@ Vcc = 2.0 => Moisture Air: 547; Hand: 23
 
 Possible issues:
 * Fast discharging circuit is not fully open with lower voltage?
+* Weird capacitance stored in the transitor messes up the quick switching?
+* Time it takes to overcome the 0.6V diode drop in the output circuit?
 
 Possible fixes:
-* Hack a software interpolation
+* Measure and  correct it via a software interpolation
+
+For now I'm implementing the software fix that seems to work well in practice. The measurements and regression coefficients are in [this spreadsheet](https://docs.google.com/spreadsheets/d/1F6rtkCX7626tzZff0NANZVknawb_U4uS38zjyy6ZPEE/edit#gid=1442651809).
 
 # Battery
 * [CR2032 datasheet](https://data.energizer.com/pdfs/cr2032.pdf)
