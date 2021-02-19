@@ -278,6 +278,9 @@ Questions:
   * FPU (floating point interrupts) also might trigger the interrupt. Important thread from [nordic](https://devzone.nordicsemi.com/f/nordic-q-a/23242/single-float-division-causing-7x-higher-current-draw)
   * Doesn't work with C++?? [devzone](https://devzone.nordicsemi.com/f/nordic-q-a/13465/nvic-registered-interrupt-doesn-t-work)
 
+
+* Good tips on how to save energy (for nrf51, but the same ideas apply) [link](https://devzone.nordicsemi.com/f/nordic-q-a/1657/how-to-minimize-current-consumption-for-ble-application-on-nrf51822#5187)
+
 ## Deep Sleep with SoftwareTimer
 This is a FreeRTOS scheduled task. It seems to work, but by default it wasn't. I had to increase the FreeRTOS timer stack size, as hinted in [this GitHub issue](https://github.com/adafruit/Adafruit_nRF52_Arduino/issues/188)], in ~/.platformio/packages/framework-arduinoadafruitnrf52/cores/nRF5/freertos/config/FreeRTOSConfig.h.
 

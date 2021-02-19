@@ -1,3 +1,6 @@
+// #define NRF_LOG_BACKEND_UART_ENABLED 0
+// #define NRF_LOG_ENABLED 0
+
 #include <Arduino.h>
 
 #include <cstring>
@@ -8,12 +11,13 @@
 #include "parasite/pwm.h"
 
 // variants/feather_nrf52840_express/variant.cpp
-constexpr int kLED1Pin = 17;             // P0.28
-constexpr int kLED2Pin = 18;             // P0.02
-constexpr int kPWMPin = 33;              // 0.09
-constexpr int kSoilAnalogPin = 21;       // P0.31, AIN7
-constexpr int kBattAnalogPin = 15;       // P0.05, AIN3
-constexpr int kDischargeEnablePin = 16;  // P0.30;
+constexpr int kLED1Pin = 17;               // P0.28
+constexpr int kLED2Pin = 18;               // P0.02
+constexpr int kPWMPin = 33;                // 0.09
+constexpr int kSoilAnalogPin = 21;         // P0.31, AIN7
+constexpr int kBattAnalogPin = 15;         // P0.05, AIN3
+constexpr int kBattMonitorEnablePin = 19;  // P0.03, AIN1
+constexpr int kDischargeEnablePin = 16;    // P0.30;
 constexpr double kPWMFrequency = 500000;
 
 // parasite::SquareWaveGenerator square_wave_generator(kPWMFrequency, kPWMPin);
@@ -53,43 +57,55 @@ void timer_cb(TimerHandle_t timer_handle) {
 
   // digitalToggle(kLED1Pin);
 
+  digitalWrite(kBattMonitorEnablePin, HIGH);
+  delay(10);
   double battery_voltage = batt_monitor.Read();
+  digitalWrite(kBattMonitorEnablePin, LOW);
   Serial.printf("Batt voltage: %f\n", battery_voltage);
 
   digitalWrite(kDischargeEnablePin, HIGH);
   square_wave_generator.Start();
   delay(10);
   parasite::soil_reading_t soil_reading = soil_monitor.Read(battery_voltage);
-  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
-                100 * soil_reading.parcent);
   square_wave_generator.Stop();
   digitalWrite(kDischargeEnablePin, LOW);
+  Serial.printf("Moisture val: %d, %f%%\n", soil_reading.raw,
+                100 * soil_reading.parcent);
 
   updateAdvertisingData(&advertiser, soil_reading, battery_voltage);
 
   // Keep adversiting for 1 second.
   delay(500);
-
   advertiser.Stop();
-
-  // TODO(rbaron): what else can we turn off to save battery?
 }
 
 void setup() {
-  Serial.begin(9600);
-  // pinMode(kLED1Pin, OUTPUT);
-  pinMode(kDischargeEnablePin, OUTPUT);
+  // Serial.begin(9600);
+  // // pinMode(kLED1Pin, OUTPUT);
+  // pinMode(kDischargeEnablePin, OUTPUT);
+  // pinMode(kBattMonitorEnablePin, OUTPUT);
 
   // digitalWrite(kDischargeEnablePin, HIGH);
   // parasite::SquareWaveGenerator square_wave_generator(kPWMFrequency,
   // kPWMPin); square_wave_generator.Start();
 
-  timer.begin(1000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
-  timer.start();
+  // timer.begin(1000, timer_cb, /*timerID=*/nullptr, /*repeating=*/true);
+  // timer.start();
 
   // Suspend the loop task. Under the hood this is a freeRTOS task set up
   // by the Adafruit_nNRF52_Arduino package.
-  suspendLoop();
+  // suspendLoop();
+  // NRF_UART0->TASKS_STOPTX = 1;
+  // NRF_UART0->TASKS_STOPRX = 1;
+  // NRF_UART0->ENABLE = 0;
+
+  // NRF_SPI0->ENABLE = 0;
+  // __disable_irq()
+  // sd_power_system_off();
+  // NRF_POWER->SYSTEMOFF = POWER_SYSTEMOFF_SYSTEMOFF_Enter;
 }
 
-void loop() {}
+void loop() {
+  Serial.printf("Ok");
+  delay(1000);
+}
