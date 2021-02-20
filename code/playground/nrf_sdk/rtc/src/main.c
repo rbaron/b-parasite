@@ -13,7 +13,7 @@
 #define LED_PIN 3
 
 // Seconds between RTC COMPARE0 events.
-#define COMPARE_COUNTERTIME \ (1UL)
+#define COMPARE_COUNTERTIME (1UL)
 
 const nrf_drv_rtc_t rtc = NRF_DRV_RTC_INSTANCE(0);
 
@@ -64,6 +64,7 @@ int main(void) {
 
   rtc_config();
 
+  // NRF_POWER->SYSTEMOFF = 1;
   while (true) {
     __SEV();
     __WFE();
