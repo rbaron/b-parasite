@@ -347,3 +347,5 @@ Changing the following on framework-arduinoadafruitnrf52/variants/feather_nrf528
 #define USE_LFRC    // Board uses RC for LF
 ```
 
+# Using the raw nrf5 SDK
+- SparkFun article on how to setup vscode for development [link](https://learn.sparkfun.com/tutorials/nrf52840-advanced-development-with-the-nrf5-sdk/setting-up-a-vs-code-environment)
