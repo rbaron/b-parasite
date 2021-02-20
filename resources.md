@@ -349,3 +349,13 @@ Changing the following on framework-arduinoadafruitnrf52/variants/feather_nrf528
 
 # Using the raw nrf5 SDK
 - SparkFun article on how to setup vscode for development [link](https://learn.sparkfun.com/tutorials/nrf52840-advanced-development-with-the-nrf5-sdk/setting-up-a-vs-code-environment)
+
+## Dev boards
+- [PCA10040](https://docs.zephyrproject.org/1.9.0/boards/arm/nrf52_pca10040/doc/nrf52_pca10040.html) uses an nrf52832
+- [PCA10056](https://docs.zephyrproject.org/1.14.1/boards/arm/nrf52840_pca10056/doc/index.html) uses an nrf52840. This is what I want.
+
+## Timers, RTC
+- [devzone thread](https://devzone.nordicsemi.com/f/nordic-q-a/12731/clocks-timers-rtc-why):
+  - Timers use the HFCLK; better resolution, more power usage
+  - RTC uses the low frequency source LFCLK; less accurate, less power usage
+I want RTC, since I don't need to be super precise and I want to save as much battery as possible.
