@@ -383,3 +383,10 @@ A side note: the E73-2G4M04S1B module uses the "old" nrf52832 module, but it sho
 So the latest data is:
 - System ON sleep: ~4uA
 - System OFF sleep: 0.3uA (pretty cool!)
+
+## BLE
+I had to change the LFCLK source in these params:
+#define NRFX_CLOCK_CONFIG_LF_SRC 0
+#define NRF_SDH_CLOCK_LF_SRC 0
+#define CLOCK_CONFIG_LF_CAL_ENABLED 1
+#define NRF_SDH_CLOCK_LF_ACCURACY 1
