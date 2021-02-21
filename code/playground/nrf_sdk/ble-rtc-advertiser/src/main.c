@@ -57,6 +57,7 @@
 #include "bsp.h"
 #include "nordic_common.h"
 #include "nrf_delay.h"
+#include "nrf_drv_rtc.h"
 #include "nrf_gpio.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -82,6 +83,12 @@ static uint8_t service_data[SERVICE_DATA_LEN];
 
 #define APP_BLE_CONN_CFG_TAG 1
 
+// Seconds between RTC 2 events.
+#define COMPARE_COUNTERTIME (3UL)
+
+// RTC0 is used by softdevice! We need to pick another instance.
+const nrf_drv_rtc_t rtc = NRF_DRV_RTC_INSTANCE(2);
+
 static ble_gap_adv_params_t m_adv_params; /**< Parameters to be passed to the
                                              stack when starting advertising. */
 static uint8_t m_adv_handle =
@@ -103,7 +110,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name) {
 }
 
 static void advertising_init(void) {
-
   uint32_t err_code;
   ble_advdata_t advdata;
   // Build and set advertising data.
@@ -116,7 +122,6 @@ static void advertising_init(void) {
   advdata_service_data.data.p_data = service_data;
   advdata_service_data.data.size = SERVICE_DATA_LEN;
 
-
   advdata.name_type = BLE_ADVDATA_FULL_NAME;
   advdata.flags = flags;
 
@@ -126,7 +131,8 @@ static void advertising_init(void) {
   // Initialize advertising parameters (used when starting advertising).
   memset(&m_adv_params, 0, sizeof(m_adv_params));
 
-  m_adv_params.properties.type = BLE_GAP_ADV_TYPE_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED;
+  m_adv_params.properties.type =
+      BLE_GAP_ADV_TYPE_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED;
   m_adv_params.p_peer_addr = NULL;  // Undirected advertisement.
   m_adv_params.filter_policy = BLE_GAP_ADV_FP_ANY;
   m_adv_params.interval = NON_CONNECTABLE_ADV_INTERVAL;
@@ -134,7 +140,7 @@ static void advertising_init(void) {
 
   ble_gap_conn_sec_mode_t sec_mode;
   BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-  sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *) NAME, NAME_LEN);
+  sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)NAME, NAME_LEN);
 
   err_code = ble_advdata_encode(&advdata, m_adv_data.adv_data.p_data,
                                 &m_adv_data.adv_data.len);
@@ -150,8 +156,12 @@ static void advertising_start(void) {
 
   err_code = sd_ble_gap_adv_start(m_adv_handle, APP_BLE_CONN_CFG_TAG);
   APP_ERROR_CHECK(err_code);
+}
 
-  nrf_gpio_pin_set(LED_PIN);
+static void advertising_stop(void) {
+  ret_code_t err_code;
+  err_code = sd_ble_gap_adv_stop(m_adv_handle);
+  APP_ERROR_CHECK(err_code);
 }
 
 static void ble_stack_init(void) {
@@ -206,9 +216,43 @@ static void idle_state_handle(void) {
   }
 }
 
-/**
- * @brief Function for application main entry.
- */
+static void rtc_handler(nrf_drv_rtc_int_type_t int_type) {
+  if (int_type == NRF_DRV_RTC_INT_COMPARE2) {
+    nrf_gpio_pin_toggle(LED_PIN);
+    advertising_start();
+    nrf_delay_ms(1000);
+    advertising_stop();
+    nrf_drv_rtc_counter_clear(&rtc);
+    // We need to re-enable the RTC2 interrupt.
+    nrf_drv_rtc_int_enable(&rtc, NRF_RTC_INT_COMPARE2_MASK);
+  }
+  // This should be disabled and never triggered.
+  else if (int_type == NRF_DRV_RTC_INT_TICK) {
+  }
+}
+
+static void rtc_config(void) {
+  uint32_t err_code;
+
+  // Initialize RTC instance.
+  nrf_drv_rtc_config_t config = NRF_DRV_RTC_DEFAULT_CONFIG;
+  config.prescaler = 4095;
+  err_code = nrf_drv_rtc_init(&rtc, &config, rtc_handler);
+  APP_ERROR_CHECK(err_code);
+
+  nrf_drv_rtc_tick_disable(&rtc);
+  nrf_drv_rtc_overflow_disable(&rtc);
+  nrf_drv_rtc_counter_clear(&rtc);
+
+  // Set compare channel to trigger interrupt after COMPARE_COUNTERTIME
+  // seconds.
+  err_code = nrf_drv_rtc_cc_set(&rtc, 2, COMPARE_COUNTERTIME * 8, true);
+  APP_ERROR_CHECK(err_code);
+
+  // Power on RTC instance.
+  nrf_drv_rtc_enable(&rtc);
+}
+
 int main(void) {
   // Initialize.
   log_init();
@@ -217,15 +261,16 @@ int main(void) {
   power_management_init();
   ble_stack_init();
   advertising_init();
+  rtc_config();
 
   // Start execution.
-  NRF_LOG_INFO("Beacon example started.");
-  advertising_start();
+  // NRF_LOG_INFO("Beacon example started.");
+  // advertising_start();
+  UNUSED_VARIABLE(advertising_start);
+  UNUSED_VARIABLE(idle_state_handle);
 
   // Enter main loop.
   for (;;) {
-    idle_state_handle();
-    nrf_delay_ms(100);
-    NRF_LOG_FLUSH();
+    sd_app_evt_wait();
   }
 }
