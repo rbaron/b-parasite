@@ -390,3 +390,9 @@ I had to change the LFCLK source in these params:
 #define NRF_SDH_CLOCK_LF_SRC 0
 #define CLOCK_CONFIG_LF_CAL_ENABLED 1
 #define NRF_SDH_CLOCK_LF_ACCURACY 1
+
+## Debugging
+- Basics of debugging with SEGGER embedded studio [video](https://www.youtube.com/watch?v=uP8RYgYGRvI)
+
+## Error handling
+- Nice post on devzone [link](https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/an-introduction-to-error-handling-in-nrf5-projects)
