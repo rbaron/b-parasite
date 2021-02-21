@@ -359,3 +359,27 @@ Changing the following on framework-arduinoadafruitnrf52/variants/feather_nrf528
   - Timers use the HFCLK; better resolution, more power usage
   - RTC uses the low frequency source LFCLK; less accurate, less power usage
 I want RTC, since I don't need to be super precise and I want to save as much battery as possible.
+
+## Power down
+- [powerdown examples](https://github.com/NordicPlayground/nrf51-powerdown-examples) for nrf51 and nrf52
+- How to measure current with the dev kit using an oscilloscope. [Docs by nordic](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fug_nrf52832_dk%2FUG%2Fnrf52_DK%2Fhw_meas_current.html)
+- Good thread on devzone about current measurement [link](https://devzone.nordicsemi.com/nordic/short-range-guides/b/hardware-and-layout/posts/current-measurement-guide-measuring-current-with-n)
+
+There is something very weird going on. The current usage of my module varies wildly with the input voltage (Vcc). Something is off:
+- Vcc = 2.5 => 15uA
+- Vcc = 3.3V => 1ma
+- Vcc = 3.6 => > 2ma
+
+Very weird. What I did:
+- Tried the same sketch with a barebones nrf52832 module (E73-2G4M04S1B). It seems to behave as expected: around 2uA current in the input range 2V-3.6V;
+- Soldered _another_ nrf52840 to another breakout board. Now I'm seeing ~4uA in the input range 2V-3.6V;
+
+This suggestes there was something wrong with my previous nrf52840 module. Maybe I abused it too much or shorted something while soldering (but I wasn't able to find it with a contuniuity test). Also the system on might be because the nrf52840 has more RAM to keep powered on. We can selectively disable some, I think.
+
+Anyway, I'm considering this solved.
+
+A side note: the E73-2G4M04S1B module uses the "old" nrf52832 module, but it shows lower current _and_ it has a 32kHz crystal built in, which the E73-..C does not. I think the old module might be a better choice for us. The only downside is that it's slightly larger, but shouldn't matter at all.
+
+So the latest data is:
+- System ON sleep: ~4uA
+- System OFF sleep: 0.3uA (pretty cool!)

@@ -69,7 +69,6 @@
 #ifndef NRF_CLOCK_ENABLED
 #define NRF_CLOCK_ENABLED 1
 #endif
-
 #ifndef CLOCK_CONFIG_LF_SRC
 #define CLOCK_CONFIG_LF_SRC 0
 #endif

@@ -13,7 +13,7 @@
 #define LED_PIN 3
 
 // Seconds between RTC COMPARE0 events.
-#define COMPARE_COUNTERTIME (1UL)
+#define COMPARE_COUNTERTIME (3UL)
 
 const nrf_drv_rtc_t rtc = NRF_DRV_RTC_INSTANCE(0);
 
@@ -49,7 +49,8 @@ static void rtc_config(void) {
   nrf_drv_rtc_overflow_disable(&rtc);
   nrf_drv_rtc_counter_clear(&rtc);
 
-  // Set compare channel to trigger interrupt after COMPARE_COUNTERTIME seconds.
+  // Set compare channel to trigger interrupt after COMPARE_COUNTERTIME
+  // seconds.
   err_code = nrf_drv_rtc_cc_set(&rtc, 0, COMPARE_COUNTERTIME * 8, true);
   APP_ERROR_CHECK(err_code);
 
@@ -64,8 +65,8 @@ int main(void) {
 
   rtc_config();
 
-  // NRF_POWER->SYSTEMOFF = 1;
   while (true) {
+    // NRF_POWER->SYSTEMOFF = 1;
     __SEV();
     __WFE();
     __WFE();
