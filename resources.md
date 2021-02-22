@@ -364,6 +364,7 @@ I want RTC, since I don't need to be super precise and I want to save as much ba
 - [powerdown examples](https://github.com/NordicPlayground/nrf51-powerdown-examples) for nrf51 and nrf52
 - How to measure current with the dev kit using an oscilloscope. [Docs by nordic](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fug_nrf52832_dk%2FUG%2Fnrf52_DK%2Fhw_meas_current.html)
 - Good thread on devzone about current measurement [link](https://devzone.nordicsemi.com/nordic/short-range-guides/b/hardware-and-layout/posts/current-measurement-guide-measuring-current-with-n)
+- Another thread on how to minimize current consumption on [devzone](https://devzone.nordicsemi.com/f/nordic-q-a/1657/how-to-minimize-current-consumption-for-ble-application-on-nrf51822#5187)
 
 There is something very weird going on. The current usage of my module varies wildly with the input voltage (Vcc). Something is off:
 - Vcc = 2.5 => 15uA
@@ -396,3 +397,16 @@ I had to change the LFCLK source in these params:
 
 ## Error handling
 - Nice post on devzone [link](https://devzone.nordicsemi.com/nordic/nordic-blog/b/blog/posts/an-introduction-to-error-handling-in-nrf5-projects)
+
+## RC vs. Crystal
+- Good post with pros/cros on [devzone](https://devzone.nordicsemi.com/f/nordic-q-a/19/what-s-the-benefit-of-having-an-external-32-khz-crystal)
+Botom line:
+- RC is "cheaper" (doesn't require crystal of course)
+- RC is omre power hungry
+  - Needs to be recalibrated often (requires turning on the HFCLK of 16MHz)
+  - Accuracy is worse, so requires bigger windows for transmitting
+- All in all it should increase of 8-10uA on average
+- [github.com/joric/nrfmicro/wiki/Crystal](https://github.com/joric/nrfmicro/wiki/Crystal)
+
+
+Question: can we pay this cost only when the BLE is transmitting?
