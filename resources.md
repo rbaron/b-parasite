@@ -160,7 +160,7 @@ For battery monitoring, we need an absolute reference. Luckily, we can use the i
 With a gain of 1/2, we could read the absolute range of [0, 1.2V]. Since we're interested in the max value of roughly 4.2 (fully charged LiPo, or alternatively 3.0V for a CR2032 coin cell), we can use a voltage divider with R1 = 1470 kOhm and R2 = 470kOhm. This would give us a range of [0, ~5V].
 This seems to be working okay, but I need to investigate if making it stiffer (lower R1 and R2) improves the accuracy. With higher resistor values, we minimize the quiescent current, but increase the source impedance. Even hooking up the oscilloscope changes the reading value.
 
-There is a way to measure Vcc without any external circuitry. It uses the NRF_SSADC_INPUT_VDD. See [this post](https://devzone.nordicsemi.com/f/nordic-q-a/24159/what-is-the-pin-for-the-battery-voltage-on-nrf52pca1040-dk) on devzone.
+There is a way to measure Vcc without any external circuitry. It uses the NRF_SAADC_INPUT_VDD. See [this post](https://devzone.nordicsemi.com/f/nordic-q-a/24159/what-is-the-pin-for-the-battery-voltage-on-nrf52pca1040-dk) on devzone.
 
 ## Ideas for improvement:
 * Decrease the impedance of the voltage divider, but somehow use a mcu-controlled switch so we don't pay the current price when the MCU is sleeping (which is most of the time). [This stackexchange answer](https://electronics.stackexchange.com/a/64491) mentions a similar approach

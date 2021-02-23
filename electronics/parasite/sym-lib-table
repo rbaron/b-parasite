@@ -1,4 +1,5 @@
 (sym_lib_table
   (lib (name AO3407A)(type Legacy)(uri /Users/rbaron/dev/parasite/electronics/lib/snapeda/AO3407A.lib)(options "")(descr ""))
   (lib (name E73-2G4M04S1B)(type Legacy)(uri /Users/rbaron/dev/parasite/electronics/lib/snapeda/E73-2G4M04S1B.lib)(options "")(descr ""))
+  (lib (name SHT30-DIS-B)(type Legacy)(uri /Users/rbaron/dev/parasite/electronics/lib/snapeda/SHT30-DIS-B.lib)(options "")(descr ""))
 )
