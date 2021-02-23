@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name kicad)(type KiCad)(uri /Users/rbaron/dev/parasite/electronics/lib/kicad)(options "")(descr ""))
+  (lib (name snapeda)(type KiCad)(uri /Users/rbaron/dev/parasite/electronics/lib/snapeda)(options "")(descr ""))
+  (lib (name oshw)(type KiCad)(uri /Users/rbaron/dev/parasite/electronics/lib/oshw)(options "")(descr ""))
+)

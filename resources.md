@@ -160,6 +160,8 @@ For battery monitoring, we need an absolute reference. Luckily, we can use the i
 With a gain of 1/2, we could read the absolute range of [0, 1.2V]. Since we're interested in the max value of roughly 4.2 (fully charged LiPo, or alternatively 3.0V for a CR2032 coin cell), we can use a voltage divider with R1 = 1470 kOhm and R2 = 470kOhm. This would give us a range of [0, ~5V].
 This seems to be working okay, but I need to investigate if making it stiffer (lower R1 and R2) improves the accuracy. With higher resistor values, we minimize the quiescent current, but increase the source impedance. Even hooking up the oscilloscope changes the reading value.
 
+There is a way to measure Vcc without any external circuitry. It uses the NRF_SSADC_INPUT_VDD. See [this post](https://devzone.nordicsemi.com/f/nordic-q-a/24159/what-is-the-pin-for-the-battery-voltage-on-nrf52pca1040-dk) on devzone.
+
 ## Ideas for improvement:
 * Decrease the impedance of the voltage divider, but somehow use a mcu-controlled switch so we don't pay the current price when the MCU is sleeping (which is most of the time). [This stackexchange answer](https://electronics.stackexchange.com/a/64491) mentions a similar approach
 * Use even larger resistor values and attach a capacitor across R2, as suggested by [this answer](https://www.eevblog.com/forum/projects/battery-monitoring-voltage-divider/msg2524116/#msg2524116). We can reach nanoamps of current, which is negligible in this design. Question: does the capacitor self leak? If so, we'd need to be constantly pumping charges into it. How significant is this effect? If we do oversampling, the capacitor probably won't charge in time for multiple fast measurements. But the capacitor might act like a filter itself, negating the need for oversampling.
@@ -410,3 +412,7 @@ Botom line:
 
 
 Question: can we pay this cost only when the BLE is transmitting?
+Answer: I don't think so, since the RTC depends on the LFCLK. In theory we could let go of the calibration during system on sleep and let it drift by however many seconds it does. It won't matter if it drifts for a dozen seconds on a 5 minutes sleep. But it starts to get tricky to implement and measure. The best solution is to just stick a crystal on the board.
+
+## DEC capacitors
+The nrf52832 SoC requires a few decoupling caps on its DEC* pins. User NeverDie took some good pics of the module with the cap removed and it seems like the capacitors are already there: [link](https://forum.mysensors.org/topic/6961/nrf5-action/311?lang=en-US)

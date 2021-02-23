@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/rbaron/dev/homeauto/uc/electronics/parasite/parasite/parasite.sch</source>
+    <date>2021 January 24, Sunday 14:48:42</date>
+    <tool>Eeschema (5.1.2-1)-1</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>parasite</title>
+        <company/>
+        <rev>1.0.0</rev>
+        <date>2021-01-23</date>
+        <source>parasite.sch</source>
+        <comment number="1" value="rbaron.net"/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="MOD1">
+      <value>ESP32-WROOM-32</value>
+      <footprint>RF_Module:ESP32-WROOM-32</footprint>
+      <datasheet>https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf</datasheet>
+      <fields>
+        <field name="Category">RF/IF and RFID</field>
+        <field name="DK_Datasheet_Link">https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf</field>
+        <field name="DK_Detail_Page">/product-detail/en/espressif-systems/ESP32-WROOM-32/1904-1010-1-ND/8544305</field>
+        <field name="Description">SMD MODULE, ESP32-D0WDQ6, 32MBIT</field>
+        <field name="Digi-Key_PN">1904-1010-1-ND</field>
+        <field name="Family">RF Transceiver Modules</field>
+        <field name="MPN">ESP32-WROOM-32</field>
+        <field name="Manufacturer">Espressif Systems</field>
+        <field name="Status">Active</field>
+      </fields>
+      <libsource lib="dk_RF-Transceiver-Modules" part="ESP32-WROOM-32" description="SMD MODULE, ESP32-D0WDQ6, 32MBIT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600B059D</tstamp>
+    </comp>
+    <comp ref="BAT1">
+      <value>BS-7</value>
+      <footprint>Battery:BatteryHolder_Keystone_3008_1x2450</footprint>
+      <datasheet>http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf</datasheet>
+      <fields>
+        <field name="Category">Battery Products</field>
+        <field name="DK_Datasheet_Link">http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf</field>
+        <field name="DK_Detail_Page">/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447</field>
+        <field name="Description">BATTERY HOLDER COIN 20MM PC PIN</field>
+        <field name="Digi-Key_PN">BS-7-ND</field>
+        <field name="Family">Battery Holders, Clips, Contacts</field>
+        <field name="MPN">BS-7</field>
+        <field name="Manufacturer">MPD (Memory Protection Devices)</field>
+        <field name="Status">Active</field>
+      </fields>
+      <libsource lib="dk_Battery-Holders-Clips-Contacts" part="BS-7" description="BATTERY HOLDER COIN 20MM PC PIN"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600B5F55</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>10u</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600C0E3F</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600C897C</tstamp>
+    </comp>
+    <comp ref="J1">
+      <value>Conn_01x02_Female</value>
+      <footprint>Connector_JST:JST_PH_S2B-PH-K_1x02_P2.00mm_Horizontal</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="Conn_01x02_Female" description="Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600CD6DE</tstamp>
+    </comp>
+    <comp ref="L1">
+      <value>HT7333-A</value>
+      <footprint>Package_TO_SOT_SMD:SOT-89-3_Handsoldering</footprint>
+      <libsource lib="ht7333-a" part="HT7333-A" description=""/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600BCB7B</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>10u</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600D587C</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>10u</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600D4FBF</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600E0E7A</tstamp>
+    </comp>
+    <comp ref="D1">
+      <value>LL4148</value>
+      <footprint>Diode_SMD:D_MiniMELF</footprint>
+      <datasheet>http://www.vishay.com/docs/85557/ll4148.pdf</datasheet>
+      <libsource lib="Diode" part="LL4148" description="100V 0.15A standard switching diode, MiniMELF"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600E601E</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>1n</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600E6E5B</tstamp>
+    </comp>
+    <comp ref="R6">
+      <value>1M</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600E7750</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>1000u</value>
+      <footprint>Capacitor_THT:CP_Radial_D5.0mm_P2.50mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600FAFC2</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600FFF47</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601057D9</tstamp>
+    </comp>
+    <comp ref="R5">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601113E2</tstamp>
+    </comp>
+    <comp ref="C6">
+      <value>100p</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600D105B</tstamp>
+    </comp>
+    <comp ref="TP3">
+      <value>Csen+</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>6014264C</tstamp>
+    </comp>
+    <comp ref="TP4">
+      <value>Vsen_out</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>60145A9D</tstamp>
+    </comp>
+    <comp ref="TP2">
+      <value>EN</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600C7664</tstamp>
+    </comp>
+    <comp ref="TP5">
+      <value>TX</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600DE18D</tstamp>
+    </comp>
+    <comp ref="TP6">
+      <value>RX</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600DEAED</tstamp>
+    </comp>
+    <comp ref="TP7">
+      <value>Vbatt</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601531E7</tstamp>
+    </comp>
+    <comp ref="TP1">
+      <value>IO0</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>600CC1D9</tstamp>
+    </comp>
+    <comp ref="Cpara1">
+      <value>5p</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>6016579E</tstamp>
+    </comp>
+    <comp ref="Q1">
+      <value>MMBT3904</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf</datasheet>
+      <libsource lib="Transistor_BJT" part="MMBT3904" description="0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>60188253</tstamp>
+    </comp>
+    <comp ref="Q2">
+      <value>MMBT3904</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf</datasheet>
+      <libsource lib="Transistor_BJT" part="MMBT3904" description="0.2A Ic, 40V Vce, Small Signal NPN Transistor, SOT-23"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601897A7</tstamp>
+    </comp>
+    <comp ref="TP8">
+      <value>3.3</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601A891E</tstamp>
+    </comp>
+    <comp ref="TP9">
+      <value>GND</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>601AB8DD</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector" part="Conn_01x02_Female">
+      <description>Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_1x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_01x02_Female</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector" part="TestPoint">
+      <description>test point</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Pin*</fp>
+        <fp>Test*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">TP</field>
+        <field name="Value">TestPoint</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C_Small">
+      <description>Unpolarized capacitor, small symbol</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C_Small</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R_Small_US">
+      <description>Resistor, small US symbol</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R_Small_US</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Diode" part="LL4148">
+      <aliases>
+        <alias>LL4448</alias>
+      </aliases>
+      <description>100V 0.15A standard switching diode, MiniMELF</description>
+      <docs>http://www.vishay.com/docs/85557/ll4148.pdf</docs>
+      <footprints>
+        <fp>D*MiniMELF*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LL4148</field>
+        <field name="Footprint">Diode_SMD:D_MiniMELF</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Transistor_BJT" part="BC817">
+      <aliases>
+        <alias>BC818</alias>
+        <alias>BC847</alias>
+        <alias>BC848</alias>
+        <alias>BC849</alias>
+        <alias>BC850</alias>
+        <alias>MMBT3904</alias>
+        <alias>MMBT5550L</alias>
+        <alias>MMBT5551L</alias>
+      </aliases>
+      <description>0.8A Ic, 45V Vce, NPN Transistor, SOT-23</description>
+      <docs>http://www.fairchildsemi.com/ds/BC/BC817.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">BC817</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="input"/>
+        <pin num="2" name="E" type="passive"/>
+        <pin num="3" name="C" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="dk_Battery-Holders-Clips-Contacts" part="BS-7">
+      <description>BATTERY HOLDER COIN 20MM PC PIN</description>
+      <docs>http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf</docs>
+      <fields>
+        <field name="Reference">BAT</field>
+        <field name="Value">BS-7</field>
+        <field name="Footprint">digikey-footprints:Battery_Holder_Coin_2032_BS-7</field>
+        <field name="Datasheet">http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf</field>
+        <field name="Digi-Key_PN">BS-7-ND</field>
+        <field name="MPN">BS-7</field>
+        <field name="Category">Battery Products</field>
+        <field name="Family">Battery Holders, Clips, Contacts</field>
+        <field name="DK_Datasheet_Link">http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf</field>
+        <field name="DK_Detail_Page">/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447</field>
+        <field name="Description">BATTERY HOLDER COIN 20MM PC PIN</field>
+        <field name="Manufacturer">MPD (Memory Protection Devices)</field>
+        <field name="Status">Active</field>
+      </fields>
+      <pins>
+        <pin num="Neg" name="~" type="power_out"/>
+        <pin num="Pos" name="~" type="power_out"/>
+      </pins>
+    </libpart>
+    <libpart lib="dk_RF-Transceiver-Modules" part="ESP32-WROOM-32">
+      <description>SMD MODULE, ESP32-D0WDQ6, 32MBIT</description>
+      <docs>https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf</docs>
+      <fields>
+        <field name="Reference">MOD</field>
+        <field name="Value">ESP32-WROOM-32</field>
+        <field name="Footprint">digikey-footprints:ESP32-WROOM-32D</field>
+        <field name="Datasheet">https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf</field>
+        <field name="Digi-Key_PN">1904-1010-1-ND</field>
+        <field name="MPN">ESP32-WROOM-32</field>
+        <field name="Category">RF/IF and RFID</field>
+        <field name="Family">RF Transceiver Modules</field>
+        <field name="DK_Datasheet_Link">https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf</field>
+        <field name="DK_Detail_Page">/product-detail/en/espressif-systems/ESP32-WROOM-32/1904-1010-1-ND/8544305</field>
+        <field name="Description">SMD MODULE, ESP32-D0WDQ6, 32MBIT</field>
+        <field name="Manufacturer">Espressif Systems</field>
+        <field name="Status">Active</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="3V3" type="power_in"/>
+        <pin num="3" name="EN" type="input"/>
+        <pin num="4" name="SENSOR_VP" type="input"/>
+        <pin num="5" name="SENSOR_VN" type="input"/>
+        <pin num="6" name="IO34" type="BiDi"/>
+        <pin num="7" name="IO35" type="BiDi"/>
+        <pin num="8" name="IO32" type="BiDi"/>
+        <pin num="9" name="IO33" type="BiDi"/>
+        <pin num="10" name="IO25" type="BiDi"/>
+        <pin num="11" name="IO26" type="BiDi"/>
+        <pin num="12" name="IO27" type="BiDi"/>
+        <pin num="13" name="IO14" type="BiDi"/>
+        <pin num="14" name="IO12" type="BiDi"/>
+        <pin num="15" name="GND" type="power_in"/>
+        <pin num="16" name="IO13" type="BiDi"/>
+        <pin num="17" name="SHD/SD2" type="BiDi"/>
+        <pin num="18" name="SWP/SD3" type="BiDi"/>
+        <pin num="19" name="SCS/CMD" type="BiDi"/>
+        <pin num="20" name="SCK/CLK" type="BiDi"/>
+        <pin num="21" name="SDO/SD0" type="BiDi"/>
+        <pin num="22" name="SDI/SD1" type="BiDi"/>
+        <pin num="23" name="IO15" type="BiDi"/>
+        <pin num="24" name="IO2" type="BiDi"/>
+        <pin num="25" name="IO0" type="BiDi"/>
+        <pin num="26" name="IO4" type="BiDi"/>
+        <pin num="27" name="IO16" type="BiDi"/>
+        <pin num="28" name="IO17" type="BiDi"/>
+        <pin num="29" name="IO5" type="BiDi"/>
+        <pin num="30" name="IO18" type="BiDi"/>
+        <pin num="31" name="IO19" type="BiDi"/>
+        <pin num="32" name="NC" type="NotConnected"/>
+        <pin num="33" name="IO21" type="BiDi"/>
+        <pin num="34" name="RXD0" type="BiDi"/>
+        <pin num="35" name="TXD0" type="BiDi"/>
+        <pin num="36" name="IO22" type="BiDi"/>
+        <pin num="37" name="IO23" type="BiDi"/>
+        <pin num="38" name="GND" type="power_in"/>
+        <pin num="39" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="ht7333-a" part="HT7333-A">
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">HT7333-A</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="input"/>
+        <pin num="2" name="VIN" type="input"/>
+        <pin num="3" name="VOUT" type="input"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector">
+      <uri>/Library/Application Support/kicad/library/Connector.lib</uri>
+    </library>
+    <library logical="Device">
+      <uri>/Library/Application Support/kicad/library/Device.lib</uri>
+    </library>
+    <library logical="Diode">
+      <uri>/Library/Application Support/kicad/library/Diode.lib</uri>
+    </library>
+    <library logical="Transistor_BJT">
+      <uri>/Library/Application Support/kicad/library/Transistor_BJT.lib</uri>
+    </library>
+    <library logical="dk_Battery-Holders-Clips-Contacts">
+      <uri>/Users/rbaron/dev/nightoid/kicad/digikey-kicad-library/digikey-symbols/dk_Battery-Holders-Clips-Contacts.lib</uri>
+    </library>
+    <library logical="dk_RF-Transceiver-Modules">
+      <uri>/Users/rbaron/dev/nightoid/kicad/digikey-kicad-library/digikey-symbols/dk_RF-Transceiver-Modules.lib</uri>
+    </library>
+    <library logical="ht7333-a">
+      <uri>/Users/rbaron/dev/homeauto/uc/electronics/libs/kicad-libraries/ht7333-a.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(MOD1-Pad5)">
+      <node ref="MOD1" pin="5"/>
+    </net>
+    <net code="2" name="Net-(MOD1-Pad6)">
+      <node ref="MOD1" pin="6"/>
+    </net>
+    <net code="3" name="Net-(MOD1-Pad7)">
+      <node ref="MOD1" pin="7"/>
+    </net>
+    <net code="4" name="Net-(MOD1-Pad8)">
+      <node ref="MOD1" pin="8"/>
+    </net>
+    <net code="5" name="Net-(MOD1-Pad9)">
+      <node ref="MOD1" pin="9"/>
+    </net>
+    <net code="6" name="Net-(MOD1-Pad10)">
+      <node ref="MOD1" pin="10"/>
+    </net>
+    <net code="7" name="Net-(MOD1-Pad20)">
+      <node ref="MOD1" pin="20"/>
+    </net>
+    <net code="8" name="Net-(MOD1-Pad30)">
+      <node ref="MOD1" pin="30"/>
+    </net>
+    <net code="9" name="Net-(MOD1-Pad11)">
+      <node ref="MOD1" pin="11"/>
+    </net>
+    <net code="10" name="Net-(MOD1-Pad21)">
+      <node ref="MOD1" pin="21"/>
+    </net>
+    <net code="11" name="Net-(MOD1-Pad31)">
+      <node ref="MOD1" pin="31"/>
+    </net>
+    <net code="12" name="Net-(MOD1-Pad12)">
+      <node ref="MOD1" pin="12"/>
+    </net>
+    <net code="13" name="Net-(MOD1-Pad22)">
+      <node ref="MOD1" pin="22"/>
+    </net>
+    <net code="14" name="Net-(MOD1-Pad32)">
+      <node ref="MOD1" pin="32"/>
+    </net>
+    <net code="15" name="Net-(MOD1-Pad13)">
+      <node ref="MOD1" pin="13"/>
+    </net>
+    <net code="16" name="Net-(MOD1-Pad23)">
+      <node ref="MOD1" pin="23"/>
+    </net>
+    <net code="17" name="Net-(MOD1-Pad33)">
+      <node ref="MOD1" pin="33"/>
+    </net>
+    <net code="18" name="Net-(MOD1-Pad14)">
+      <node ref="MOD1" pin="14"/>
+    </net>
+    <net code="19" name="Net-(MOD1-Pad24)">
+      <node ref="MOD1" pin="24"/>
+    </net>
+    <net code="20" name="Net-(MOD1-Pad25)">
+      <node ref="TP1" pin="1"/>
+      <node ref="MOD1" pin="25"/>
+    </net>
+    <net code="21" name="Net-(MOD1-Pad16)">
+      <node ref="MOD1" pin="16"/>
+    </net>
+    <net code="22" name="Net-(MOD1-Pad26)">
+      <node ref="MOD1" pin="26"/>
+    </net>
+    <net code="23" name="Net-(MOD1-Pad36)">
+      <node ref="MOD1" pin="36"/>
+    </net>
+    <net code="24" name="Net-(MOD1-Pad17)">
+      <node ref="MOD1" pin="17"/>
+    </net>
+    <net code="25" name="/PWM">
+      <node ref="MOD1" pin="27"/>
+      <node ref="C6" pin="2"/>
+      <node ref="R4" pin="2"/>
+      <node ref="R1" pin="1"/>
+    </net>
+    <net code="26" name="Net-(MOD1-Pad37)">
+      <node ref="MOD1" pin="37"/>
+    </net>
+    <net code="27" name="Net-(MOD1-Pad18)">
+      <node ref="MOD1" pin="18"/>
+    </net>
+    <net code="28" name="Net-(MOD1-Pad28)">
+      <node ref="MOD1" pin="28"/>
+    </net>
+    <net code="29" name="Net-(MOD1-Pad19)">
+      <node ref="MOD1" pin="19"/>
+    </net>
+    <net code="30" name="Net-(MOD1-Pad29)">
+      <node ref="MOD1" pin="29"/>
+    </net>
+    <net code="31" name="GND">
+      <node ref="TP9" pin="1"/>
+      <node ref="L1" pin="1"/>
+      <node ref="Q2" pin="2"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="Cpara1" pin="1"/>
+      <node ref="C4" pin="2"/>
+      <node ref="MOD1" pin="1"/>
+      <node ref="C3" pin="2"/>
+      <node ref="MOD1" pin="15"/>
+      <node ref="MOD1" pin="38"/>
+      <node ref="MOD1" pin="39"/>
+      <node ref="BAT1" pin="Neg"/>
+      <node ref="C2" pin="2"/>
+      <node ref="C1" pin="2"/>
+      <node ref="R6" pin="2"/>
+      <node ref="J1" pin="2"/>
+      <node ref="C5" pin="2"/>
+    </net>
+    <net code="32" name="Net-(MOD1-Pad3)">
+      <node ref="TP2" pin="1"/>
+      <node ref="MOD1" pin="3"/>
+      <node ref="R2" pin="2"/>
+    </net>
+    <net code="33" name="/TX">
+      <node ref="TP5" pin="1"/>
+      <node ref="MOD1" pin="35"/>
+    </net>
+    <net code="34" name="+BATT">
+      <node ref="BAT1" pin="Pos"/>
+      <node ref="L1" pin="2"/>
+      <node ref="C3" pin="1"/>
+      <node ref="TP7" pin="1"/>
+      <node ref="J1" pin="1"/>
+    </net>
+    <net code="35" name="/RX">
+      <node ref="MOD1" pin="34"/>
+      <node ref="TP6" pin="1"/>
+    </net>
+    <net code="36" name="/Csen+">
+      <node ref="TP3" pin="1"/>
+      <node ref="Cpara1" pin="2"/>
+      <node ref="R5" pin="1"/>
+      <node ref="R1" pin="2"/>
+      <node ref="D1" pin="2"/>
+    </net>
+    <net code="37" name="/Vsen_out">
+      <node ref="R6" pin="1"/>
+      <node ref="D1" pin="1"/>
+      <node ref="C1" pin="1"/>
+      <node ref="MOD1" pin="4"/>
+      <node ref="TP4" pin="1"/>
+    </net>
+    <net code="38" name="Net-(Q1-Pad3)">
+      <node ref="Q2" pin="1"/>
+      <node ref="Q1" pin="3"/>
+      <node ref="R3" pin="2"/>
+    </net>
+    <net code="39" name="Net-(Q2-Pad3)">
+      <node ref="R5" pin="2"/>
+      <node ref="Q2" pin="3"/>
+    </net>
+    <net code="40" name="Net-(C6-Pad1)">
+      <node ref="Q1" pin="1"/>
+      <node ref="C6" pin="1"/>
+      <node ref="R4" pin="1"/>
+    </net>
+    <net code="41" name="+3V3">
+      <node ref="C5" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="MOD1" pin="2"/>
+      <node ref="C2" pin="1"/>
+      <node ref="L1" pin="3"/>
+      <node ref="R2" pin="1"/>
+      <node ref="R3" pin="1"/>
+      <node ref="TP8" pin="1"/>
+    </net>
+  </nets>
+</export>

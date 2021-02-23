@@ -1,0 +1,34 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# BS-7-dk_Battery-Holders-Clips-Contacts
+#
+DEF BS-7-dk_Battery-Holders-Clips-Contacts BAT 0 40 N Y 1 F N
+F0 "BAT" -50 150 60 H V R CNN
+F1 "BS-7-dk_Battery-Holders-Clips-Contacts" -50 -150 60 H V R CNN
+F2 "digikey-footprints:Battery_Holder_Coin_2032_BS-7" 200 200 60 H I L CNN
+F3 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" 200 300 60 V I L CNN
+F4 "BS-7-ND" 200 400 60 H I L CNN "Digi-Key_PN"
+F5 "BS-7" 200 500 60 H I L CNN "MPN"
+F6 "Battery Products" 200 600 60 H I L CNN "Category"
+F7 "Battery Holders, Clips, Contacts" 200 700 60 H I L CNN "Family"
+F8 "http://www.memoryprotectiondevices.com/datasheets/BS-7-datasheet.pdf" 200 800 60 H I L CNN "DK_Datasheet_Link"
+F9 "/product-detail/en/mpd-memory-protection-devices/BS-7/BS-7-ND/389447" 200 900 60 H I L CNN "DK_Detail_Page"
+F10 "BATTERY HOLDER COIN 20MM PC PIN" 200 1000 60 H I L CNN "Description"
+F11 "MPD (Memory Protection Devices)" 200 1100 60 H I L CNN "Manufacturer"
+F12 "Active" 200 1200 60 H I L CNN "Status"
+DRAW
+P 2 1 1 0 0 -100 0 -75 N
+P 2 1 1 0 0 75 0 100 N
+P 2 1 1 0 50 -75 -50 -75 N
+P 2 1 1 0 50 25 -50 25 N
+P 2 1 1 0 50 90 50 130 N
+P 2 1 1 0 70 110 30 110 N
+P 2 1 1 0 100 -25 -100 -25 N
+P 2 1 1 0 100 75 -100 75 N
+X ~ Neg 0 -200 100 U 50 50 1 1 w
+X ~ Pos 0 200 100 D 50 50 1 1 w
+ENDDRAW
+ENDDEF
+#
+#End Library
