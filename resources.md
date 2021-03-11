@@ -416,3 +416,13 @@ Answer: I don't think so, since the RTC depends on the LFCLK. In theory we could
 
 ## DEC capacitors
 The nrf52832 SoC requires a few decoupling caps on its DEC* pins. User NeverDie took some good pics of the module with the cap removed and it seems like the capacitors are already there: [link](https://forum.mysensors.org/topic/6961/nrf5-action/311?lang=en-US)
+
+# Electronics
+## Temperature sensor
+Comparison table form Sensirion: [link](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/)
+* SHT31 is the one I bought for testing
+* SHTC3
+  * ~ $1.5 each
+  * Google JLC support for assembly [link](https://jlcpcb.com/parts/componentSearch?searchTxt=sht30)
+  * 0.3uA in sleep
+  * KiCad footprint on [GitHub](https://kicad.github.io/symbols/Sensor_Humidity)
