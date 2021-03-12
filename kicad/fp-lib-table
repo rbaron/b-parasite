@@ -1,0 +1,6 @@
+(fp_lib_table
+  (lib (name kicad)(type KiCad)(uri ${KIPRJMOD}/lib/kicad)(options "")(descr ""))
+  (lib (name nrfmicro)(type KiCad)(uri ${KIPRJMOD}/lib/nrfmicro)(options "")(descr ""))
+  (lib (name OSHW-logo)(type Legacy)(uri ${KIPRJMOD}/lib/oshw/OSHW-logo.mod)(options "")(descr ""))
+  (lib (name snapeda)(type KiCad)(uri ${KIPRJMOD}/lib/snapeda)(options "")(descr ""))
+)
