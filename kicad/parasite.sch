@@ -323,7 +323,7 @@ Text Notes 725  4150 0    50   ~ 0
 Parasitic capacitor sensing
 Text Notes 725  5575 0    50   ~ 0
 Fast discharge on PWM’s low cycle
-Text Label 1900 1100 2    50   ~ 0
+Text Label 1900 2500 2    50   ~ 0
 PWM
 Text Label 1900 1300 2    50   ~ 0
 SENS_OUT
@@ -659,7 +659,7 @@ L AO3407A:AO3407A Q3
 U 1 1 604DA824
 P 5325 6550
 F 0 "Q3" V 5670 6550 50  0000 C CNN
-F 1 "AO3407A" V 5579 6550 50  0000 C CNN
+F 1 "AO3407" V 5579 6550 50  0000 C CNN
 F 2 "Package_TO_SOT_SMD:SOT-23" H 5325 6550 50  0001 L BNN
 F 3 "" H 5325 6550 50  0001 L BNN
 F 4 "C181093" V 5325 6550 50  0001 C CNN "LCSC"
@@ -808,7 +808,7 @@ Wire Wire Line
 Wire Wire Line
 	7125 5025 7175 5025
 Wire Wire Line
-	1900 1100 2025 1100
+	1900 2500 2025 2500
 Wire Wire Line
 	1900 1200 2025 1200
 Wire Wire Line
@@ -820,7 +820,6 @@ NoConn ~ 2025 1700
 NoConn ~ 2025 1800
 NoConn ~ 2025 1900
 NoConn ~ 2025 2000
-NoConn ~ 2025 2500
 NoConn ~ 2025 2700
 NoConn ~ 3375 1200
 NoConn ~ 3375 1400
@@ -833,9 +832,11 @@ F 0 "U2" H 7719 4971 50  0000 L CNN
 F 1 "SHTC3" H 7719 4880 50  0000 L CNN
 F 2 "kicad:Sensirion_DFN-4-1EP_2x2mm_P1mm_EP0.7x1.6mm" H 7675 4575 50  0001 C CNN
 F 3 "https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/0_Datasheets/Humidity/Sensirion_Humidity_Sensors_SHTC3_Datasheet.pdf" H 7175 5375 50  0001 C CNN
+F 4 "C194656" H 7475 4925 50  0001 C CNN "LCSC"
 	1    7475 4925
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	1400 4550 2050 4550
+NoConn ~ 2025 1100
 $EndSCHEMATC
