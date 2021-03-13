@@ -15,12 +15,13 @@
 #include "nrf_sdh.h"
 #include "nrf_sdh_ble.h"
 #include "nrf_soc.h"
+#include "rtc.h"
 
 // P0.03
 // #define LED_PIN 3
 #define LED_PIN NRF_GPIO_PIN_MAP(1, 11)
 
-// Environmental sensing
+// Environmental sensing.
 #define SERVICE_UUID 0x181a
 
 #define DEAD_BEEF 0xDEADBEEF
@@ -166,50 +167,6 @@ static void idle_state_handle(void) {
   }
 }
 
-static void rtc_handler(nrf_drv_rtc_int_type_t int_type) {
-  NRF_LOG_INFO("CALLBACK!\n");
-  NRF_LOG_FLUSH();
-  if (int_type == NRF_DRV_RTC_INT_COMPARE2) {
-    nrf_gpio_pin_set(LED_PIN);
-    advertising_start();
-    nrf_delay_ms(1000);
-    advertising_stop();
-    nrf_gpio_pin_clear(LED_PIN);
-    nrf_drv_rtc_counter_clear(&rtc);
-    // We need to re-enable the RTC2 interrupt.
-    nrf_drv_rtc_int_enable(&rtc, NRF_RTC_INT_COMPARE2_MASK);
-  }
-  // This should be disabled and never triggered.
-  else if (int_type == NRF_DRV_RTC_INT_TICK) {
-  }
-}
-
-static void rtc_config(void) {
-  uint32_t err_code;
-
-  NRF_LOG_INFO("1!\n"); NRF_LOG_FLUSH();
-  // Initialize RTC instance.
-  nrf_drv_rtc_config_t config = NRF_DRV_RTC_DEFAULT_CONFIG;
-  config.prescaler = 4095;
-  err_code = nrf_drv_rtc_init(&rtc, &config, rtc_handler);
-  APP_ERROR_CHECK(err_code);
-
-  NRF_LOG_INFO("2!\n"); NRF_LOG_FLUSH();
-  nrf_drv_rtc_tick_disable(&rtc);
-  nrf_drv_rtc_overflow_disable(&rtc);
-  nrf_drv_rtc_counter_clear(&rtc);
-
-  NRF_LOG_INFO("3!\n"); NRF_LOG_FLUSH();
-  // Set compare channel to trigger interrupt after COMPARE_COUNTERTIME
-  // seconds.
-  err_code = nrf_drv_rtc_cc_set(&rtc, 2, COMPARE_COUNTERTIME * 8, true);
-  APP_ERROR_CHECK(err_code);
-
-  NRF_LOG_INFO("4!\n"); NRF_LOG_FLUSH();
-  // Power on RTC instance.
-  nrf_drv_rtc_enable(&rtc);
-}
-
 #define FPU_EXCEPTION_MASK 0x0000009F
 
 static void power_manage(void) {
@@ -219,27 +176,29 @@ static void power_manage(void) {
   nrf_pwr_mgmt_run();
 }
 
+static void rtc_callback() {
+  NRF_LOG_INFO("rtc callback running...\n");
+  NRF_LOG_FLUSH();
+  nrf_gpio_pin_set(LED_PIN);
+  advertising_start();
+  nrf_delay_ms(500);
+  advertising_stop();
+  nrf_gpio_pin_clear(LED_PIN);
+}
+
 int main(void) {
   // Initialize.
   log_init();
   leds_init();
   power_management_init();
-  NRF_LOG_INFO("Power inited\n"); NRF_LOG_FLUSH();
   ble_stack_init();
-  NRF_LOG_INFO("BLE stack inited\n"); NRF_LOG_FLUSH();
   advertising_init();
-  NRF_LOG_INFO("Adv inited\n"); NRF_LOG_FLUSH();
-  rtc_config();
-  // advertising_start();
 
-  NRF_LOG_FLUSH();
+  prst_rtc_set_callback(rtc_callback);
+  prst_rtc_init();
 
   // Enter main loop.
   for (;;) {
-    // sd_power_system_off();
     power_manage();
-    // NRF_LOG_INFO("Hello, RTT!\n");
-    // NRF_LOG_FLUSH();
-    // nrf_delay_ms(500);
   }
 }
