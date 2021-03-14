@@ -19,12 +19,7 @@
 #include "prst/pwm.h"
 #include "prst/rtc.h"
 
-// P0.03
-// #define LED_PIN 3
-#define LED_PIN NRF_GPIO_PIN_MAP(1, 11)
-
-// Environmental sensing.
-#define SERVICE_UUID 0x181a
+#include "prst_config.h"
 
 #define DEAD_BEEF 0xDEADBEEF
 
@@ -40,11 +35,7 @@ static void log_init(void) {
 }
 
 static void leds_init(void) {
-  nrf_gpio_cfg_output(LED_PIN);
-  nrf_gpio_pin_toggle(LED_PIN);
-  nrf_delay_ms(500);
-  nrf_gpio_pin_toggle(LED_PIN);
-  nrf_delay_ms(500);
+  nrf_gpio_cfg_output(PRST_LED_PIN);
   NRF_LOG_INFO("Leds inited");
 }
 
@@ -67,27 +58,28 @@ static uint8_t data;
 static void rtc_callback() {
   NRF_LOG_INFO("rtc callback running...\n");
   NRF_LOG_FLUSH();
-  nrf_gpio_pin_set(LED_PIN);
+  nrf_gpio_pin_set(PRST_LED_PIN);
+  prst_pwm_init();
+  prst_pwm_start();
+  // TODO: ADC.
+  nrf_delay_ms(500);
+  prst_pwm_stop();
   prst_ble_update_adv_data(++data);
   prst_adv_start();
   nrf_delay_ms(300);
   prst_adv_stop();
-  nrf_gpio_pin_clear(LED_PIN);
+  nrf_gpio_pin_clear(PRST_LED_PIN);
 }
 
 int main(void) {
-  // Initialize.
   log_init();
   leds_init();
   power_management_init();
-  prst_pwm_init();
-  prst_pwm_start();
   prst_ble_init();
 
   prst_rtc_set_callback(rtc_callback);
   prst_rtc_init();
 
-  // Enter main loop.
   for (;;) {
     power_manage();
   }
