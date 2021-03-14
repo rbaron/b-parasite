@@ -34,7 +34,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name) {
 static void log_init(void) {
   ret_code_t err_code = NRF_LOG_INIT(NULL);
   APP_ERROR_CHECK(err_code);
-
   NRF_LOG_DEFAULT_BACKENDS_INIT();
   NRF_LOG_INFO("Log inited");
 }
@@ -48,11 +47,6 @@ static void leds_init(void) {
   NRF_LOG_INFO("Leds inited");
 }
 
-static void timers_init(void) {
-  ret_code_t err_code = app_timer_init();
-  APP_ERROR_CHECK(err_code);
-}
-
 #define FPU_EXCEPTION_MASK 0x0000009F
 
 static void power_management_init(void) {
@@ -61,7 +55,6 @@ static void power_management_init(void) {
   APP_ERROR_CHECK(err_code);
 }
 
-//
 static void power_manage(void) {
   __set_FPSCR(__get_FPSCR() & ~(FPU_EXCEPTION_MASK));
   (void)__get_FPSCR();
@@ -69,10 +62,12 @@ static void power_manage(void) {
   nrf_pwr_mgmt_run();
 }
 
+static uint8_t data;
 static void rtc_callback() {
   NRF_LOG_INFO("rtc callback running...\n");
   NRF_LOG_FLUSH();
   nrf_gpio_pin_set(LED_PIN);
+  prst_ble_update_adv_data(++data);
   prst_adv_start();
   nrf_delay_ms(300);
   prst_adv_stop();
@@ -85,7 +80,6 @@ int main(void) {
   leds_init();
   power_management_init();
   prst_ble_init();
-  prst_ble_update_adv_data(1);
 
   prst_rtc_set_callback(rtc_callback);
   prst_rtc_init();
