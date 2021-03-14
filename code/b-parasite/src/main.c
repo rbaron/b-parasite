@@ -16,6 +16,7 @@
 #include "nrf_sdh_ble.h"
 #include "nrf_soc.h"
 #include "prst/ble.h"
+#include "prst/pwm.h"
 #include "prst/rtc.h"
 
 // P0.03
@@ -79,6 +80,8 @@ int main(void) {
   log_init();
   leds_init();
   power_management_init();
+  prst_pwm_init();
+  prst_pwm_start();
   prst_ble_init();
 
   prst_rtc_set_callback(rtc_callback);

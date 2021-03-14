@@ -58,9 +58,6 @@ static uint8_t adv_handle_ = BLE_GAP_ADV_SET_HANDLE_NOT_SET;
 static ble_gap_adv_params_t adv_params_;
 
 static void init_advertisement_data() {
-  UNUSED_VARIABLE(adv_data_);
-  UNUSED_VARIABLE(advdata_service_data_);
-
   // We'll just broadcast our data, so we disallow connections and scan
   // requests.
   adv_params_.properties.type =
