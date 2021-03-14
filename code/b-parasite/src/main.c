@@ -18,7 +18,7 @@
 #include "prst/ble.h"
 #include "prst/pwm.h"
 #include "prst/rtc.h"
-
+#include "prst/shtc3.h"
 #include "prst_config.h"
 
 #define DEAD_BEEF 0xDEADBEEF
@@ -77,8 +77,11 @@ int main(void) {
   power_management_init();
   prst_ble_init();
 
+  prst_sht3c_init();
   prst_rtc_set_callback(rtc_callback);
-  prst_rtc_init();
+  NRF_LOG_FLUSH();
+  // UNUSED_VARIABLE(prst_rtc_init());
+  UNUSED_VARIABLE(prst_rtc_init));
 
   for (;;) {
     power_manage();
