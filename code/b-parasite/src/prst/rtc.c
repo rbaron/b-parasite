@@ -1,4 +1,4 @@
-#include "rtc.h"
+#include "prst/rtc.h"
 
 #include <nrf_drv_rtc.h>
 #include <nrf_log.h>
