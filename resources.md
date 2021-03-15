@@ -426,3 +426,6 @@ Comparison table form Sensirion: [link](https://www.sensirion.com/en/environment
   * Google JLC support for assembly [link](https://jlcpcb.com/parts/componentSearch?searchTxt=sht30)
   * 0.3uA in sleep
   * KiCad footprint on [GitHub](https://kicad.github.io/symbols/Sensor_Humidity)
+
+# Antenna
+* Guide for PCB design on [devzone](https://devzone.nordicsemi.com/nordic/short-range-guides/b/hardware-and-layout/posts/general-pcb-design-guidelines-for-nrf52)

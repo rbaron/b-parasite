@@ -23,9 +23,9 @@
 
 #define DEAD_BEEF 0xDEADBEEF
 
-void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name) {
-  app_error_handler(DEAD_BEEF, line_num, p_file_name);
-}
+// void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name) {
+//   app_error_handler(DEAD_BEEF, line_num, p_file_name);
+// }
 
 static void log_init(void) {
   ret_code_t err_code = NRF_LOG_INIT(NULL);
@@ -55,20 +55,28 @@ static void power_manage(void) {
 }
 
 static uint8_t data;
+
+// Here we need to be extra careful with what operations we do. This callback
+// has to return fast-ish, otherwise we hit some hard exceptions.
 static void rtc_callback() {
   NRF_LOG_INFO("rtc callback running...\n");
   NRF_LOG_FLUSH();
   nrf_gpio_pin_set(PRST_LED_PIN);
+  prst_shtc3_read_t temp_humi = prst_shtc3_read();
+  NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
+               NRF_LOG_FLOAT(temp_humi.temp_c));
   prst_pwm_init();
   prst_pwm_start();
   // TODO: ADC.
   nrf_delay_ms(500);
+  // TODO: PWM pin seems to be stuch on high after stop.
   prst_pwm_stop();
   prst_ble_update_adv_data(++data);
   prst_adv_start();
   nrf_delay_ms(300);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
+  NRF_LOG_FLUSH();
 }
 
 int main(void) {
@@ -76,12 +84,9 @@ int main(void) {
   leds_init();
   power_management_init();
   prst_ble_init();
-
-  prst_sht3c_init();
+  prst_shtc3_init();
   prst_rtc_set_callback(rtc_callback);
-  NRF_LOG_FLUSH();
-  // UNUSED_VARIABLE(prst_rtc_init());
-  UNUSED_VARIABLE(prst_rtc_init));
+  prst_rtc_init();
 
   for (;;) {
     power_manage();
