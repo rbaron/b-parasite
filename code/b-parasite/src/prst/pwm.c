@@ -62,10 +62,7 @@ void prst_pwm_start() {
 }
 
 void prst_pwm_stop() {
-  // Careful when using wait_until_stopped! When calling this from within the
-  // RTC callback, somtimes I'm hitting a hard exception. I haven't figured it
-  // out yet, but probably some race condition for waiting + rtc?
-  APP_ERROR_CHECK(nrf_drv_pwm_stop(&m_pwm0, /*wait_until_stopped=*/false));
+  nrf_drv_pwm_stop(&m_pwm0, /*wait_until_stopped=*/true);
   nrf_drv_pwm_uninit(&m_pwm0);
   nrf_gpio_pin_clear(PRST_PWM_PIN);
 }

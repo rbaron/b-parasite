@@ -3361,7 +3361,7 @@
 // <e> NRFX_SAADC_ENABLED - nrfx_saadc - SAADC peripheral driver
 //==========================================================
 #ifndef NRFX_SAADC_ENABLED
-#define NRFX_SAADC_ENABLED 0
+#define NRFX_SAADC_ENABLED 1
 #endif
 // <o> NRFX_SAADC_CONFIG_RESOLUTION  - Resolution
 
@@ -4393,7 +4393,7 @@
 // <e> NRFX_UARTE_ENABLED - nrfx_uarte - UARTE peripheral driver
 //==========================================================
 #ifndef NRFX_UARTE_ENABLED
-#define NRFX_UARTE_ENABLED 1
+#define NRFX_UARTE_ENABLED 0
 #endif
 // <o> NRFX_UARTE0_ENABLED - Enable UARTE0 instance
 #ifndef NRFX_UARTE0_ENABLED
@@ -5411,7 +5411,7 @@
 // <e> SAADC_ENABLED - nrf_drv_saadc - SAADC peripheral driver - legacy layer
 //==========================================================
 #ifndef SAADC_ENABLED
-#define SAADC_ENABLED 0
+#define SAADC_ENABLED 1
 #endif
 // <o> SAADC_CONFIG_RESOLUTION  - Resolution
 
@@ -5883,7 +5883,7 @@
 // <e> UART_ENABLED - nrf_drv_uart - UART/UARTE peripheral driver - legacy layer
 //==========================================================
 #ifndef UART_ENABLED
-#define UART_ENABLED 1
+#define UART_ENABLED 0
 #endif
 // <o> UART_DEFAULT_CONFIG_HWFC  - Hardware Flow Control
 
@@ -7611,7 +7611,7 @@
 
 
 #ifndef NRF_FPRINTF_DOUBLE_ENABLED
-#define NRF_FPRINTF_DOUBLE_ENABLED 0
+#define NRF_FPRINTF_DOUBLE_ENABLED 1
 #endif
 
 // </h>
@@ -7784,8 +7784,9 @@
 
 // <i> Log data is buffered and can be processed in idle.
 
+// TODO(rbaron): optimize.
 #ifndef NRF_LOG_DEFERRED
-#define NRF_LOG_DEFERRED 1
+#define NRF_LOG_DEFERRED 0
 #endif
 
 // <q> NRF_LOG_FILTERS_ENABLED  - Enable dynamic filtering of logs.
@@ -8479,7 +8480,7 @@
 // <e> PWM_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef PWM_CONFIG_LOG_ENABLED
-#define PWM_CONFIG_LOG_ENABLED 0
+#define PWM_CONFIG_LOG_ENABLED 1
 #endif
 // <o> PWM_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8690,7 +8691,7 @@
 // <e> SAADC_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef SAADC_CONFIG_LOG_ENABLED
-#define SAADC_CONFIG_LOG_ENABLED 0
+#define SAADC_CONFIG_LOG_ENABLED 1
 #endif
 // <o> SAADC_CONFIG_LOG_LEVEL  - Default Severity level
 

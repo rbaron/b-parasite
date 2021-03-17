@@ -15,6 +15,7 @@
 #include "nrf_sdh.h"
 #include "nrf_sdh_ble.h"
 #include "nrf_soc.h"
+#include "prst/adc.h"
 #include "prst/ble.h"
 #include "prst/pwm.h"
 #include "prst/rtc.h"
@@ -54,28 +55,28 @@ static void power_manage(void) {
   nrf_pwr_mgmt_run();
 }
 
-static uint8_t data;
-
 // Here we need to be extra careful with what operations we do. This callback
 // has to return fast-ish, otherwise we hit some hard exceptions.
 static void rtc_callback() {
-  NRF_LOG_INFO("rtc callback running...\n");
+  NRF_LOG_INFO("Batt raw ");
   NRF_LOG_FLUSH();
   nrf_gpio_pin_set(PRST_LED_PIN);
   prst_shtc3_read_t temp_humi = prst_shtc3_read();
-  NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
-               NRF_LOG_FLOAT(temp_humi.temp_c));
   prst_pwm_init();
   prst_pwm_start();
-  // TODO: ADC.
-  nrf_delay_ms(500);
-  // TODO: PWM pin seems to be stuch on high after stop.
+  prst_adc_batt_read_t batt_read = prst_adc_batt_read();
   prst_pwm_stop();
-  prst_ble_update_adv_data(++data);
+  prst_ble_update_adv_data(batt_read.millivolts);
   prst_adv_start();
-  nrf_delay_ms(300);
+  nrf_delay_ms(200);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
+  UNUSED_VARIABLE(batt_read);
+  UNUSED_VARIABLE(temp_humi);
+  NRF_LOG_INFO("Read batt: " NRF_LOG_FLOAT_MARKER " V (%d), %u mV",
+               NRF_LOG_FLOAT(batt_read.voltage), batt_read.raw, batt_read.millivolts);
+  NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
+               NRF_LOG_FLOAT(temp_humi.temp_c));
   NRF_LOG_FLUSH();
 }
 
@@ -84,9 +85,12 @@ int main(void) {
   leds_init();
   power_management_init();
   prst_ble_init();
+  prst_adc_init();
   prst_shtc3_init();
   prst_rtc_set_callback(rtc_callback);
   prst_rtc_init();
+
+  nrf_delay_ms(100);
 
   for (;;) {
     power_manage();

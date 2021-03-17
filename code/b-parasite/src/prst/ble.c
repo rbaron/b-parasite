@@ -98,8 +98,9 @@ void prst_ble_init() {
   init_advertisement_data();
 }
 
-void prst_ble_update_adv_data(uint8_t n) {
-  service_data[0] = n;
+void prst_ble_update_adv_data(uint16_t batt_millivolts) {
+  service_data[0] = batt_millivolts >> 8;
+  service_data[1] = batt_millivolts & 0xff;
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(

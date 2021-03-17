@@ -11,6 +11,6 @@ void prst_adv_start();
 
 void prst_adv_stop();
 
-void prst_ble_update_adv_data(uint8_t n);
+void prst_ble_update_adv_data(uint16_t batt_millivolts);
 
 #endif  // _PRST_BLE_H_
