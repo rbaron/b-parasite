@@ -71,7 +71,7 @@ static void rtc_callback() {
                            temp_humi.humidity, soil_read.relative);
   NRF_LOG_FLUSH();
   prst_adv_start();
-  nrf_delay_ms(200);
+  nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
   NRF_LOG_FLUSH();

@@ -6,6 +6,8 @@
 #include <nrf_log.h>
 #include <nrf_log_ctrl.h>
 
+#include "prst_config.h"
+
 static const nrf_drv_twi_t twi_ = NRF_DRV_TWI_INSTANCE(0);
 static nrf_drv_twi_config_t twi_config_ = NRF_DRV_TWI_DEFAULT_CONFIG;
 
@@ -54,9 +56,9 @@ prst_shtc3_read_t prst_shtc3_read() {
                            .humidity = humi};
 #if PRST_SHT3C_DEBUG
   NRF_LOG_INFO("[sht3c] Read temp: " NRF_LOG_FLOAT_MARKER " oC",
-               NRF_LOG_FLOAT((float)temp_humi.temp_millicelcius / 1000.0));
+               NRF_LOG_FLOAT((float)ret.temp_millicelcius / 1000.0));
   NRF_LOG_INFO("[sht3c] Read humi: " NRF_LOG_FLOAT_MARKER " %%",
-               NRF_LOG_FLOAT(100.0 * temp_humi.humidity / (1 << 16)));
+               NRF_LOG_FLOAT(100.0 * ret.humidity / (1 << 16)));
 #endif
   return ret;
 }

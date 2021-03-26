@@ -23,7 +23,7 @@
 #define NON_CONNECTABLE_ADV_INTERVAL MSEC_TO_UNITS(100, UNIT_0_625_MS)
 
 // Sensor data payload that will go into the advertisement message.
-#define SERVICE_DATA_LEN 16
+#define SERVICE_DATA_LEN 12
 static uint8_t service_data[SERVICE_DATA_LEN];
 
 // Stores the encoded advertisement data. As per BLE spec, 31 bytes max.
@@ -61,6 +61,17 @@ static uint8_t adv_handle_ = BLE_GAP_ADV_SET_HANDLE_NOT_SET;
 // Advertisement parameters.
 static ble_gap_adv_params_t adv_params_;
 
+// Stores the MAC address & type.
+// We're using a random static MAC address, which has the following constraints:
+// 1. Two most significant bits are set to 1;
+// 2. The remaining bits should not _all_ be set to 0;
+// 2. The remaining bits should not _all_ be set to 1;
+static const ble_gap_addr_t gap_addr_ = {
+    .addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC,
+    // Least significant bytes first.
+    .addr = {PRST_BLE_MAC_ADDR_LSB0, PRST_BLE_MAC_ADDR_LSB1, 0xca, 0xf0, 0xca,
+             0xf0}};
+
 static void init_advertisement_data() {
   // We'll just broadcast our data, so we disallow connections and scan
   // requests.
@@ -81,6 +92,8 @@ static void init_advertisement_data() {
   uint32_t err_code =
       sd_ble_gap_adv_set_configure(&adv_handle_, &gap_adv_data_, &adv_params_);
   APP_ERROR_CHECK(err_code);
+
+  APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
 }
 
 void prst_ble_init() {
