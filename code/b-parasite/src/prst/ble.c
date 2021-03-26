@@ -9,6 +9,9 @@
 
 #include "prst_config.h"
 
+// TODO(rbaron): More info in the adv packet:
+// - Software version
+
 // We need to pick a service UUID for broadcasting our sensor data.
 // 0x181a is defined as "environmental sensing", which seems appopriate.
 #define SERVICE_UUID 0x181a

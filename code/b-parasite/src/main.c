@@ -72,11 +72,13 @@ static void rtc_callback() {
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
   UNUSED_VARIABLE(batt_read);
-  UNUSED_VARIABLE(temp_humi);
+  // UNUSED_VARIABLE(temp_humi);
   NRF_LOG_INFO("Read batt: " NRF_LOG_FLOAT_MARKER " V (%d), %u mV",
                NRF_LOG_FLOAT(batt_read.voltage), batt_read.raw, batt_read.millivolts);
   NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
                NRF_LOG_FLOAT(temp_humi.temp_c));
+  NRF_LOG_INFO("Read humi: " NRF_LOG_FLOAT_MARKER " %%",
+               NRF_LOG_FLOAT(temp_humi.humidity));
   NRF_LOG_FLUSH();
 }
 

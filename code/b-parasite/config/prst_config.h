@@ -4,7 +4,7 @@
 #include "nrf_gpio.h"
 
 // Built-in LED.
-#define PRST_LED_PIN NRF_GPIO_PIN_MAP(1, 11)
+#define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Deep sleep.
 #define PRST_DEEP_SLEEP_IN_SECONDS 2
