@@ -58,31 +58,22 @@ static void power_manage(void) {
 // Here we need to be extra careful with what operations we do. This callback
 // has to return fast-ish, otherwise we hit some hard exceptions.
 static void rtc_callback() {
-  NRF_LOG_INFO("Batt raw ");
-  NRF_LOG_FLUSH();
   nrf_gpio_pin_set(PRST_LED_PIN);
   prst_shtc3_read_t temp_humi = prst_shtc3_read();
   nrf_gpio_pin_set(PRST_FAST_DISCH_PIN);
   prst_pwm_init();
   prst_pwm_start();
   prst_adc_batt_read_t batt_read = prst_adc_batt_read();
-  int16_t soil_read = prst_adc_soil_read();
+  prst_adc_soil_moisture_t soil_read = prst_adc_soil_read();
   prst_pwm_stop();
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
-  NRF_LOG_INFO("Read soil: %d", soil_read);
-  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius, temp_humi.humidity, 0);
+  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
+                           temp_humi.humidity, soil_read.relative);
   NRF_LOG_FLUSH();
   prst_adv_start();
   nrf_delay_ms(200);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
-  UNUSED_VARIABLE(batt_read);
-  // NRF_LOG_INFO("Read batt: " NRF_LOG_FLOAT_MARKER " V (%d), %u mV",
-  //              NRF_LOG_FLOAT(batt_read.voltage), batt_read.raw, batt_read.millivolts);
-  // NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
-  //              NRF_LOG_FLOAT((float) temp_humi.temp_millicelcius / 1000.0));
-  // NRF_LOG_INFO("Read humi: " NRF_LOG_FLOAT_MARKER " %%",
-  //              NRF_LOG_FLOAT(100.0 * temp_humi.humidity / (1 << 16)));
   NRF_LOG_FLUSH();
 }
 
@@ -94,11 +85,18 @@ int main(void) {
   prst_ble_init();
   prst_adc_init();
   prst_shtc3_init();
+
+  // Set up RTC. It will call our custom callback at a regular interval, defined
+  // by PRST_DEEP_SLEEP_IN_SECONDS.
   prst_rtc_set_callback(rtc_callback);
   prst_rtc_init();
 
-  nrf_delay_ms(100);
+  // In addition to scheduling it, let's immediatelly call it - it makes
+  // debugging less tedious.
+  rtc_callback();
 
+  // Here we go into a low energy mode. The datasheet calls this mode "System
+  // ON", and in my tests it consumes around 2.7uA.
   for (;;) {
     power_manage();
   }

@@ -27,6 +27,11 @@ static nrf_saadc_value_t sample_adc_channel(uint8_t channel) {
   return result;
 }
 
+// Caps the argument to the [0, 1] range.
+static inline double cap_value(double value) {
+  return value > 1.0 ? 1.0 : (value < 0.0 ? 0.0 : value);
+}
+
 // Unused, since we'll call the SAADC synchronously for now.
 void saadc_callback(nrf_drv_saadc_evt_t const* p_event) {
   if (p_event->type == NRF_DRV_SAADC_EVT_DONE) {
@@ -69,16 +74,23 @@ prst_adc_batt_read_t prst_adc_batt_read() {
   ret.voltage = (3.6 * result) / (1 << PRST_ADC_RESOLUTION);
   ret.millivolts = ret.voltage * 1000;
 #if PRST_ADC_DEBUG
-  NRF_LOG_INFO("[adc] Read battery voltage: %d (raw); %d mV; ", ret.raw, ret.millivolts,
-               ret.voltage);
+  NRF_LOG_INFO("[adc] Read battery voltage: %d (raw); %d mV; ", ret.raw,
+               ret.millivolts, ret.voltage);
 #endif
   return ret;
 }
 
-int16_t prst_adc_soil_read() {
+prst_adc_soil_moisture_t prst_adc_soil_read() {
   nrf_saadc_value_t result = sample_adc_channel(PRST_ADC_SOIL_CHANNEL);
+  double percentage = cap_value(((double)result - PRST_SOIL_DRY) /
+                                (PRST_SOIL_WET - PRST_SOIL_DRY));
+  prst_adc_soil_moisture_t ret;
+  ret.raw = result;
+  ret.relative = percentage * (1 << 16);
 #if PRST_ADC_DEBUG
-  NRF_LOG_INFO("[adc] Read soil moisture: %d", result);
+  NRF_LOG_INFO("[adc] Read soil moisture: %d (raw); " NRF_LOG_FLOAT_MARKER
+               " %% (percentage); %u (relative)",
+               ret.raw, NRF_LOG_FLOAT(percentage * 100), ret.relative);
 #endif
-  return result;
+  return ret;
 }
