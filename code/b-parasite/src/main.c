@@ -66,19 +66,18 @@ static void rtc_callback() {
   prst_pwm_start();
   prst_adc_batt_read_t batt_read = prst_adc_batt_read();
   prst_pwm_stop();
-  prst_ble_update_adv_data(batt_read.millivolts);
+  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius, temp_humi.humidity, 0);
   prst_adv_start();
   nrf_delay_ms(200);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
   UNUSED_VARIABLE(batt_read);
-  // UNUSED_VARIABLE(temp_humi);
   NRF_LOG_INFO("Read batt: " NRF_LOG_FLOAT_MARKER " V (%d), %u mV",
                NRF_LOG_FLOAT(batt_read.voltage), batt_read.raw, batt_read.millivolts);
   NRF_LOG_INFO("Read temp: " NRF_LOG_FLOAT_MARKER " oC",
-               NRF_LOG_FLOAT(temp_humi.temp_c));
+               NRF_LOG_FLOAT((float) temp_humi.temp_millicelcius / 1000.0));
   NRF_LOG_INFO("Read humi: " NRF_LOG_FLOAT_MARKER " %%",
-               NRF_LOG_FLOAT(temp_humi.humidity));
+               NRF_LOG_FLOAT(100.0 * temp_humi.humidity / (1 << 16)));
   NRF_LOG_FLUSH();
 }
 

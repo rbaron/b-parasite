@@ -13,8 +13,11 @@
 #define PRST_SHTC3_CMD_MEASURE_TFIRST_LOW_POWER 0x609c
 
 typedef struct prst_shtc3_values {
-  double temp_c;
-  double humidity;
+  // Temperature in millicelcius. To get the temp in Celcius, divide this by
+  // 1000.0.
+  int16_t temp_millicelcius;
+  // Relative humidity, from 0 to 2^16.
+  uint16_t humidity;
 } prst_shtc3_read_t;
 
 void prst_shtc3_init();

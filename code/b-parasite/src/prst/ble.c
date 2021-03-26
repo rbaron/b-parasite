@@ -11,6 +11,7 @@
 
 // TODO(rbaron): More info in the adv packet:
 // - Software version
+// - Counter
 
 // We need to pick a service UUID for broadcasting our sensor data.
 // 0x181a is defined as "environmental sensing", which seems appopriate.
@@ -101,9 +102,20 @@ void prst_ble_init() {
   init_advertisement_data();
 }
 
-void prst_ble_update_adv_data(uint16_t batt_millivolts) {
+void prst_ble_update_adv_data(uint16_t batt_millivolts,
+                              uint16_t temp_millicelcius, uint16_t humidity,
+                              uint16_t soil_moisture) {
   service_data[0] = batt_millivolts >> 8;
   service_data[1] = batt_millivolts & 0xff;
+
+  service_data[2] = temp_millicelcius >> 8;
+  service_data[3] = temp_millicelcius & 0xff;
+
+  service_data[4] = humidity >> 8;
+  service_data[5] = humidity & 0xff;
+
+  service_data[6] = soil_moisture >> 8;
+  service_data[7] = soil_moisture & 0xff;
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(
