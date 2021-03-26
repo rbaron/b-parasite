@@ -2835,7 +2835,7 @@
 // <e> NRFX_PWM_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef NRFX_PWM_CONFIG_LOG_ENABLED
-#define NRFX_PWM_CONFIG_LOG_ENABLED 1
+#define NRFX_PWM_CONFIG_LOG_ENABLED 0
 #endif
 // <o> NRFX_PWM_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -3308,7 +3308,7 @@
 // <e> NRFX_RTC_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef NRFX_RTC_CONFIG_LOG_ENABLED
-#define NRFX_RTC_CONFIG_LOG_ENABLED 1
+#define NRFX_RTC_CONFIG_LOG_ENABLED 0
 #endif
 // <o> NRFX_RTC_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -4340,7 +4340,7 @@
 // <e> NRFX_TWI_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef NRFX_TWI_CONFIG_LOG_ENABLED
-#define NRFX_TWI_CONFIG_LOG_ENABLED 1
+#define NRFX_TWI_CONFIG_LOG_ENABLED 0
 #endif
 // <o> NRFX_TWI_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8072,7 +8072,7 @@
 // <e> CLOCK_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef CLOCK_CONFIG_LOG_ENABLED
-#define CLOCK_CONFIG_LOG_ENABLED 1
+#define CLOCK_CONFIG_LOG_ENABLED 0
 #endif
 // <o> CLOCK_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8480,7 +8480,7 @@
 // <e> PWM_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef PWM_CONFIG_LOG_ENABLED
-#define PWM_CONFIG_LOG_ENABLED 1
+#define PWM_CONFIG_LOG_ENABLED 0
 #endif
 // <o> PWM_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8640,7 +8640,7 @@
 // <e> RTC_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef RTC_CONFIG_LOG_ENABLED
-#define RTC_CONFIG_LOG_ENABLED 1
+#define RTC_CONFIG_LOG_ENABLED 0
 #endif
 // <o> RTC_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8691,7 +8691,7 @@
 // <e> SAADC_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef SAADC_CONFIG_LOG_ENABLED
-#define SAADC_CONFIG_LOG_ENABLED 1
+#define SAADC_CONFIG_LOG_ENABLED 0
 #endif
 // <o> SAADC_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -8946,7 +8946,7 @@
 // <e> TWI_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef TWI_CONFIG_LOG_ENABLED
-#define TWI_CONFIG_LOG_ENABLED 1
+#define TWI_CONFIG_LOG_ENABLED 0
 #endif
 // <o> TWI_CONFIG_LOG_LEVEL  - Default Severity level
 
@@ -10284,7 +10284,7 @@
 // <e> NRF_SDH_BLE_LOG_ENABLED - Enable logging in SoftDevice handler (BLE) module.
 //==========================================================
 #ifndef NRF_SDH_BLE_LOG_ENABLED
-#define NRF_SDH_BLE_LOG_ENABLED 1
+#define NRF_SDH_BLE_LOG_ENABLED 0
 #endif
 // <o> NRF_SDH_BLE_LOG_LEVEL  - Default Severity level
 
@@ -11343,7 +11343,7 @@
 // <2=> BLOCK_IF_FIFO_FULL
 
 #ifndef SEGGER_RTT_CONFIG_DEFAULT_MODE
-#define SEGGER_RTT_CONFIG_DEFAULT_MODE 0
+#define SEGGER_RTT_CONFIG_DEFAULT_MODE 2
 #endif
 
 // </h>

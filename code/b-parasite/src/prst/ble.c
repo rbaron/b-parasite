@@ -117,29 +117,33 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[6] = soil_moisture >> 8;
   service_data[7] = soil_moisture & 0xff;
 
-  NRF_LOG_INFO("LETS SEE");
-
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(
       &adv_data_, gap_adv_data_.adv_data.p_data, &gap_adv_data_.adv_data.len);
   APP_ERROR_CHECK(err_code);
 
-  // NRF_LOG_INFO("Encoded BLE adv packket:");
-  // for (int i = 0; i < sizeof(encoded_adv_data_); i++) {
-  //   NRF_LOG_INFO("0x%x ", encoded_adv_data_[i]);
-  // }
+#if PRST_BLE_DEBUG
+  NRF_LOG_INFO("[ble] Encoded BLE adv packket:");
+  for (int i = 0; i < sizeof(encoded_adv_data_); i++) {
+    NRF_LOG_INFO("[ble] 0x%x ", encoded_adv_data_[i]);
+  }
+#endif
 }
 
 void prst_adv_start() {
   ret_code_t err_code;
   err_code = sd_ble_gap_adv_start(adv_handle_, PRST_CONN_CFG_TAG);
   APP_ERROR_CHECK(err_code);
-  NRF_LOG_INFO("Advertising started.\n");
+#if PRST_BLE_DEBUG
+  NRF_LOG_INFO("[ble] Advertising started.\n");
+#endif
 }
 
 void prst_adv_stop() {
   ret_code_t err_code;
   err_code = sd_ble_gap_adv_stop(adv_handle_);
   APP_ERROR_CHECK(err_code);
-  NRF_LOG_INFO("Advertising stopped.\n");
+#if PRST_BLE_DEBUG
+  NRF_LOG_INFO("[ble] Advertising stopped.\n");
+#endif
 }
