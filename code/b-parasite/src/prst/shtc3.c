@@ -44,12 +44,15 @@ prst_shtc3_read_t prst_shtc3_read() {
   // Uninit i2c.
   nrf_drv_twi_uninit(&twi_);
 
+  // TODO(rbaron): verify the CRC of the measurements. The function is described
+  // in the datasheet.
+
   NRF_LOG_INFO("Computing...");
-  double temp_c =
-      -45 + 175 * ((double)((buff[0] << 8) | buff[1])) / (1 << 16);
+  double temp_c = -45 + 175 * ((double)((buff[0] << 8) | buff[1])) / (1 << 16);
   // double humi = ((double)((buff[3] << 8) | buff[4])) / ((1 << 16) - 1);
   uint16_t humi = (buff[3] << 8) | buff[4];
 
-  prst_shtc3_read_t ret = {.temp_millicelcius = temp_c * 1000, .humidity = humi };
+  prst_shtc3_read_t ret = {.temp_millicelcius = temp_c * 1000,
+                           .humidity = humi};
   return ret;
 }

@@ -23,7 +23,7 @@
 #define NON_CONNECTABLE_ADV_INTERVAL MSEC_TO_UNITS(100, UNIT_0_625_MS)
 
 // Sensor data payload that will go into the advertisement message.
-#define SERVICE_DATA_LEN 8
+#define SERVICE_DATA_LEN 16
 static uint8_t service_data[SERVICE_DATA_LEN];
 
 // Stores the encoded advertisement data. As per BLE spec, 31 bytes max.
@@ -117,10 +117,17 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[6] = soil_moisture >> 8;
   service_data[7] = soil_moisture & 0xff;
 
+  NRF_LOG_INFO("LETS SEE");
+
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(
       &adv_data_, gap_adv_data_.adv_data.p_data, &gap_adv_data_.adv_data.len);
   APP_ERROR_CHECK(err_code);
+
+  // NRF_LOG_INFO("Encoded BLE adv packket:");
+  // for (int i = 0; i < sizeof(encoded_adv_data_); i++) {
+  //   NRF_LOG_INFO("0x%x ", encoded_adv_data_[i]);
+  // }
 }
 
 void prst_adv_start() {
