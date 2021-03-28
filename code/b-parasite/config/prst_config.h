@@ -7,7 +7,7 @@
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Deep sleep.
-#define PRST_DEEP_SLEEP_IN_SECONDS 3
+#define PRST_DEEP_SLEEP_IN_SECONDS 300
 
 // Analog to digital converter (ADC).
 // Prints out ADC debug info, such as the values read for battery and soil
@@ -17,10 +17,15 @@
 // BLE.
 // Prints out BLE debug info, such as the final encoded advertisement packet.
 #define PRST_BLE_DEBUG 0
-#define PRST_BLE_MAC_ADDR_LSB0 0xaa
-#define PRST_BLE_MAC_ADDR_LSB1 0xbb
-#define PRST_BLE_ADV_TIME_IN_MS 200
-#define PRST_BLE_ADV_NAME "prst aabb"
+#define PRST_BLE_PROTOCOL_VERSION 1
+#define PRST_BLE_MAC_ADDR_LSB1 0x00
+#define PRST_BLE_MAC_ADDR_LSB0 0x01
+#define PRST_BLE_ADV_NAME "prst"
+// Total time spend advertising.
+#define PRST_BLE_ADV_TIME_IN_MS 1000
+// Interval between advertising packets.
+// From the specs, this value has to be greater or equal 20ms.
+#define PRST_BLE_ADV_INTERVAL_IN_MS 30
 
 // PWM.
 #define PRST_PWM_PIN NRF_GPIO_PIN_MAP(0, 5)

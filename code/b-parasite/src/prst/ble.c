@@ -20,7 +20,8 @@
 // The connection to configure. We only have the one.
 #define PRST_CONN_CFG_TAG 1
 
-#define NON_CONNECTABLE_ADV_INTERVAL MSEC_TO_UNITS(100, UNIT_0_625_MS)
+#define NON_CONNECTABLE_ADV_INTERVAL \
+  MSEC_TO_UNITS(PRST_BLE_ADV_INTERVAL_IN_MS, UNIT_0_625_MS)
 
 // Sensor data payload that will go into the advertisement message.
 #define SERVICE_DATA_LEN 12
@@ -93,7 +94,8 @@ static void init_advertisement_data() {
       sd_ble_gap_adv_set_configure(&adv_handle_, &gap_adv_data_, &adv_params_);
   APP_ERROR_CHECK(err_code);
 
-  APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
+  // Four bits for the protocol version
+  service_data[0] = (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
 }
 
 void prst_ble_init() {
@@ -112,23 +114,29 @@ void prst_ble_init() {
   err_code = nrf_sdh_ble_enable(&ram_start);
   APP_ERROR_CHECK(err_code);
 
+  APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
+
   init_advertisement_data();
 }
 
 void prst_ble_update_adv_data(uint16_t batt_millivolts,
                               uint16_t temp_millicelcius, uint16_t humidity,
-                              uint16_t soil_moisture) {
-  service_data[0] = batt_millivolts >> 8;
-  service_data[1] = batt_millivolts & 0xff;
+                              uint16_t soil_moisture, uint8_t run_counter) {
+  // 4 bits for a small wrap-around counter for deduplicating messages on the
+  // receiver.
+  service_data[1] = run_counter & 0x0f;
 
-  service_data[2] = temp_millicelcius >> 8;
-  service_data[3] = temp_millicelcius & 0xff;
+  service_data[2] = batt_millivolts >> 8;
+  service_data[3] = batt_millivolts & 0xff;
 
-  service_data[4] = humidity >> 8;
-  service_data[5] = humidity & 0xff;
+  service_data[4] = temp_millicelcius >> 8;
+  service_data[5] = temp_millicelcius & 0xff;
 
-  service_data[6] = soil_moisture >> 8;
-  service_data[7] = soil_moisture & 0xff;
+  service_data[6] = humidity >> 8;
+  service_data[7] = humidity & 0xff;
+
+  service_data[8] = soil_moisture >> 8;
+  service_data[9] = soil_moisture & 0xff;
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(

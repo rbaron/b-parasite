@@ -22,11 +22,13 @@
 #include "prst/shtc3.h"
 #include "prst_config.h"
 
-#define DEAD_BEEF 0xDEADBEEF
-
+// #define DEAD_BEEF 0xDEADBEEF
 // void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name) {
 //   app_error_handler(DEAD_BEEF, line_num, p_file_name);
 // }
+
+// A small wrap-around counter for deduplicating BLE packets on the receiver.
+static uint8_t run_counter = 0;
 
 static void log_init(void) {
   ret_code_t err_code = NRF_LOG_INIT(NULL);
@@ -68,13 +70,14 @@ static void rtc_callback() {
   prst_pwm_stop();
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
   prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
-                           temp_humi.humidity, soil_read.relative);
+                           temp_humi.humidity, soil_read.relative, run_counter);
   NRF_LOG_FLUSH();
   prst_adv_start();
   nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();
   nrf_gpio_pin_clear(PRST_LED_PIN);
   NRF_LOG_FLUSH();
+  run_counter++;
 }
 
 int main(void) {
