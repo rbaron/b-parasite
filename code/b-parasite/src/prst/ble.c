@@ -152,9 +152,9 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
 }
 
 void prst_adv_start() {
-  ret_code_t err_code;
-  err_code = sd_ble_gap_adv_start(adv_handle_, PRST_CONN_CFG_TAG);
-  APP_ERROR_CHECK(err_code);
+  APP_ERROR_CHECK(sd_ble_gap_adv_start(adv_handle_, PRST_CONN_CFG_TAG));
+  APP_ERROR_CHECK(sd_ble_gap_tx_power_set(BLE_GAP_TX_POWER_ROLE_ADV,
+                                          adv_handle_, PRST_BLE_ADV_TX_POWER));
 #if PRST_BLE_DEBUG
   NRF_LOG_INFO("[ble] Advertising started.\n");
 #endif

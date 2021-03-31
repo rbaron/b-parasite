@@ -26,6 +26,8 @@
 // Interval between advertising packets.
 // From the specs, this value has to be greater or equal 20ms.
 #define PRST_BLE_ADV_INTERVAL_IN_MS 30
+// Possible values are ..., -8, -4, 0, 4, 8.
+#define PRST_BLE_ADV_TX_POWER 8
 
 // PWM.
 #define PRST_PWM_PIN NRF_GPIO_PIN_MAP(0, 5)

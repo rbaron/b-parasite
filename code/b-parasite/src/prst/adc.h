@@ -8,7 +8,7 @@
 // I previously did a hacky linear regression to estimate them, but I'm
 // not super sure how useful that is.
 #define PRST_SOIL_WET 200
-#define PRST_SOIL_DRY 500
+#define PRST_SOIL_DRY 450
 
 typedef struct prst_adc_batt_val {
   int16_t raw;

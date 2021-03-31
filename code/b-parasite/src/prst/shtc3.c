@@ -34,8 +34,14 @@ prst_shtc3_read_t prst_shtc3_read() {
   // Wake the sensor up.
   write_cmd(PRST_SHTC3_CMD_WAKEUP);
   nrf_delay_ms(1);
+
   // Request measurement.
-  write_cmd(PRST_SHTC3_CMD_MEASURE_TFIRST_LOW_POWER);
+  write_cmd(PRST_SHTC3_CMD_MEASURE_TFIRST_NORMAL);
+
+  // Reading in normal (not low power) mode can take up to 12.1 ms, according to
+  // the datasheet.
+  nrf_delay_ms(15);
+
   // Read temp and humidity.
   while (nrf_drv_twi_rx(&twi_, PRST_SHTC3_ADDR, buff, 6) != 0) {
     nrf_delay_ms(10);

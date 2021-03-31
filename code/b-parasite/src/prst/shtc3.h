@@ -11,6 +11,7 @@
 #define PRST_SHTC3_CMD_SLEEP 0xb098
 #define PRST_SHTC3_CMD_WAKEUP 0x3517
 #define PRST_SHTC3_CMD_MEASURE_TFIRST_LOW_POWER 0x609c
+#define PRST_SHTC3_CMD_MEASURE_TFIRST_NORMAL 0x7866
 
 typedef struct prst_shtc3_values {
   // Temperature in millicelcius. To get the temp in Celcius, divide this by
