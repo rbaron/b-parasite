@@ -59,7 +59,7 @@ static void rtc_callback() {
   prst_pwm_init();
   prst_pwm_start();
   prst_adc_batt_read_t batt_read = prst_adc_batt_read();
-  prst_adc_soil_moisture_t soil_read = prst_adc_soil_read();
+  prst_adc_soil_moisture_t soil_read = prst_adc_soil_read(batt_read.voltage);
   prst_pwm_stop();
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
   prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,

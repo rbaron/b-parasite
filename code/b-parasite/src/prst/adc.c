@@ -27,7 +27,7 @@ static nrf_saadc_value_t sample_adc_channel(uint8_t channel) {
 }
 
 // Caps the argument to the [0, 1] range.
-static inline double cap_value(double value) {
+static inline double cap_percentage(double value) {
   return value > 1.0 ? 1.0 : (value < 0.0 ? 0.0 : value);
 }
 
@@ -72,21 +72,48 @@ prst_adc_batt_read_t prst_adc_batt_read() {
   ret.raw = (uint16_t)result;
   ret.voltage = (3.6 * result) / (1 << PRST_ADC_RESOLUTION);
   ret.millivolts = ret.voltage * 1000;
-#if PRST_ADC_DEBUG
-  NRF_LOG_INFO("[adc] Read battery voltage: %d (raw); %d mV; ", ret.raw,
-               ret.millivolts, ret.voltage);
+#if PRST_ADC_BATT_DEBUG
+  NRF_LOG_INFO(
+      "[adc] Read battery voltage: %d (raw); %d mV; " NRF_LOG_FLOAT_MARKER " V",
+      ret.raw, ret.millivolts, NRF_LOG_FLOAT(ret.voltage));
 #endif
   return ret;
 }
 
-prst_adc_soil_moisture_t prst_adc_soil_read() {
-  nrf_saadc_value_t result = sample_adc_channel(PRST_ADC_SOIL_CHANNEL);
-  double percentage = cap_value(((double)result - PRST_SOIL_DRY) /
-                                (PRST_SOIL_WET - PRST_SOIL_DRY));
+// If you got this far and really want to see how the sausage is made,
+// this function estimates the soil moisture percent based on the raw
+// ADC value as returned from the saadc. It assumes 10 bits resolution.
+// Ideally, we're taking the ADC sample relative to the VDD voltage, so
+// this input value should be stable across the range of input voltages.
+// In practice, when varying the input voltage, this value is drifting
+// enough to be annoying. To account for this drift, I collected ADC readings
+// while varying the input voltage from 2V to 3V (CR2032 voltage range) and
+// fitted two second degree polynomials over them - one for the sensor
+// out in the air (representing a dry soil) and one while holding the
+// sensor in my hand (representing a wet soil).
+// This raw data is available at the data/ dir at the root of this repository.
+static inline double get_soil_moisture_percent(
+    double battery_voltage, nrf_saadc_value_t raw_adc_output) {
+  const double x = battery_voltage;
+  const double dry = -12.9 * x * x + 111 * x + 228;
+  const double wet = -5.71 * x * x + 60.2 * x + 126;
+#if PRST_ADC_SOIL_DEBUG
+  NRF_LOG_INFO("[adc] batt: " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(x));
+  NRF_LOG_INFO("[adc] dry: " NRF_LOG_FLOAT_MARKER " wet: " NRF_LOG_FLOAT_MARKER,
+               NRF_LOG_FLOAT(dry), NRF_LOG_FLOAT(wet));
+#endif
+  return (raw_adc_output - dry) / (wet - dry);
+}
+
+prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
+  nrf_saadc_value_t raw_adc_output = sample_adc_channel(PRST_ADC_SOIL_CHANNEL);
+  const double percentage =
+      get_soil_moisture_percent(battery_voltage, raw_adc_output);
   prst_adc_soil_moisture_t ret;
-  ret.raw = result;
+  ret.raw = raw_adc_output;
+  ret.percentage = cap_percentage(percentage);
   ret.relative = percentage * (1 << 16);
-#if PRST_ADC_DEBUG
+#if PRST_ADC_SOIL_DEBUG
   NRF_LOG_INFO("[adc] Read soil moisture: %d (raw); " NRF_LOG_FLOAT_MARKER
                " %% (percentage); %u (relative)",
                ret.raw, NRF_LOG_FLOAT(percentage * 100), ret.relative);

@@ -18,14 +18,15 @@ typedef struct prst_adc_batt_val {
 
 typedef struct prst_adc_soil_moisture {
   int16_t raw;
-  // A value from 0 (cmopletely dry) to 2^10 (completely wet).
+  // A value from 0 (completely dry) to 2^10 (completely wet).
   uint16_t relative;
+  double percentage;
 } prst_adc_soil_moisture_t;
 
 void prst_adc_init();
 
 prst_adc_batt_read_t prst_adc_batt_read();
 
-prst_adc_soil_moisture_t prst_adc_soil_read();
+prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage);
 
 #endif  // _PRST_ADC_H_
