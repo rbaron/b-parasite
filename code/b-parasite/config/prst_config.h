@@ -20,7 +20,7 @@
 #define PRST_BLE_DEBUG 0
 #define PRST_BLE_PROTOCOL_VERSION 1
 #define PRST_BLE_MAC_ADDR_LSB1 0x00
-#define PRST_BLE_MAC_ADDR_LSB0 0x02
+#define PRST_BLE_MAC_ADDR_LSB0 0x07
 #define PRST_BLE_ADV_NAME "prst"
 // Total time spend advertising.
 #define PRST_BLE_ADV_TIME_IN_MS 1000
