@@ -1,3 +1,5 @@
+[![b-parasite firmware build](https://github.com/rbaron/b-parasite/actions/workflows/b-parasite.yml/badge.svg?branch=main)](https://github.com/rbaron/b-parasite/actions/workflows/b-parasite.yml)
+
 # b-parasite
 <p align="center">
   <img src="img/resized/img1.jpg" width="512px" border="0" alt="PCB front and back photo" />
