@@ -16,7 +16,7 @@ b-parasite is an open source Bluetooth Low Energy (BLE) soil moisture and ambien
 * [kicad/](./kicad/) - KiCad schematic, layout and fabrication files for the printed circuit board (PCB)
 * [data/](data/) - data for testing and sensor calibration
 * [bridge/](bridge/) - an [ESPHome](https://github.com/esphome/esphome)-based BLE-MQTT bridge
-
+* [case/](case/) - a 3D printable case
 
 # How It Works
 <p align="center">
@@ -50,6 +50,10 @@ With these parameters in hand, I put together [this spreadsheet](https://docs.go
 <p align="center">
   <img src="img/resized/img2.jpg" border="0" alt="b-parasite stuck into a small plant vase" />
 </p>
+
+# Case
+A 3D printable case model can be found in [case/](case/).
+![Render of the 3D printable case](./img/case/screenshot.png)
 
 # License
 The hardware and associated design files are released under the [Creative Commons CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
