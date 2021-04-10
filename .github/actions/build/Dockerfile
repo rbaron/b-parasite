@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM debian:bullseye-slim
 
 RUN apt-get update && \
   apt-get -y install wget tar unzip make clang-format gcc-arm-none-eabi
