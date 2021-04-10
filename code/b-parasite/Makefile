@@ -312,3 +312,11 @@ sdk_config:
 .PHONY: flash_loop
 flash_loop:
 	while [ 1 ]; do make flash && break; done
+
+.PHONY: lint
+lint:
+	find src -iname *.h -o -iname *.c | xargs clang-format -n -Werror
+
+.PHONY: fix
+lint-fix:
+	find src -iname *.h -o -iname *.c | xargs clang-format -i
