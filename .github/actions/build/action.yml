@@ -1,0 +1,5 @@
+name: 'Build'
+description: 'Builds b-parasite firmware'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
