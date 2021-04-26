@@ -90,8 +90,12 @@ static void init_advertisement_data() {
       sd_ble_gap_adv_set_configure(&adv_handle_, &gap_adv_data_, &adv_params_);
   APP_ERROR_CHECK(err_code);
 
-  // Four bits for the protocol version
+  // Four bits for the protocol version.
   service_data[0] = (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
+
+  // Bytes 10 and 11 contain the last two bytes of the MAC address.
+  service_data[10] = PRST_BLE_MAC_ADDR_LSB1;
+  service_data[11] = PRST_BLE_MAC_ADDR_LSB0;
 }
 
 void prst_ble_init() {
