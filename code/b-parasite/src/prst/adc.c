@@ -4,7 +4,7 @@
 #include <nrf_drv_saadc.h>
 #include <nrf_log.h>
 #include <nrf_saadc.h>
-// #include <nrfx_saadc.h>
+#include <stdint.h>
 
 #include "prst_config.h"
 
@@ -26,7 +26,7 @@ static nrf_saadc_value_t sample_adc_channel(uint8_t channel) {
   return result;
 }
 
-// Caps the argument to the [0, 1] range.
+// Caps the argument to the [0.0, 1.0] range.
 static inline double cap_percentage(double value) {
   return value > 1.0 ? 1.0 : (value < 0.0 ? 0.0 : value);
 }
@@ -111,8 +111,8 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
       get_soil_moisture_percent(battery_voltage, raw_adc_output);
   prst_adc_soil_moisture_t ret;
   ret.raw = raw_adc_output;
-  ret.percentage = cap_percentage(percentage);
-  ret.relative = percentage * (1 << 16);
+  ret.percentage = percentage;
+  ret.relative = cap_percentage(percentage) * UINT16_MAX;
 #if PRST_ADC_SOIL_DEBUG
   NRF_LOG_INFO("[adc] Read soil moisture: %d (raw); " NRF_LOG_FLOAT_MARKER
                " %% (percentage); %u (relative)",
