@@ -29,7 +29,16 @@ b-parasite works by periodically measuring the soil moisture, air temperature/hu
 
 At this point, b-parasite's job is done. We have many possibilities of how to capture its BLE advertisement packet and what to do with the data. What works okay for me is having a BLE-MQTT bridge that listens for these BLE broadcasts, decodes them and ships the sensor values through MQTT messages. The MQTT broker is then responsible for relaying the sensor data to interested parties. This is the topology shown in the diagram above.
 
-A popular choice for a BLE-MQTT bridge is the [ESPHome](https://github.com/esphome/esphome) project, which runs on our beloved [ESP32](https://www.espressif.com/en/products/socs/esp32) boards. I forked ESPHome into [rbaron/esphome](https://github.com/rbaron/esphome) and added support for the `b_parasite` platform. An example project using this fork is defined in this repo, under [bridge/](bridge/) (check out [README.md](bridge/README.md) there for more info).
+## BLE-MQTT Bridges
+### ESP32
+A popular choice for a BLE-MQTT bridge is the [ESPHome](https://github.com/esphome/esphome) project, which runs on our beloved [ESP32](https://www.espressif.com/en/products/socs/esp32) boards. Support for b-parasite [has been merged into ESPHome](https://github.com/esphome/esphome/pull/1666) by introducing the `b_parasite` platform. You can use it by pulling the most recent ESPHome code from Github. An example of using this platform is available in this repo, under [bridge/](bridge/) (check out [README.md](bridge/README.md) there for more info).
+
+ESPHome is a battle-tested project with a vibrant community, and is currently the most mature b-parasite bridge. ESP32 are also cheap, so you can sprinkle a few of them around the house to cover a wide range, and even share the same ESP32 with other sensors.
+
+### Linux/Raspberry Pi & macOS
+Another possibility is running [parasite-scanner](https://github.com/rbaron/parasite-scanner). It is a purpose-built bridge for b-parasites, and runs on Linux and macOS.
+
+This is the quickest way to collect and visualize data from b-parasites, and I personally use it a lot for testing and debugging.
 
 # Battery Life
 **tl;dr:** By taking readings 10 minutes apart, the battery should last for over a year.

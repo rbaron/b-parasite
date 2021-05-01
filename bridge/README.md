@@ -18,4 +18,7 @@ wifi_password: WIFI_PASSWORD
 mqtt_broker: MQTT_BROKER
 mqtt_password: MQTT_PASSWORD
 ota_password: OTA_PASSWORD
-``
+```
+
+# Alternative
+[parasite-scanner](https://github.com/rbaron/parasite-scanner) is a purpose-built BLE-MQTT bridge for b-parasites, and runs on Linux and macOS.
