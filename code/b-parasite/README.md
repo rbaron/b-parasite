@@ -23,3 +23,19 @@ Calls to `NRF_LOG` will be readable on the console using `JLinkRTTLogger`. This 
 ```bash
 $ echo "\n\n\n\n0\n/dev/stdout" | JLinkRTTLogger | sed 's/^.*app: //'
 ```
+
+# Bluetooth Low Energy Advertisement Data Encoding
+Sensor data is encoded in the BLE advertisement packet as Service Data for the [Environmental Sensing Service profile](https://www.bluetooth.com/specifications/assigned-numbers/environmental-sensing-service-characteristics/) (UUID 0x181a).
+
+Sensor data is encoded in unsigned 16 bits (2 bytes), and whenever multiple
+ bytes are used to represent a single value, the encoding is big-endian.
+
+| Byte index |                          Description                           |
+|------------|----------------------------------------------------------------|
+| 0          | 4 bits for protocol version + 4 reserved bits                  |
+| 1          | 4 reserved bits + 4 bits wrap-around counter for deduplication |
+| 2-3        | Battery voltage in millivolts                                  |
+| 4-5        | Temperature in millidegrees Celcius                            |
+| 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)     |
+| 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)        |
+| 10-15      | b-parasite's own MAC address, big-endian format                |

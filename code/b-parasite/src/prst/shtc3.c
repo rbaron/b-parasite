@@ -64,7 +64,7 @@ prst_shtc3_read_t prst_shtc3_read() {
   NRF_LOG_INFO("[sht3c] Read temp: " NRF_LOG_FLOAT_MARKER " oC",
                NRF_LOG_FLOAT((float)ret.temp_millicelcius / 1000.0));
   NRF_LOG_INFO("[sht3c] Read humi: " NRF_LOG_FLOAT_MARKER " %%",
-               NRF_LOG_FLOAT(100.0 * ret.humidity / (1 << 16)));
+               NRF_LOG_FLOAT(100.0 * ret.humidity / 0xffff));
 #endif
   return ret;
 }

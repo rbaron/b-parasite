@@ -40,6 +40,9 @@ Another possibility is running [parasite-scanner](https://github.com/rbaron/para
 
 This is the quickest way to collect and visualize data from b-parasites, and I personally use it a lot for testing and debugging.
 
+## Protocol and Data Encoding
+Sensor data is transmitted via BLE advertisement broadcasts. [Here](./code/b-parasite/README.md) you can find a byte-by-byte description of the data as it is encoded inside the advertisement packet.
+
 # Battery Life
 **tl;dr:** By taking readings 10 minutes apart, the battery should last for over a year.
 
