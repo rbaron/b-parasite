@@ -21,7 +21,7 @@
 
 // Sensor data payload that will go into the advertisement message.
 // We have a maximum of 20 bytes to play with here.
-#define SERVICE_DATA_LEN 12
+#define SERVICE_DATA_LEN 16
 static uint8_t service_data[SERVICE_DATA_LEN];
 
 // Stores the encoded advertisement data. As per BLE spec, 31 bytes max.
@@ -60,15 +60,8 @@ static uint8_t adv_handle_ = BLE_GAP_ADV_SET_HANDLE_NOT_SET;
 static ble_gap_adv_params_t adv_params_;
 
 // Stores the MAC address & type.
-// We're using a random static MAC address, which has the following constraints:
-// 1. Two most significant bits are set to 1;
-// 2. The remaining bits should not _all_ be set to 0;
-// 2. The remaining bits should not _all_ be set to 1;
-static const ble_gap_addr_t gap_addr_ = {
-    .addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC,
-    // Least significant bytes first.
-    .addr = {PRST_BLE_MAC_ADDR_LSB0, PRST_BLE_MAC_ADDR_LSB1, 0xca, 0xf0, 0xca,
-             0xf0}};
+static ble_gap_addr_t gap_addr_ = {.addr_type =
+                                       BLE_GAP_ADDR_TYPE_RANDOM_STATIC};
 
 static void init_advertisement_data() {
   // We'll just broadcast our data, so we disallow connections and scan
@@ -94,9 +87,16 @@ static void init_advertisement_data() {
   // Four bits for the protocol version.
   service_data[0] = (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
 
-  // Bytes 10 and 11 contain the last two bytes of the MAC address.
-  service_data[10] = PRST_BLE_MAC_ADDR_LSB1;
-  service_data[11] = PRST_BLE_MAC_ADDR_LSB0;
+  // Parses configured MAC address from PRST_BLE_MAC_ADDR.
+  int mac_bytes[6];
+  sscanf(PRST_BLE_MAC_ADDR, "%x:%x:%x:%x:%x:%x", &mac_bytes[0], &mac_bytes[1],
+         &mac_bytes[2], &mac_bytes[3], &mac_bytes[4], &mac_bytes[5]);
+
+  // Bytes 10-15 (inclusive) contain the whole MAC address.
+  for (int i = 0; i < 6; i++) {
+    gap_addr_.addr[5 - i] = (uint8_t)mac_bytes[i];
+    service_data[10 + i] = (uint8_t)mac_bytes[i];
+  }
 }
 
 void prst_ble_init() {
@@ -115,9 +115,9 @@ void prst_ble_init() {
   err_code = nrf_sdh_ble_enable(&ram_start);
   APP_ERROR_CHECK(err_code);
 
-  APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
-
   init_advertisement_data();
+
+  APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
 }
 
 void prst_ble_update_adv_data(uint16_t batt_millivolts,

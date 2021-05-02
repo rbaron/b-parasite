@@ -19,8 +19,11 @@
 // Prints out BLE debug info, such as the final encoded advertisement packet.
 #define PRST_BLE_DEBUG 0
 #define PRST_BLE_PROTOCOL_VERSION 1
-#define PRST_BLE_MAC_ADDR_LSB1 0x00
-#define PRST_BLE_MAC_ADDR_LSB0 0x07
+// We're using a random static MAC address, which has the following constraints:
+// 1. Two most significant bits are set to 1;
+// 2. The remaining bits should not _all_ be set to 0;
+// 2. The remaining bits should not _all_ be set to 1;
+#define PRST_BLE_MAC_ADDR "f0:ca:f0:ca:00:01"
 #define PRST_BLE_ADV_NAME "prst"
 // Total time spend advertising.
 #define PRST_BLE_ADV_TIME_IN_MS 1000
