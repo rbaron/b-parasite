@@ -20,6 +20,7 @@
   MSEC_TO_UNITS(PRST_BLE_ADV_INTERVAL_IN_MS, UNIT_0_625_MS)
 
 // Sensor data payload that will go into the advertisement message.
+// We have a maximum of 20 bytes to play with here.
 #define SERVICE_DATA_LEN 12
 static uint8_t service_data[SERVICE_DATA_LEN];
 
@@ -144,9 +145,9 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   APP_ERROR_CHECK(err_code);
 
 #if PRST_BLE_DEBUG
-  NRF_LOG_INFO("[ble] Encoded BLE adv packket:");
+  NRF_LOG_INFO("[ble] Encoded BLE adv packet:");
   for (int i = 0; i < sizeof(encoded_adv_data_); i++) {
-    NRF_LOG_INFO("[ble] 0x%x ", encoded_adv_data_[i]);
+    NRF_LOG_INFO("[ble] 0x%02x", encoded_adv_data_[i]);
   }
 #endif
 }
