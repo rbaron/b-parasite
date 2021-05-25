@@ -1,0 +1,29 @@
+### Module positions - created on 05/25/21 11:01:42 ###
+### Printed by Pcbnew version kicad (5.1.6)-1
+## Unit = mm, Angle = deg.
+## Side : top
+# Ref     Val        Package                                          PosX       PosY       Rot  Side
+C1        1n         C_0402_1005Metric                             68.0000   -50.9150   90.0000  top
+C2        100n       C_0402_1005Metric                             72.8150   -53.8000  180.0000  top
+C3        12p        C_0402_1005Metric                             64.8000   -50.9150  270.0000  top
+C4        12p        C_0402_1005Metric                             66.2000   -50.9150   90.0000  top
+C6        100p       C_0402_1005Metric                             61.9150   -56.4000  180.0000  top
+Cpara1    5p         C_0805_2012Metric                             64.1000   -54.3000   90.0000  top
+D1        LL4148     D_MiniMELF                                    67.9500   -53.7000  180.0000  top
+D2        LED        LED_0603_1608Metric                           62.0000   -51.2125   90.0000  top
+Q1        MMBT3904   SOT-23                                        64.8000   -58.7000   90.0000  top
+Q2        MMBT3904   SOT-23                                        68.4500   -58.7000   90.0000  top
+Q3        AO3407     SOT-23                                        73.1000   -57.3000  270.0000  top
+R1        10k        R_0402_1005Metric                             62.0000   -54.4000    0.0000  top
+R2        1k         R_0402_1005Metric                             62.0000   -47.4850  270.0000  top
+R3        1k         R_0402_1005Metric                             67.3000   -56.3000    0.0000  top
+R4        10k        R_0402_1005Metric                             61.9150   -58.2000  180.0000  top
+R5        1k         R_0402_1005Metric                             69.3850   -56.3000    0.0000  top
+R6        1M         R_0402_1005Metric                             69.3000   -50.9150   90.0000  top
+R7        10k        R_0402_1005Metric                             70.7000   -48.0850   90.0000  top
+R8        10k        R_0402_1005Metric                             72.1000   -48.0850  270.0000  top
+R10       2k         R_0402_1005Metric                             59.1000   -36.1850  270.0000  top
+R11       220        R_0402_1005Metric                             59.1000   -38.2850  270.0000  top
+U2        SHTC3      Sensirion_DFN-4-1EP_2x2mm_P1mm_EP0.7x1.6mm    72.8000   -50.6000  180.0000  top
+Y1        32.768kHz  Crystal_SMD_3215-2Pin_3.2x1.5mm               66.2500   -48.0000  180.0000  top
+## End
