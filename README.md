@@ -31,7 +31,7 @@ At this point, b-parasite's job is done. We have many possibilities of how to ca
 
 ## BLE-MQTT Bridges
 ### ESP32
-A popular choice for a BLE-MQTT bridge is the [ESPHome](https://github.com/esphome/esphome) project, which runs on our beloved [ESP32](https://www.espressif.com/en/products/socs/esp32) boards. Support for b-parasite [has been merged into ESPHome](https://github.com/esphome/esphome/pull/1666) by introducing the `b_parasite` platform. You can use it by pulling the most recent ESPHome code from Github. An example of using this platform is available in this repo, under [bridge/](bridge/) (check out [README.md](bridge/README.md) there for more info).
+A popular choice for a BLE-MQTT bridge is the [ESPHome](https://github.com/esphome/esphome) project, which runs on our beloved [ESP32](https://www.espressif.com/en/products/socs/esp32) boards. b-parasite is now officially supported and documentation for using it can be found in [the b-parasite ESPHome docs](https://esphome.io/components/sensor/b_parasite.html). An example of using this platform is also available in this repo, under [bridge/](bridge/) (check out [README.md](bridge/README.md) there for more info).
 
 ESPHome is a battle-tested project with a vibrant community, and is currently the most mature b-parasite bridge. ESP32 are also cheap, so you can sprinkle a few of them around the house to cover a wide range, and even share the same ESP32 with other sensors.
 
