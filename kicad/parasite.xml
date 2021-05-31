@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.sch</source>
-    <date>2021 March 12, Friday 20:02:36</date>
+    <date>2021 May 31, Monday 21:00:06</date>
     <tool>Eeschema (5.1.2-1)-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -251,6 +251,9 @@
     <comp ref="U1">
       <value>E73-2G4M08S1C-52840</value>
       <footprint>nrfmicro:E73-2G4M08S1C-52840</footprint>
+      <fields>
+        <field name="LCSC">C356849</field>
+      </fields>
       <libsource lib="nrfmicro" part="E73-2G4M08S1C-52840" description=""/>
       <sheetpath names="/" tstamps="/"/>
       <tstamp>604C2391</tstamp>
