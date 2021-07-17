@@ -63,12 +63,12 @@ static void rtc_callback() {
   prst_pwm_stop();
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
 
-  nrf_gpio_pin_set(PRST_PHOTO_V);                                         // set GPIO for photoresistor HIGH
-  prst_adc_photo_sensor prst_adc_photo_read(double battery_voltage);      // read PHOTO SENSOR value
-  nrf_gpio_pin_clear(PRST_PHOTO_V);                                       // not sure need this one
+  nrf_gpio_pin_set(PRST_PHOTO_V);                                               // set GPIO for photoresistor HIGH
+  prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);  // read PHOTO SENSOR value
+  nrf_gpio_pin_clear(PRST_PHOTO_V);                                             // clear GPIO for photoresistor
 
   prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
-                           temp_humi.humidity, soil_read.relative, prst_adc_photo_sensor.lux, run_counter);
+                           temp_humi.humidity, soil_read.relative, photo_read.lux, run_counter);
   prst_adv_start();
   nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();

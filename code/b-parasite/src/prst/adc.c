@@ -130,22 +130,15 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
   return ret;
 }
 
-static inline double get_lux_level(double battery_voltage, nrf_saadc_value_t raw_adc_output) {
-  const double x = battery_voltage;
-
-  // todo: add DEBUG lines
-
-  return 0;   // place holder. need to map values to lux level.
-}
-
-prst_adc_photo_sensor prst_adc_photo_read(double battery_voltage) {
-  nrf_saadc_value_t raw_adc_output = sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
-  const uint16_t lux = get_lux_level(battery_voltage, raw_adc_output);
-  prst_adc_photo_sensor ret;
-  ret.raw = raw_adc_output;
-  ret.lux = lux;      
-
-  // todo: add DEBUG lines
-  
+prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
+  nrf_saadc_value_t raw_photo_output = sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
+  prst_adc_photo_sensor_t ret;
+  ret.raw = raw_photo_output;
+  ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
+  ret.lux = (uint16_t)ret.voltage*100000/(battery_voltage-ret.voltage);
+#if PRST_ADC_SOIL_DEBUG
+  NRF_LOG_INFO("[adc] Read lux level: %d (raw); %d (lux)",
+               ret.raw, ret.lux);
+#endif
   return ret;
 }
