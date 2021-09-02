@@ -39,3 +39,23 @@ Sensor data is encoded in unsigned 16 bits (2 bytes), and whenever multiple
 | 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)     |
 | 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)        |
 | 10-15      | b-parasite's own MAC address, big-endian format                |
+
+# Supported Modules
+
+This code supports two E73 modules:
+ * E73-2G4M08S1C (nrf2480, default)
+ * E73-2G4M08S1E (nrf2833) 
+
+To choose for which one you want to compile, just pass PLATFORM as an env variable to make, and set it to the platform you want to use. For example, to compile for E73-2G4M08S1E:
+
+
+```bash
+SDK_ROOT=<...> PLATFORM=E73_2G4M08S1E make
+```
+
+and vice-cerase for E73-2G4M08S1C, although that platform will be chosen as default anyways:
+
+
+```bash
+SDK_ROOT=<...> PLATFORM=E73_2G4M08S1C make
+```
