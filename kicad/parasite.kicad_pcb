@@ -1,4 +1,4 @@
-(kicad_pcb (version 20171130) (host pcbnew "(5.1.10)-1")
+(kicad_pcb (version 20171130) (host pcbnew "(5.1.2-1)-1")
 
   (general
     (thickness 1.6)
@@ -12,8 +12,8 @@
   (page A4)
   (title_block
     (title b-parasite)
-    (date 2021-03-12)
-    (rev 1.0.0)
+    (date 2021-09-02)
+    (rev 1.1.0)
     (company rbaron.net)
   )
 
@@ -97,7 +97,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "D:/GitHub/b-parasite/kicad/"))
+      (outputdirectory "gerber/"))
   )
 
   (net 0 "")
@@ -1396,7 +1396,7 @@
   )
 
   (gr_circle (center 74 51.7) (end 74.2 51.7) (layer F.SilkS) (width 0.12))
-  (gr_text "b-parasite\n1.0.0\nrbaron.net" (at 68 77) (layer F.SilkS) (tstamp 604CBA76)
+  (gr_text "b-parasite\n1.1.0\nrbaron.net" (at 68 77) (layer F.SilkS) (tstamp 604CBA76)
     (effects (font (size 0.8 0.8) (thickness 0.1)))
   )
   (gr_line (start 60 27) (end 76 27) (layer Edge.Cuts) (width 0.05) (tstamp 604C66D7))

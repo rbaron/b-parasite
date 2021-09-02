@@ -1,12 +1,13 @@
 EESchema Schematic File Version 4
-EELAYER 30 0
+LIBS:parasite-cache
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "b-parasite"
-Date "2021-03-12"
-Rev "1.0.0"
+Date "2021-09-02"
+Rev "1.1.0"
 Comp ""
 Comment1 "rbaron.net"
 Comment2 ""
