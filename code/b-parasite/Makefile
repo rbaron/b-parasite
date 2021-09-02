@@ -1,28 +1,29 @@
 # Supported platforms:
 # * E73_2G4M08S1C (nrf2480, default)
 # * E73_2G4M08S1E (nrf2833) 
-PLATFORM ?= E73_2G4M08S1C 
+# note: the missing whitespace after the = is on purpose here
+PLATFORM ?=E73_2G4M08S1C
 
-ifeq ($(PLATFORM), E73_2G4M08S1E)
-	SRC_FILES += \
+ifeq ($(PLATFORM),E73_2G4M08S1E)
+	SRC_FILES := \
 		$(SDK_ROOT)/modules/nrfx/mdk/gcc_startup_nrf52833.S \
   		$(SDK_ROOT)/modules/nrfx/mdk/system_nrf52833.c
 	TARGETS := nrf52833_xxaa
 	CFLAGS += -DNRF52833_XXAA
 	ASMFLAGS += -DNRF52833_XXAA
   	LINKER_SCRIPT  := b_parasite_gcc_nrf52833.ld
-HEAP_SIZE := 2048
-STACK_SIZE := 2048
-else ifeq ($(PLATFORM), E73_2G4M08S1C)
-	SRC_FILES += \
+	HEAP_SIZE := 2048
+	STACK_SIZE := 2048
+else ifeq ($(PLATFORM),E73_2G4M08S1C)
+	SRC_FILES := \
 		$(SDK_ROOT)/modules/nrfx/mdk/gcc_startup_nrf52840.S \
   		$(SDK_ROOT)/modules/nrfx/mdk/system_nrf52840.c
 	TARGETS := nrf52840_xxaa
 	CFLAGS += -DNRF52840_XXAA
 	ASMFLAGS += -DNRF52840_XXAA
   	LINKER_SCRIPT  := b_parasite_gcc_nrf52840.ld
-HEAP_SIZE := 8192
-STACK_SIZE := 8192
+	HEAP_SIZE := 8192
+	STACK_SIZE := 8192
 endif
 
 
