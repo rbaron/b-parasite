@@ -71,8 +71,8 @@ void prst_adc_init() {
   nrf_saadc_channel_config_t photo_channel_config =
       NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(PRST_ADC_PHOTO_INPUT);
 
-  APP_ERROR_CHECK(
-      nrf_drv_saadc_channel_init(PRST_ADC_PHOTO_CHANNEL, &photo_channel_config));
+  APP_ERROR_CHECK(nrf_drv_saadc_channel_init(PRST_ADC_PHOTO_CHANNEL,
+                                             &photo_channel_config));
 }
 
 prst_adc_batt_read_t prst_adc_batt_read() {
@@ -131,14 +131,28 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
 }
 
 prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
-  nrf_saadc_value_t raw_photo_output = sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
+  nrf_saadc_value_t raw_photo_output =
+      sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
   prst_adc_photo_sensor_t ret;
   ret.raw = raw_photo_output;
   ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
-  ret.lux = (uint16_t)ret.voltage*100000/(battery_voltage-ret.voltage);
-#if PRST_ADC_SOIL_DEBUG
-  NRF_LOG_INFO("[adc] Read lux level: %d (raw); %d (lux)",
-               ret.raw, ret.lux);
+  // This value needs to be calibrated.
+  // The photo resistor forms a voltage divider with a 10 kOhm resistor.
+  // The voltage here is measured in the middle of the voltage divider.
+  // Vcc ---- (R_photo) ---|--- (10k) ---- GND
+  //                      Vout
+  // So we can estimate R_photo = R * (Vcc - Vout) / Vout
+  const double photo_resistance =
+      1e4 * (battery_voltage - ret.voltage) / ret.voltage;
+
+  // TODO: Now that we have the resistor value of the photo resistor, we need to
+  // estimate the value in lux. This needs to be calibrated with a real board in
+  // complete dark and in a super bright environment.
+  // This current value is just a placeholder.
+  ret.lux = (uint16_t)UINT16_MAX * (photo_resistance / 1e4);
+
+#if PRST_ADC_PHOTO_DEBUG
+  NRF_LOG_INFO("[adc] Read lux level: %d (raw); %d (lux)", ret.raw, ret.lux);
 #endif
   return ret;
 }

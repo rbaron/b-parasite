@@ -33,8 +33,9 @@
 | 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)     |
 | 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)        |
 | 10-15      | b-parasite's own MAC address                                   |
+| 16-17      | Lux level from the photoresistor                               |
 */
-#define SERVICE_DATA_LEN 16
+#define SERVICE_DATA_LEN 18
 static uint8_t service_data[SERVICE_DATA_LEN];
 
 // Stores the encoded advertisement data. As per BLE spec, 31 bytes max.
@@ -135,7 +136,8 @@ void prst_ble_init() {
 
 void prst_ble_update_adv_data(uint16_t batt_millivolts,
                               uint16_t temp_millicelcius, uint16_t humidity,
-                              uint16_t soil_moisture, uint8_t run_counter) {
+                              uint16_t soil_moisture, uint16_t lux,
+                              uint8_t run_counter) {
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
   service_data[1] = run_counter & 0x0f;
@@ -151,6 +153,9 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
 
   service_data[8] = soil_moisture >> 8;
   service_data[9] = soil_moisture & 0xff;
+
+  service_data[16] = lux >> 8;
+  service_data[17] = lux & 0xff;
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(
