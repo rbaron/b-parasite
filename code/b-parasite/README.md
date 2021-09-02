@@ -53,7 +53,7 @@ To choose for which one you want to compile, just pass PLATFORM as an env variab
 SDK_ROOT=<...> PLATFORM=E73_2G4M08S1E make
 ```
 
-and vice-cerase for E73-2G4M08S1C, although that platform will be chosen as default anyways:
+and vice-versa for E73-2G4M08S1C, although that platform will be chosen as default anyways:
 
 
 ```bash
