@@ -35,7 +35,12 @@
 
 // PWM.
 #define PRST_PWM_PIN NRF_GPIO_PIN_MAP(0, 5)
+
+#ifdef NRF52833_XXAA
+#define PRST_FAST_DISCH_PIN NRF_GPIO_PIN_MAP(0, 25)
+#else
 #define PRST_FAST_DISCH_PIN NRF_GPIO_PIN_MAP(1, 10)
+#endif
 
 // SHT3C temp/humidity sensor.
 #define PRST_SHT3C_DEBUG 0
