@@ -26,6 +26,7 @@ static void log_init(void) {
 static void gpio_init(void) {
   nrf_gpio_cfg_output(PRST_LED_PIN);
   nrf_gpio_cfg_output(PRST_FAST_DISCH_PIN);
+  nrf_gpio_cfg_output(PRST_PHOTO_V);
   NRF_LOG_INFO("GPIO pins inited.");
 }
 
