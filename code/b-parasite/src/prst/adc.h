@@ -21,7 +21,7 @@ typedef struct prst_adc_photo_sensor {
   // A value from 0x0000 (no light) 0xffff (direct sun).
   // Might need calibration.
   double voltage;
-  uint16_t lux;
+  uint16_t brightness;
 } prst_adc_photo_sensor_t;
 
 void prst_adc_init();

@@ -33,7 +33,7 @@
 | 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)     |
 | 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)        |
 | 10-15      | b-parasite's own MAC address                                   |
-| 16-17      | Lux level from the photoresistor                               |
+| 16-17      | Ambient brightness level from 0 (dark) to 0xffff (bright)      |
 */
 #define SERVICE_DATA_LEN 18
 static uint8_t service_data[SERVICE_DATA_LEN];
@@ -136,7 +136,7 @@ void prst_ble_init() {
 
 void prst_ble_update_adv_data(uint16_t batt_millivolts,
                               uint16_t temp_millicelcius, uint16_t humidity,
-                              uint16_t soil_moisture, uint16_t lux,
+                              uint16_t soil_moisture, uint16_t brightness,
                               uint8_t run_counter) {
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
@@ -154,8 +154,8 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[8] = soil_moisture >> 8;
   service_data[9] = soil_moisture & 0xff;
 
-  service_data[16] = lux >> 8;
-  service_data[17] = lux & 0xff;
+  service_data[16] = brightness >> 8;
+  service_data[17] = brightness & 0xff;
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(

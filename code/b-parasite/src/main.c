@@ -69,7 +69,7 @@ static void rtc_callback() {
 
   prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
                            temp_humi.humidity, soil_read.relative,
-                           photo_read.lux, run_counter);
+                           photo_read.brightness, run_counter);
   prst_adv_start();
   nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();
