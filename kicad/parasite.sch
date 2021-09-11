@@ -889,8 +889,8 @@ P 9550 4750
 F 0 "R9" V 9750 4700 50  0000 L CNN
 F 1 "R_PHOTO" V 9650 4600 50  0000 L CNN
 F 2 "OptoDevice:R_LDR_4.9x4.2mm_P2.54mm_Vertical" V 9600 4500 50  0001 L CNN
-F 3 "~" H 9550 4700 50  0001 C CNN
-F 4 "C125626" V 9550 4750 50  0001 C CNN "LCSC"
+F 3 "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf" H 9550 4700 50  0001 C CNN
+F 4 "C125627" V 9550 4750 50  0001 C CNN "LCSC"
 	1    9550 4750
 	0    1    1    0   
 $EndComp
