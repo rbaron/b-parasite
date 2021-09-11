@@ -7,7 +7,7 @@
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Photo Sensor
-#define PRST_PHOTO_V NRF_GPIO_PIN_MAP(1, 11)
+#define PRST_PHOTO_V NRF_GPIO_PIN_MAP(0, 29)
 #define PRST_PHOTO_OUT NRF_GPIO_PIN_MAP(0, 2)
 
 // Deep sleep.
