@@ -800,7 +800,6 @@ Wire Wire Line
 Wire Wire Line
 	1900 1400 2025 1400
 NoConn ~ 2025 1600
-NoConn ~ 2025 1800
 NoConn ~ 2025 1900
 NoConn ~ 2025 2000
 NoConn ~ 2025 2700
@@ -879,9 +878,7 @@ Wire Notes Line
 	8700 4025 8700 5775
 Wire Notes Line
 	8700 5775 11050 5775
-Wire Wire Line
-	2025 1100 1900 1100
-Text Label 1900 1100 2    50   ~ 0
+Text Label 1875 1800 2    50   ~ 0
 PHOTO_V
 Text Label 9300 4750 2    50   ~ 0
 PHOTO_V
@@ -906,4 +903,7 @@ Wire Wire Line
 Connection ~ 9950 4750
 Wire Wire Line
 	9300 4750 9400 4750
+Wire Wire Line
+	1875 1800 2025 1800
+NoConn ~ 2025 1100
 $EndSCHEMATC
