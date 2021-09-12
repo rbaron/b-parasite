@@ -1,4 +1,5 @@
 Comment,Designator,Footprint,LCSC
+"Battery_Cell","BT1","kicad:BatteryHolder_Keystone_3002_1x2032",""
 "1n","C1","Capacitor_SMD:C_0402_1005Metric","C1523"
 "100n","C2","Capacitor_SMD:C_0402_1005Metric","C1525"
 "12p","C3,C4","Capacitor_SMD:C_0402_1005Metric","C1547"
@@ -13,6 +14,12 @@ Comment,Designator,Footprint,LCSC
 "220","R10","Resistor_SMD:R_0402_1005Metric","C25744"
 "1k","R2,R3,R5","Resistor_SMD:R_0402_1005Metric","C11702"
 "1M","R6","Resistor_SMD:R_0402_1005Metric","C26083"
+"IO","TP1","TestPoint:TestPoint_Pad_D1.0mm",""
+"CLK","TP2","TestPoint:TestPoint_Pad_D1.0mm",""
+"Vsen_out","TP4","TestPoint:TestPoint_Pad_D1.0mm",""
+"RST","TP5","TestPoint:TestPoint_Pad_D1.0mm",""
+"GND","TP6","TestPoint:TestPoint_Pad_D1.0mm",""
+"VCC","TP7","TestPoint:TestPoint_Pad_D1.0mm",""
 "E73-2G4M08S1C-52840","U1","nrfmicro:E73-2G4M08S1C-52840","C356849"
 "SHTC3","U2","kicad:Sensirion_DFN-4-1EP_2x2mm_P1mm_EP0.7x1.6mm","C194656"
 "32.768kHz","Y1","Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm","C32346"
