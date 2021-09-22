@@ -30,16 +30,16 @@ Sensor data is encoded in the BLE advertisement packet as Service Data for the [
 Sensor data is encoded in unsigned 16 bits (2 bytes), and whenever multiple
  bytes are used to represent a single value, the encoding is big-endian.
 
-| Byte index |                          Description                            |
-|------------|-----------------------------------------------------------------|
-| 0          | Protocol version (4 bits) + reserved (3 bits) + has_lux* (1 bit)|
-| 1          | Reserved (4 bits) + increasing, wrap-around counter (4 bits)     |
-| 2-3        | Battery voltage in millivolts                                   |
-| 4-5        | Temperature in millidegrees Celcius                             |
-| 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)      |
-| 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)         |
-| 10-15      | b-parasite's own MAC address                                    |
-| 16-17*     | Ambient light in lux                                            |
+| Byte index |                          Description                              |
+|------------|-------------------------------------------------------------------|
+| 0          | Protocol version (4 bits) + reserved (3 bits) + `has_lux`* (1 bit)|
+| 1          | Reserved (4 bits) + increasing, wrap-around counter (4 bits)      |
+| 2-3        | Battery voltage in millivolts                                     |
+| 4-5        | Temperature in millidegrees Celcius                               |
+| 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)        |
+| 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)           |
+| 10-15      | b-parasite's own MAC address                                      |
+| 16-17*     | Ambient light in lux                                              |
 
 \* If the `has_lux` bit is set, bytes 16-17 shall contain the ambient light in lux.
 If the `has_lux` bit is not set, bytes 16-17 may not exist or may contain

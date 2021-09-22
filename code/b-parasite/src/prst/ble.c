@@ -171,7 +171,7 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[8] = soil_moisture >> 8;
   service_data[9] = soil_moisture & 0xff;
 
-#ifdef PRST_HAS_LDR
+#if PRST_HAS_LDR
   service_data[16] = brightness >> 8;
   service_data[17] = brightness & 0xff;
 #endif
