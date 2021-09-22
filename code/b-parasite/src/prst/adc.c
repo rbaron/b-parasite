@@ -1,6 +1,7 @@
 #include "prst/adc.h"
 
 #include <app_error.h>
+#include <math.h>
 #include <nrf_drv_saadc.h>
 #include <nrf_log.h>
 #include <nrf_saadc.h>
@@ -136,31 +137,28 @@ prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   prst_adc_photo_sensor_t ret;
   ret.raw = raw_photo_output;
   ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
-  // This value needs to be calibrated.
+
   // The photo resistor forms a voltage divider with a 10 kOhm resistor.
   // The voltage here is measured in the middle of the voltage divider.
   // Vcc ---- (R_photo) ---|--- (10k) ---- GND
   //                      Vout
   // So we can estimate R_photo = R * (Vcc - Vout) / Vout
-  const double photo_resistance =
-      1e4 * (battery_voltage - ret.voltage) / ret.voltage;
+  const float photo_resistance =
+      1e4f * (battery_voltage - ret.voltage) / ret.voltage;
 
-  // TODO: Now that we have the resistor value of the photo resistor, we need to
-  // estimate the brightness level. This needs to be calibrated with a real
-  // board in complete dark and in a super bright environment. This current
-  // value is just a placeholder.
-  // Dark resistance: 1 MOhm.
-  const double kDarkResistance = 1e6;
-  // Light resistance: 10 kOhm.
-  const double kLightResistance = 1e4;
-  // A value in 0x0 (dark) - 0xffff (light).
-  // A little better, but still not great.
-  ret.brightness = (uint16_t)UINT16_MAX * (kDarkResistance - photo_resistance) /
-                   (kDarkResistance - kLightResistance);
+  // The relationship between the LDR resistance and the lux level is
+  // logarithmic. We need to solve a logarithmic equation to find the lux
+  // level, given the LDR resistance we just measured.
+  // These values work for the GL5528 LDR and were borrowed from
+  // https://github.com/QuentinCG/Arduino-Light-Dependent-Resistor-Library.
+  const float mult_value = 32017200.0f;
+  const float pow_value = 1.5832f;
+  ret.brightness =
+      MAX(0, MIN(mult_value / powf(photo_resistance, pow_value), UINT16_MAX));
 
 #if PRST_ADC_PHOTO_DEBUG
-  NRF_LOG_INFO("[adc] Read brightness level: %d (raw); %d (brightness)",
-               ret.raw, ret.brightness);
+  NRF_LOG_INFO("[adc] Read brightness level: %d (raw); %d (lux)", ret.raw,
+               ret.brightness);
 #endif
   return ret;
 }
