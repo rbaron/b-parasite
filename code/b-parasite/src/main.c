@@ -26,7 +26,9 @@ static void log_init(void) {
 static void gpio_init(void) {
   nrf_gpio_cfg_output(PRST_LED_PIN);
   nrf_gpio_cfg_output(PRST_FAST_DISCH_PIN);
-  nrf_gpio_cfg_output(PRST_PHOTO_V);
+#ifdef PRST_HAS_LDR
+  nrf_gpio_cfg_output(PRST_PHOTO_V_PIN);
+#endif
   NRF_LOG_INFO("GPIO pins inited.");
 }
 
@@ -64,13 +66,17 @@ static void rtc_callback() {
   prst_pwm_stop();
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
 
-  nrf_gpio_pin_set(PRST_PHOTO_V);
+  uint16_t lux = 0;
+#ifdef PRST_HAS_LDR
+  nrf_gpio_pin_set(PRST_PHOTO_V_PIN);
   prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
-  nrf_gpio_pin_clear(PRST_PHOTO_V);
+  nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
+  lux = photo_read.brightness;
+#endif
 
   prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
-                           temp_humi.humidity, soil_read.relative,
-                           photo_read.brightness, run_counter);
+                           temp_humi.humidity, soil_read.relative, lux,
+                           run_counter);
   prst_adv_start();
   nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();

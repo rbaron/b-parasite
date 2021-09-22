@@ -24,17 +24,28 @@
 // Sensor data is encoded in unsigned 16 bits (2 bytes), and whenever multiple
 // bytes are used to represent a single value, the encoding is big-endian:
 /*
-| Byte index |                          Description                           |
-|------------|----------------------------------------------------------------|
-| 0          | 4 bits for protocol version + 4 reserved bits                  |
-| 1          | 4 reserved bits + 4 bits wrap-around counter for deduplication |
-| 2-3        | Battery voltage in millivolts                                  |
-| 4-5        | Temperature in millidegrees Celcius                            |
-| 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)     |
-| 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)        |
-| 10-15      | b-parasite's own MAC address                                   |
-| 16-17      | Ambient brightness level from 0 (dark) to 0xffff (bright)      |
+| Byte index |                          Description                            |
+|------------|-----------------------------------------------------------------|
+| 0          | Protocol version (4 bits) + reserved (3 bits) + has_lux* (1 bit)|
+| 1          | Reserved (4 bits) + increasing, wrap-around counter (4 bits)    |
+| 2-3        | Battery voltage in millivolts                                   |
+| 4-5        | Temperature in millidegrees Celcius                             |
+| 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)      |
+| 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)         |
+| 10-15      | b-parasite's own MAC address                                    |
+| 16-17*     | Ambient light in lux                                            |
+
+* If the has_lux bit is set, bytes 16-17 shall contain the ambient light in lux.
+If the has_lux bit is not set, bytes 16-17 may not exist or may contain
+meaningless data. The reasons for this behavior are:
+1. b-parasite version 1.0.0 has no light sensor and its advertisement data may
+have only 16 bytes if its using an older firmware. In this case, has_lux shall
+never be set;
+2. b-parasite version 1.1.0 has space for an optional LDR. Users can configure
+whether or not they have added the LDR by setting the PRST_HAS_LDR to 1 in
+prst_config.h.
 */
+
 #define SERVICE_DATA_LEN 18
 static uint8_t service_data[SERVICE_DATA_LEN];
 
@@ -99,7 +110,13 @@ static void init_advertisement_data() {
   APP_ERROR_CHECK(err_code);
 
   // Four bits for the protocol version.
-  service_data[0] = (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
+  service_data[0] |= (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
+
+  // Bit 0 of byte 0 specifies whether or not ambient light data exists in the
+  // payload.
+#if PRST_HAS_LDR
+  service_data[0] |= 1;
+#endif
 
   // Parses configured MAC address from PRST_BLE_MAC_ADDR.
   int mac_bytes[6];
@@ -154,8 +171,10 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[8] = soil_moisture >> 8;
   service_data[9] = soil_moisture & 0xff;
 
+#ifdef PRST_HAS_LDR
   service_data[16] = brightness >> 8;
   service_data[17] = brightness & 0xff;
+#endif
 
   // Encodes adv_data_ into .gap_adv_data_.
   uint32_t err_code = ble_advdata_encode(
