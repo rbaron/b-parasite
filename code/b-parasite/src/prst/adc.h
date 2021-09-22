@@ -18,9 +18,8 @@ typedef struct prst_adc_soil_moisture {
 
 typedef struct prst_adc_photo_sensor {
   int16_t raw;
-  // A value from 0x0000 (no light) 0xffff (direct sun).
-  // Might need calibration.
   double voltage;
+  // Value in lux.
   uint16_t brightness;
 } prst_adc_photo_sensor_t;
 

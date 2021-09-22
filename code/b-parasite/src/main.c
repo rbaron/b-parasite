@@ -26,7 +26,7 @@ static void log_init(void) {
 static void gpio_init(void) {
   nrf_gpio_cfg_output(PRST_LED_PIN);
   nrf_gpio_cfg_output(PRST_FAST_DISCH_PIN);
-#ifdef PRST_HAS_LDR
+#if PRST_HAS_LDR
   nrf_gpio_cfg_output(PRST_PHOTO_V_PIN);
 #endif
   NRF_LOG_INFO("GPIO pins inited.");
@@ -67,7 +67,7 @@ static void rtc_callback() {
   nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
 
   uint16_t lux = 0;
-#ifdef PRST_HAS_LDR
+#if PRST_HAS_LDR
   nrf_gpio_pin_set(PRST_PHOTO_V_PIN);
   prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
   nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
