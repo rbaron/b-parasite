@@ -3,6 +3,12 @@
 
 #include "nrf_gpio.h"
 
+// Some configurations are version-specific. Uncomment the line corresponding
+// the the version you're programming. The version can be found on the
+// b-parasite board.
+// #define PRST_VERSION_1_0_X
+#define PRST_VERSION_1_1_X
+
 // Built-in LED.
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
@@ -23,7 +29,7 @@
 // 1. Two most significant bits are set to 1;
 // 2. The remaining bits should not _all_ be set to 0;
 // 2. The remaining bits should not _all_ be set to 1;
-#define PRST_BLE_MAC_ADDR "f0:ca:f0:ca:00:01"
+#define PRST_BLE_MAC_ADDR "f0:ca:f0:ca:01:01"
 #define PRST_BLE_ADV_NAME "prst"
 // Total time spend advertising.
 #define PRST_BLE_ADV_TIME_IN_MS 1000
@@ -44,5 +50,21 @@
 
 // SHT3C temp/humidity sensor.
 #define PRST_SHT3C_DEBUG 0
+
+// Version-specific configuration.
+#if defined(PRST_VERSION_1_1_X)
+// The photoresistor (LDR) is optional in this revision. If set to 1, the LDR's
+// ADC channel will be sampled and its data will be encoded in the BLE
+// advertisement packet.
+#define PRST_HAS_LDR 1
+
+// Light sensor pins.
+#define PRST_PHOTO_V_PIN NRF_GPIO_PIN_MAP(0, 29)
+#define PRST_PHOTO_OUT_PIN NRF_GPIO_PIN_MAP(0, 2)
+
+// Whether to produce debug messages for the LDR
+#define PRST_ADC_PHOTO_DEBUG 0
+
+#endif  // End of version-specific configuration.
 
 #endif  // _PRST_CONFIG_H_

@@ -1,6 +1,7 @@
 #include "prst/adc.h"
 
 #include <app_error.h>
+#include <math.h>
 #include <nrf_drv_saadc.h>
 #include <nrf_log.h>
 #include <nrf_saadc.h>
@@ -16,6 +17,9 @@
 
 #define PRST_ADC_SOIL_INPUT NRF_SAADC_INPUT_AIN1
 #define PRST_ADC_SOIL_CHANNEL 1
+
+#define PRST_ADC_PHOTO_INPUT NRF_SAADC_INPUT_AIN0
+#define PRST_ADC_PHOTO_CHANNEL 2
 
 static nrf_saadc_value_t sample_adc_channel(uint8_t channel) {
   nrf_saadc_value_t result;
@@ -64,6 +68,12 @@ void prst_adc_init() {
 
   APP_ERROR_CHECK(
       nrf_drv_saadc_channel_init(PRST_ADC_SOIL_CHANNEL, &soil_channel_config));
+
+  nrf_saadc_channel_config_t photo_channel_config =
+      NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(PRST_ADC_PHOTO_INPUT);
+
+  APP_ERROR_CHECK(nrf_drv_saadc_channel_init(PRST_ADC_PHOTO_CHANNEL,
+                                             &photo_channel_config));
 }
 
 prst_adc_batt_read_t prst_adc_batt_read() {
@@ -117,6 +127,38 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
   NRF_LOG_INFO("[adc] Read soil moisture: %d (raw); " NRF_LOG_FLOAT_MARKER
                " %% (percentage); %u (relative)",
                ret.raw, NRF_LOG_FLOAT(percentage * 100), ret.relative);
+#endif
+  return ret;
+}
+
+prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
+  nrf_saadc_value_t raw_photo_output =
+      sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
+  prst_adc_photo_sensor_t ret;
+  ret.raw = raw_photo_output;
+  ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
+
+  // The photo resistor forms a voltage divider with a 10 kOhm resistor.
+  // The voltage here is measured in the middle of the voltage divider.
+  // Vcc ---- (R_photo) ---|--- (10k) ---- GND
+  //                      Vout
+  // So we can estimate R_photo = R * (Vcc - Vout) / Vout
+  const float photo_resistance =
+      1e4f * (battery_voltage - ret.voltage) / ret.voltage;
+
+  // The relationship between the LDR resistance and the lux level is
+  // logarithmic. We need to solve a logarithmic equation to find the lux
+  // level, given the LDR resistance we just measured.
+  // These values work for the GL5528 LDR and were borrowed from
+  // https://github.com/QuentinCG/Arduino-Light-Dependent-Resistor-Library.
+  const float mult_value = 32017200.0f;
+  const float pow_value = 1.5832f;
+  ret.brightness =
+      MAX(0, MIN(mult_value / powf(photo_resistance, pow_value), UINT16_MAX));
+
+#if PRST_ADC_PHOTO_DEBUG
+  NRF_LOG_INFO("[adc] Read brightness level: %d (raw); %d (lux)", ret.raw,
+               ret.brightness);
 #endif
   return ret;
 }

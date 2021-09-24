@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "b-parasite"
-Date "2021-03-12"
-Rev "1.0.0"
+Date "2021-09-02"
+Rev "1.1.0"
 Comp ""
 Comment1 "rbaron.net"
 Comment2 ""
@@ -525,8 +525,6 @@ Text Label 3525 2200 0    50   ~ 0
 SCL
 Text Label 6850 5150 2    50   ~ 0
 SCL
-Wire Notes Line
-	8625 4025 6150 4025
 Text Notes 6200 4150 0    50   ~ 0
 Temperature and humidity sensor
 $Comp
@@ -596,8 +594,6 @@ F 3 "" H 6700 4425 50  0001 C CNN
 	1    6700 4425
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6950 4625 6950 4650
 Wire Wire Line
 	6775 4825 6775 4725
 Wire Wire Line
@@ -771,19 +767,6 @@ Wire Wire Line
 Connection ~ 3625 3200
 Wire Wire Line
 	3625 3200 3850 3200
-$Comp
-L power:GND #PWR0115
-U 1 1 6051D8FF
-P 1675 1500
-F 0 "#PWR0115" H 1675 1250 50  0001 C CNN
-F 1 "GND" H 1680 1327 50  0000 C CNN
-F 2 "" H 1675 1500 50  0001 C CNN
-F 3 "" H 1675 1500 50  0001 C CNN
-	1    1675 1500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2025 1500 1675 1500
 NoConn ~ 3375 2400
 NoConn ~ 3375 2600
 NoConn ~ 3375 2800
@@ -817,8 +800,6 @@ Wire Wire Line
 Wire Wire Line
 	1900 1400 2025 1400
 NoConn ~ 2025 1600
-NoConn ~ 2025 1700
-NoConn ~ 2025 1800
 NoConn ~ 2025 1900
 NoConn ~ 2025 2000
 NoConn ~ 2025 2700
@@ -839,5 +820,90 @@ F 4 "C194656" H 7475 4925 50  0001 C CNN "LCSC"
 $EndComp
 Wire Wire Line
 	1400 4550 2050 4550
+$Comp
+L Device:R_Small_US R10
+U 1 1 60AEBA02
+P 10300 4750
+F 0 "R10" V 10505 4750 50  0000 C CNN
+F 1 "10k" V 10414 4750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 10230 4750 50  0001 C CNN
+F 3 "~" H 10300 4750 50  0001 C CNN
+F 4 "C25744" V 10300 4750 50  0001 C CNN "LCSC"
+	1    10300 4750
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR0119
+U 1 1 60AF79A1
+P 10550 4850
+F 0 "#PWR0119" H 10550 4600 50  0001 C CNN
+F 1 "GND" H 10555 4677 50  0000 C CNN
+F 2 "" H 10550 4850 50  0001 C CNN
+F 3 "" H 10550 4850 50  0001 C CNN
+	1    10550 4850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10550 4850 10550 4750
+Wire Wire Line
+	9950 4750 9950 5150
+Wire Wire Line
+	9950 4750 10200 4750
+$Comp
+L power:GND #PWR0115
+U 1 1 6051D8FF
+P 1275 1500
+F 0 "#PWR0115" H 1275 1250 50  0001 C CNN
+F 1 "GND" H 1280 1327 50  0000 C CNN
+F 2 "" H 1275 1500 50  0001 C CNN
+F 3 "" H 1275 1500 50  0001 C CNN
+	1    1275 1500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2025 1700 1900 1700
+Wire Wire Line
+	1275 1500 2025 1500
+Text Label 1900 1700 2    50   ~ 0
+PHOTO_OUT
+Text Notes 8725 4150 0    50   ~ 0
+Light sensor
+Wire Notes Line
+	11050 4025 11050 5775
+Wire Notes Line
+	8625 4025 6150 4025
+Wire Notes Line
+	11050 4025 8700 4025
+Wire Notes Line
+	8700 4025 8700 5775
+Wire Notes Line
+	8700 5775 11050 5775
+Text Label 1875 1800 2    50   ~ 0
+PHOTO_V
+Text Label 9300 4750 2    50   ~ 0
+PHOTO_V
+$Comp
+L Device:R_PHOTO R9
+U 1 1 60AD36D1
+P 9550 4750
+F 0 "R9" V 9750 4700 50  0000 L CNN
+F 1 "R_PHOTO" V 9650 4600 50  0000 L CNN
+F 2 "OptoDevice:R_LDR_4.9x4.2mm_P2.54mm_Vertical" V 9600 4500 50  0001 L CNN
+F 3 "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf" H 9550 4700 50  0001 C CNN
+F 4 "C125627" V 9550 4750 50  0001 C CNN "LCSC"
+	1    9550 4750
+	0    1    1    0   
+$EndComp
+Text Label 9950 5150 0    50   ~ 0
+PHOTO_OUT
+Wire Wire Line
+	10400 4750 10550 4750
+Wire Wire Line
+	9700 4750 9950 4750
+Connection ~ 9950 4750
+Wire Wire Line
+	9300 4750 9400 4750
+Wire Wire Line
+	1875 1800 2025 1800
 NoConn ~ 2025 1100
 $EndSCHEMATC
