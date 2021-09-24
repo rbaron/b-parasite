@@ -13,7 +13,7 @@
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Deep sleep.
-#define PRST_DEEP_SLEEP_IN_SECONDS 2
+#define PRST_DEEP_SLEEP_IN_SECONDS 300
 
 // Analog to digital converter (ADC).
 // Prints out ADC debug info, such as the values read for battery and soil
@@ -63,7 +63,7 @@
 #define PRST_PHOTO_OUT_PIN NRF_GPIO_PIN_MAP(0, 2)
 
 // Whether to produce debug messages for the LDR
-#define PRST_ADC_PHOTO_DEBUG 1
+#define PRST_ADC_PHOTO_DEBUG 0
 
 #endif  // End of version-specific configuration.
 
