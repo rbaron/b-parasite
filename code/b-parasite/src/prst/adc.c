@@ -134,6 +134,11 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
 prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   nrf_saadc_value_t raw_photo_output =
       sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
+
+  if (raw_photo_output < 0) {
+    raw_photo_output = 0;
+  }
+
   prst_adc_photo_sensor_t ret;
   ret.raw = raw_photo_output;
   ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
