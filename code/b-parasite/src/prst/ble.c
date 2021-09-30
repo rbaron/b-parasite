@@ -114,7 +114,7 @@ static void init_advertisement_data() {
 
   // Bit 0 of byte 0 specifies whether or not ambient light data exists in the
   // payload.
-#if PRST_HAS_LDR
+#if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
   service_data[0] |= 1;
 #endif
 
@@ -171,7 +171,7 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[8] = soil_moisture >> 8;
   service_data[9] = soil_moisture & 0xff;
 
-#if PRST_HAS_LDR
+#if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
   service_data[16] = brightness >> 8;
   service_data[17] = brightness & 0xff;
 #endif

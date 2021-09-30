@@ -7,13 +7,15 @@
 // the the version you're programming. The version can be found on the
 // b-parasite board.
 // #define PRST_VERSION_1_0_X
-#define PRST_VERSION_1_1_X
+// #define PRST_VERSION_1_1_X
+#define PRST_VERSION_1_2_X
 
 // Built-in LED.
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Deep sleep.
-#define PRST_DEEP_SLEEP_IN_SECONDS 300
+// #define PRST_DEEP_SLEEP_IN_SECONDS 2
+#define PRST_DEEP_SLEEP_IN_SECONDS 2 * 3600
 
 // Analog to digital converter (ADC).
 // Prints out ADC debug info, such as the values read for battery and soil
@@ -29,7 +31,7 @@
 // 1. Two most significant bits are set to 1;
 // 2. The remaining bits should not _all_ be set to 0;
 // 2. The remaining bits should not _all_ be set to 1;
-#define PRST_BLE_MAC_ADDR "f0:ca:f0:ca:01:01"
+#define PRST_BLE_MAC_ADDR "f0:ca:f0:ca:00:10"
 #define PRST_BLE_ADV_NAME "prst"
 // Total time spend advertising.
 #define PRST_BLE_ADV_TIME_IN_MS 1000
@@ -64,6 +66,16 @@
 
 // Whether to produce debug messages for the LDR
 #define PRST_ADC_PHOTO_DEBUG 0
+
+// #endif  // End of version-specific configuration.
+#elif defined(PRST_VERSION_1_2_X)
+
+#define PRST_HAS_PHOTOTRANSISTOR 1
+
+#define PRST_PHOTO_V_PIN NRF_GPIO_PIN_MAP(0, 29)
+#define PRST_PHOTO_OUT_PIN NRF_GPIO_PIN_MAP(0, 2)
+
+#define PRST_ADC_PHOTO_DEBUG 1
 
 #endif  // End of version-specific configuration.
 

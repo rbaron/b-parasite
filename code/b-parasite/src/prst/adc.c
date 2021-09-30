@@ -8,9 +8,16 @@
 #include <stdint.h>
 
 #include "prst_config.h"
+#include "sdk_config.h"
 
 // 10 bits resoltuion.
+#if NRFX_SAADC_CONFIG_RESOLUTION == 1
 #define PRST_ADC_RESOLUTION 10
+#elif NRFX_SAADC_CONFIG_RESOLUTION == 2
+#define PRST_ADC_RESOLUTION 12
+#else
+#error "NRFX_SAADC_CONFIG_RESOLUTION does not have a valid value"
+#endif  // NRFX_SAADC_CONFIG_RESOLUTION
 
 #define PRST_ADC_BATT_INPUT NRF_SAADC_INPUT_VDD
 #define PRST_ADC_BATT_CHANNEL 0
@@ -71,6 +78,7 @@ void prst_adc_init() {
 
   nrf_saadc_channel_config_t photo_channel_config =
       NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(PRST_ADC_PHOTO_INPUT);
+  // photo_channel_config.gain = NRF_SAADC_GAIN1_4;
 
   APP_ERROR_CHECK(nrf_drv_saadc_channel_init(PRST_ADC_PHOTO_CHANNEL,
                                              &photo_channel_config));
@@ -142,7 +150,9 @@ prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   prst_adc_photo_sensor_t ret;
   ret.raw = raw_photo_output;
   ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
+  // ret.voltage = (2.4 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
 
+#if PRST_HAS_LDR
   // The photo resistor forms a voltage divider with a 10 kOhm resistor.
   // The voltage here is measured in the middle of the voltage divider.
   // Vcc ---- (R_photo) ---|--- (10k) ---- GND
@@ -161,9 +171,55 @@ prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   ret.brightness =
       MAX(0, MIN(mult_value / powf(photo_resistance, pow_value), UINT16_MAX));
 
+#elif PRST_HAS_PHOTOTRANSISTOR
+  // The ALS-PT19 phototransistor is a device in which the current flow between
+  // its two terminals is controlled by how much light there is in the ambient.
+  // We measure that current by calculating the voltage across a resistor that
+  // is connected in series with the phototransistor.
+  // Some infor:
+  // - Not all lights are the same. The ALS-PT19 has different current
+  // responses for incandescent and fluorescent lights and it shows no values
+  // for sunlight. We have to make some compromises here, aiming for a
+  // "reasonable" middle ground through calibration.
+  // - ALS-PT19' minimum voltage is 2.5 V. Our CR2032 battery has a theoretical
+  // range of 2.0 V to 3.0 V, but in our usage pattern it seems to spend most of
+  // its life around 2.6 V (https://github.com/rbaron/b-parasite/issues/1). In
+  // my manual tests it seems we can usually go lower than that. So while we're
+  // pushing it a bit, we should be okay most of the time.
+  //
+  // In order to design the value of the series resistor, we assume Vcc = 2.5V,
+  // and we want the upper limit of light intensity to correspond to a value of
+  // Vout < 2.5 V - 0.4 V (saturation) = 2.1 V. Let's call this the "direct
+  // sunlight" voltage across our resistor. This direct sunlight voltage will
+  // appear when the phototransistor outputs the direct sunlight current.
+  //
+  // In short, what we want:
+  // A value of R_L such that Vout is < 2.1 V (but close) when the sensor is in
+  // direct sunlight. While Vcc is 2.5 V, R_L = 470 Ohm outputs Vout ~ 1.7V, so
+  // there's still some wiggle room for even more sunnier days.
+  //
+  // Another caveat: the datasheet shows that the current in the transistor is
+  // relatively constant when we vary Vcc (Fig.4). This seems to be true for low
+  // currents (the datsheet uses 100 lx in Fig.4), but not for larger currents.
+  const float phototransistor_resistor = 470.0f;
+  const float current_sun = 3.59e-3f;
+  // Assuming 10000 lux for the saturation test. Calibration with a proper light
+  // meter would be better.
+  const float lux_sun = 10000.0f;
+
+  const float current = ret.voltage / phototransistor_resistor;
+  ret.brightness = MAX(0, MIN(lux_sun * current / current_sun, UINT16_MAX));
+
 #if PRST_ADC_PHOTO_DEBUG
-  NRF_LOG_INFO("[adc] Read brightness level: %d (raw); %d (lux)", ret.raw,
-               ret.brightness);
+  NRF_LOG_INFO("[adc] Phototransistor current: " NRF_LOG_FLOAT_MARKER " uA",
+               NRF_LOG_FLOAT(1000000 * current));
+#endif  // PRST_ADC_PHOTO_DEBUG
+#endif  // PRST_HAS_PHOTOTRANSISTOR
+
+#if PRST_ADC_PHOTO_DEBUG
+  NRF_LOG_INFO("[adc] Read brightness level: " NRF_LOG_FLOAT_MARKER
+               " mV %d (raw); %d (lux)",
+               NRF_LOG_FLOAT(1000 * ret.voltage), ret.raw, ret.brightness);
 #endif
   return ret;
 }
