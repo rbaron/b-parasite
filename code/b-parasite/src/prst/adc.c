@@ -8,7 +8,8 @@
 #include <stdint.h>
 
 #include "prst_config.h"
-#include "sdk_config.h"
+
+#define PRST_ADC_RESOLUTION 10
 
 #define PRST_ADC_BATT_INPUT NRF_SAADC_INPUT_VDD
 #define PRST_ADC_BATT_CHANNEL 0
