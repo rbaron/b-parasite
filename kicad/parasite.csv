@@ -11,7 +11,7 @@ Comment,Designator,Footprint,LCSC
 "AO3407","Q3","Package_TO_SOT_SMD:SOT-23","C181093"
 "Q_Photo_NPN","Q4","snapeda:TR8","C146233"
 "10k","R1,R4,R7,R8","Resistor_SMD:R_0402_1005Metric","C25744"
-"220","R10","Resistor_SMD:R_0402_1005Metric","C25744"
+"470","R10","Resistor_SMD:R_0402_1005Metric","C25744"
 "1k","R2,R3,R5","Resistor_SMD:R_0402_1005Metric","C11702"
 "1M","R6","Resistor_SMD:R_0402_1005Metric","C26083"
 "IO","TP1","TestPoint:TestPoint_Pad_D1.0mm",""

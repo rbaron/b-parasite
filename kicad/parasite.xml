@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.sch</source>
-    <date>2021 September 12, Sunday 15:52:38</date>
+    <date>2021 September 30, Thursday 18:40:07</date>
     <tool>Eeschema (5.1.2-1)-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -313,7 +313,7 @@
       <tstamp>6052CFBE</tstamp>
     </comp>
     <comp ref="R10">
-      <value>220</value>
+      <value>470</value>
       <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
       <datasheet>~</datasheet>
       <fields>
