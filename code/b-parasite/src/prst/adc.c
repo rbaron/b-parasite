@@ -10,15 +10,6 @@
 #include "prst_config.h"
 #include "sdk_config.h"
 
-// 10 bits resoltuion.
-#if NRFX_SAADC_CONFIG_RESOLUTION == 1
-#define PRST_ADC_RESOLUTION 10
-#elif NRFX_SAADC_CONFIG_RESOLUTION == 2
-#define PRST_ADC_RESOLUTION 12
-#else
-#error "NRFX_SAADC_CONFIG_RESOLUTION does not have a valid value"
-#endif  // NRFX_SAADC_CONFIG_RESOLUTION
-
 #define PRST_ADC_BATT_INPUT NRF_SAADC_INPUT_VDD
 #define PRST_ADC_BATT_CHANNEL 0
 
@@ -72,14 +63,11 @@ void prst_adc_init() {
   nrf_saadc_channel_config_t soil_channel_config =
       NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(PRST_ADC_SOIL_INPUT);
   soil_channel_config.reference = NRF_SAADC_REFERENCE_VDD4;
-
   APP_ERROR_CHECK(
       nrf_drv_saadc_channel_init(PRST_ADC_SOIL_CHANNEL, &soil_channel_config));
 
   nrf_saadc_channel_config_t photo_channel_config =
       NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(PRST_ADC_PHOTO_INPUT);
-  // photo_channel_config.gain = NRF_SAADC_GAIN1_4;
-
   APP_ERROR_CHECK(nrf_drv_saadc_channel_init(PRST_ADC_PHOTO_CHANNEL,
                                              &photo_channel_config));
 }
