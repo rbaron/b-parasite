@@ -904,6 +904,24 @@ Wire Wire Line
 Wire Wire Line
 	9775 5000 9600 5000
 Connection ~ 9600 5000
+$Comp
+L Connector:TestPoint TP3
+U 1 1 61614EDB
+P 8975 5000
+F 0 "TP3" H 9033 5118 50  0000 L CNN
+F 1 "PHOTO_OUT" H 9033 5027 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9175 5000 50  0001 C CNN
+F 3 "~" H 9175 5000 50  0001 C CNN
+	1    8975 5000
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	9600 5000 9600 5175
+	9600 5000 9600 5100
+Connection ~ 9600 5100
+Wire Wire Line
+	9600 5100 9600 5175
+Wire Wire Line
+	8975 5100 8975 5000
+Wire Wire Line
+	8975 5100 9600 5100
 $EndSCHEMATC

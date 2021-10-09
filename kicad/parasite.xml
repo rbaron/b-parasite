@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.sch</source>
-    <date>2021 September 30, Thursday 18:40:07</date>
+    <date>2021 October 09, Saturday 10:11:05</date>
     <tool>Eeschema (5.1.2-1)-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -334,6 +334,14 @@
       <sheetpath names="/" tstamps="/"/>
       <tstamp>613F6CE6</tstamp>
     </comp>
+    <comp ref="TP3">
+      <value>PHOTO_OUT</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61614EDB</tstamp>
+    </comp>
   </components>
   <libparts>
     <libpart lib="AO3407A" part="AO3407A">
@@ -592,38 +600,38 @@
     </net>
     <net code="2" name="GND">
       <node ref="R6" pin="2"/>
-      <node ref="C4" pin="1"/>
-      <node ref="Q3" pin="1"/>
-      <node ref="C1" pin="2"/>
-      <node ref="U1" pin="5"/>
-      <node ref="U1" pin="21"/>
-      <node ref="U2" pin="4"/>
-      <node ref="C2" pin="2"/>
-      <node ref="R10" pin="1"/>
-      <node ref="Cpara1" pin="1"/>
-      <node ref="Q1" pin="2"/>
-      <node ref="Q2" pin="2"/>
-      <node ref="C3" pin="2"/>
       <node ref="BT1" pin="2"/>
       <node ref="D2" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="C4" pin="1"/>
+      <node ref="C3" pin="2"/>
+      <node ref="Q3" pin="1"/>
+      <node ref="U1" pin="5"/>
+      <node ref="Cpara1" pin="1"/>
       <node ref="TP6" pin="1"/>
+      <node ref="U1" pin="21"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="U2" pin="4"/>
+      <node ref="Q2" pin="2"/>
+      <node ref="R10" pin="1"/>
+      <node ref="C2" pin="2"/>
     </net>
     <net code="3" name="/SENS_OUT">
       <node ref="U1" pin="3"/>
+      <node ref="TP4" pin="1"/>
+      <node ref="D1" pin="1"/>
       <node ref="C1" pin="1"/>
       <node ref="R6" pin="1"/>
-      <node ref="D1" pin="1"/>
-      <node ref="TP4" pin="1"/>
     </net>
     <net code="4" name="/Csen+">
-      <node ref="R5" pin="1"/>
-      <node ref="R1" pin="2"/>
-      <node ref="Cpara1" pin="2"/>
       <node ref="D1" pin="2"/>
+      <node ref="R5" pin="1"/>
+      <node ref="Cpara1" pin="2"/>
+      <node ref="R1" pin="2"/>
     </net>
     <net code="5" name="/FAST_DISCH_EN">
-      <node ref="U1" pin="2"/>
       <node ref="R3" pin="1"/>
+      <node ref="U1" pin="2"/>
     </net>
     <net code="6" name="Net-(Q1-Pad3)">
       <node ref="Q2" pin="1"/>
@@ -635,17 +643,17 @@
       <node ref="R5" pin="2"/>
     </net>
     <net code="8" name="Net-(C6-Pad1)">
-      <node ref="R4" pin="1"/>
-      <node ref="C6" pin="1"/>
       <node ref="Q1" pin="1"/>
+      <node ref="C6" pin="1"/>
+      <node ref="R4" pin="1"/>
     </net>
     <net code="9" name="Net-(D2-Pad2)">
-      <node ref="D2" pin="2"/>
       <node ref="R2" pin="2"/>
+      <node ref="D2" pin="2"/>
     </net>
     <net code="10" name="Net-(BT1-Pad1)">
-      <node ref="Q3" pin="3"/>
       <node ref="BT1" pin="1"/>
+      <node ref="Q3" pin="3"/>
     </net>
     <net code="11" name="Net-(U1-Pad1)">
       <node ref="U1" pin="1"/>
@@ -658,13 +666,13 @@
     </net>
     <net code="14" name="+3V0">
       <node ref="U1" pin="19"/>
+      <node ref="C2" pin="1"/>
+      <node ref="TP7" pin="1"/>
       <node ref="U1" pin="23"/>
       <node ref="Q3" pin="2"/>
-      <node ref="TP7" pin="1"/>
       <node ref="U2" pin="1"/>
       <node ref="R7" pin="2"/>
       <node ref="R8" pin="1"/>
-      <node ref="C2" pin="1"/>
     </net>
     <net code="15" name="Net-(U1-Pad25)">
       <node ref="U1" pin="25"/>
@@ -684,21 +692,21 @@
     </net>
     <net code="20" name="/SCL">
       <node ref="R8" pin="2"/>
-      <node ref="U2" pin="2"/>
       <node ref="U1" pin="33"/>
+      <node ref="U2" pin="2"/>
     </net>
     <net code="21" name="/SDA">
+      <node ref="U1" pin="35"/>
       <node ref="R7" pin="1"/>
       <node ref="U2" pin="3"/>
-      <node ref="U1" pin="35"/>
     </net>
     <net code="22" name="Net-(TP1-Pad1)">
       <node ref="TP1" pin="1"/>
       <node ref="U1" pin="37"/>
     </net>
     <net code="23" name="Net-(TP2-Pad1)">
-      <node ref="U1" pin="39"/>
       <node ref="TP2" pin="1"/>
+      <node ref="U1" pin="39"/>
     </net>
     <net code="24" name="/LED">
       <node ref="U1" pin="4"/>
@@ -715,6 +723,7 @@
     </net>
     <net code="28" name="/PHOTO_OUT">
       <node ref="U1" pin="7"/>
+      <node ref="TP3" pin="1"/>
       <node ref="Q4" pin="2"/>
       <node ref="R10" pin="2"/>
     </net>
@@ -722,9 +731,9 @@
       <node ref="U1" pin="9"/>
     </net>
     <net code="30" name="Net-(C3-Pad1)">
-      <node ref="U1" pin="11"/>
-      <node ref="Y1" pin="1"/>
       <node ref="C3" pin="1"/>
+      <node ref="Y1" pin="1"/>
+      <node ref="U1" pin="11"/>
     </net>
     <net code="31" name="Net-(C4-Pad2)">
       <node ref="C4" pin="2"/>
