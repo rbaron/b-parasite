@@ -69,13 +69,9 @@ static void rtc_callback() {
   uint16_t lux = 0;
 #if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
   nrf_gpio_pin_set(PRST_PHOTO_V_PIN);
-
-  // Just while debugging.
-  while (1) {
-    nrf_delay_ms(1000);
-    prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
-    lux = photo_read.brightness;
-  }
+  nrf_delay_ms(50);
+  prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
+  lux = photo_read.brightness;
   nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
 #endif
 

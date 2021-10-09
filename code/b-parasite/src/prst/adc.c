@@ -130,16 +130,10 @@ prst_adc_soil_moisture_t prst_adc_soil_read(double battery_voltage) {
 
 prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   nrf_saadc_value_t raw_photo_output =
-      sample_adc_channel(PRST_ADC_PHOTO_CHANNEL);
-
-  if (raw_photo_output < 0) {
-    raw_photo_output = 0;
-  }
-
+      MAX(0, sample_adc_channel(PRST_ADC_PHOTO_CHANNEL));
   prst_adc_photo_sensor_t ret;
   ret.raw = raw_photo_output;
   ret.voltage = (3.6 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
-  // ret.voltage = (2.4 * raw_photo_output) / (1 << PRST_ADC_RESOLUTION);
 
 #if PRST_HAS_LDR
   // The photo resistor forms a voltage divider with a 10 kOhm resistor.
@@ -165,37 +159,11 @@ prst_adc_photo_sensor_t prst_adc_photo_read(double battery_voltage) {
   // its two terminals is controlled by how much light there is in the ambient.
   // We measure that current by calculating the voltage across a resistor that
   // is connected in series with the phototransistor.
-  // Some infor:
-  // - Not all lights are the same. The ALS-PT19 has different current
-  // responses for incandescent and fluorescent lights and it shows no values
-  // for sunlight. We have to make some compromises here, aiming for a
-  // "reasonable" middle ground through calibration.
-  // - ALS-PT19' minimum voltage is 2.5 V. Our CR2032 battery has a theoretical
-  // range of 2.0 V to 3.0 V, but in our usage pattern it seems to spend most of
-  // its life around 2.6 V (https://github.com/rbaron/b-parasite/issues/1). In
-  // my manual tests it seems we can usually go lower than that. So while we're
-  // pushing it a bit, we should be okay most of the time.
-  //
-  // In order to design the value of the series resistor, we assume Vcc = 2.5V,
-  // and we want the upper limit of light intensity to correspond to a value of
-  // Vout < 2.5 V - 0.4 V (saturation) = 2.1 V. Let's call this the "direct
-  // sunlight" voltage across our resistor. This direct sunlight voltage will
-  // appear when the phototransistor outputs the direct sunlight current.
-  //
-  // In short, what we want:
-  // A value of R_L such that Vout is < 2.1 V (but close) when the sensor is in
-  // direct sunlight. While Vcc is 2.5 V, R_L = 470 Ohm outputs Vout ~ 1.7V, so
-  // there's still some wiggle room for even more sunnier days.
-  //
-  // Another caveat: the datasheet shows that the current in the transistor is
-  // relatively constant when we vary Vcc (Fig.4). This seems to be true for low
-  // currents (the datsheet uses 100 lx in Fig.4), but not for larger currents.
   const float phototransistor_resistor = 470.0f;
   const float current_sun = 3.59e-3f;
   // Assuming 10000 lux for the saturation test. Calibration with a proper light
   // meter would be better.
   const float lux_sun = 10000.0f;
-
   const float current = ret.voltage / phototransistor_resistor;
   ret.brightness = MAX(0, MIN(lux_sun * current / current_sun, UINT16_MAX));
 
