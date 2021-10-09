@@ -5,11 +5,12 @@
   <img src="img/resized/img1.jpg" width="512px" border="0" alt="PCB front and back photo" />
 </p>
 
-b-parasite is an open source Bluetooth Low Energy (BLE) soil moisture and ambient temperature/humidity sensor.
+b-parasite is an open source Bluetooth Low Energy (BLE) soil moisture and ambient temperature/humidity/light sensor.
 
 # Features
 * Soil moisture sensor. I wrote about how capacitive soil moisture sensors works on [this Twitter thread](https://twitter.com/rbaron_/status/1367182806368071685), based on [this great post](https://wemakethings.net/2012/09/26/capacitance_measurement/) on wemakethings.net
 * Air temperature and humity sensor using a [Sensirion's SHTC3](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensor-shtc3-our-new-standard-for-consumer-electronics/)
+* Light sensor using an [ALS-PT19](https://everlighteurope.com/ambient-light-sensors/7/ALSPT19315CL177TR8.html) phototransistor
 * Powered by a common CR2032 coin cell, with a battery life of possibly over a year - see "Battery Life" below
 * Open hardware and open source design
 
