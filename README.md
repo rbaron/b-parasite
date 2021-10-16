@@ -14,6 +14,11 @@ b-parasite is an open source Bluetooth Low Energy (BLE) soil moisture and ambien
 * Powered by a common CR2032 coin cell, with a battery life of possibly over a year - see "Battery Life" below
 * Open hardware and open source design
 
+# Wiki Pages
+* [Hardware Versions](https://github.com/rbaron/b-parasite/wiki/Hardware-Versions)
+* [How to order: PCB fabrication and SMT assembly](https://github.com/rbaron/b-parasite/wiki/How-to-order:-PCB-fabrication-and-SMT-assembly)
+* [How to Program](https://github.com/rbaron/b-parasite/wiki/How-to-Program)
+
 # Repository Organization
 * [code/b-parasite/](./code/b-parasite/) - firmware code based on the [nRF5 SDK](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_sdk%2Fstruct%2Fsdk_nrf5_latest.html&cp=7_1)
 * [kicad/](./kicad/) - KiCad schematic, layout and fabrication files for the printed circuit board (PCB)
