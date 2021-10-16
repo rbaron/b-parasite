@@ -7,7 +7,8 @@
 // the the version you're programming. The version can be found on the
 // b-parasite board.
 // #define PRST_VERSION_1_0_X
-#define PRST_VERSION_1_1_X
+// #define PRST_VERSION_1_1_X
+#define PRST_VERSION_1_2_X
 
 // Built-in LED.
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
@@ -63,6 +64,15 @@
 #define PRST_PHOTO_OUT_PIN NRF_GPIO_PIN_MAP(0, 2)
 
 // Whether to produce debug messages for the LDR
+#define PRST_ADC_PHOTO_DEBUG 0
+
+#elif defined(PRST_VERSION_1_2_X)
+
+#define PRST_HAS_PHOTOTRANSISTOR 1
+
+#define PRST_PHOTO_V_PIN NRF_GPIO_PIN_MAP(0, 29)
+#define PRST_PHOTO_OUT_PIN NRF_GPIO_PIN_MAP(0, 2)
+
 #define PRST_ADC_PHOTO_DEBUG 0
 
 #endif  // End of version-specific configuration.

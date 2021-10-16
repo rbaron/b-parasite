@@ -2,14 +2,14 @@
 <export version="D">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.sch</source>
-    <date>2021 September 11, Saturday 11:24:30</date>
+    <date>2021 October 09, Saturday 10:11:05</date>
     <tool>Eeschema (5.1.2-1)-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>b-parasite</title>
         <company/>
-        <rev>1.1.0</rev>
-        <date>2021-09-02</date>
+        <rev>1.2.0</rev>
+        <date>2021-09-12</date>
         <source>parasite.sch</source>
         <comment number="1" value="rbaron.net"/>
         <comment number="2" value=""/>
@@ -313,7 +313,7 @@
       <tstamp>6052CFBE</tstamp>
     </comp>
     <comp ref="R10">
-      <value>10k</value>
+      <value>470</value>
       <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
       <datasheet>~</datasheet>
       <fields>
@@ -323,16 +323,24 @@
       <sheetpath names="/" tstamps="/"/>
       <tstamp>60AEBA02</tstamp>
     </comp>
-    <comp ref="R9">
-      <value>R_PHOTO</value>
-      <footprint>OptoDevice:R_LDR_4.9x4.2mm_P2.54mm_Vertical</footprint>
-      <datasheet>~</datasheet>
+    <comp ref="Q4">
+      <value>Q_Photo_NPN</value>
+      <footprint>snapeda:TR8</footprint>
+      <datasheet>https://datasheet.lcsc.com/lcsc/1806131537_Everlight-Elec-ALS-PT19-315C-L177-TR8_C146233.pdf</datasheet>
       <fields>
-        <field name="LCSC">C125626</field>
+        <field name="LCSC">C146233</field>
       </fields>
-      <libsource lib="Device" part="R_PHOTO" description="Photoresistor"/>
+      <libsource lib="Device" part="Q_Photo_NPN" description="NPN phototransistor, collector/emitter"/>
       <sheetpath names="/" tstamps="/"/>
-      <tstamp>60AD36D1</tstamp>
+      <tstamp>613F6CE6</tstamp>
+    </comp>
+    <comp ref="TP3">
+      <value>PHOTO_OUT</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <datasheet>~</datasheet>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>61614EDB</tstamp>
     </comp>
   </components>
   <libparts>
@@ -425,20 +433,19 @@
         <pin num="2" name="A" type="passive"/>
       </pins>
     </libpart>
-    <libpart lib="Device" part="R_PHOTO">
-      <description>Photoresistor</description>
+    <libpart lib="Device" part="Q_Photo_NPN">
+      <aliases>
+        <alias>Q_Photo_NPN_CE</alias>
+      </aliases>
+      <description>NPN phototransistor, collector/emitter</description>
       <docs>~</docs>
-      <footprints>
-        <fp>*LDR*</fp>
-        <fp>R?LDR*</fp>
-      </footprints>
       <fields>
-        <field name="Reference">R</field>
-        <field name="Value">R_PHOTO</field>
+        <field name="Reference">Q</field>
+        <field name="Value">Q_Photo_NPN</field>
       </fields>
       <pins>
-        <pin num="1" name="~" type="passive"/>
-        <pin num="2" name="~" type="passive"/>
+        <pin num="1" name="C" type="passive"/>
+        <pin num="2" name="E" type="passive"/>
       </pins>
     </libpart>
     <libpart lib="Device" part="R_Small_US">
@@ -593,33 +600,33 @@
     </net>
     <net code="2" name="GND">
       <node ref="R6" pin="2"/>
-      <node ref="U1" pin="21"/>
-      <node ref="U1" pin="5"/>
-      <node ref="Q3" pin="1"/>
-      <node ref="C3" pin="2"/>
-      <node ref="C4" pin="1"/>
-      <node ref="C1" pin="2"/>
-      <node ref="C2" pin="2"/>
-      <node ref="U2" pin="4"/>
-      <node ref="Cpara1" pin="1"/>
-      <node ref="Q1" pin="2"/>
       <node ref="BT1" pin="2"/>
-      <node ref="Q2" pin="2"/>
       <node ref="D2" pin="1"/>
-      <node ref="R10" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="C4" pin="1"/>
+      <node ref="C3" pin="2"/>
+      <node ref="Q3" pin="1"/>
+      <node ref="U1" pin="5"/>
+      <node ref="Cpara1" pin="1"/>
       <node ref="TP6" pin="1"/>
+      <node ref="U1" pin="21"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="U2" pin="4"/>
+      <node ref="Q2" pin="2"/>
+      <node ref="R10" pin="1"/>
+      <node ref="C2" pin="2"/>
     </net>
     <net code="3" name="/SENS_OUT">
       <node ref="U1" pin="3"/>
-      <node ref="R6" pin="1"/>
-      <node ref="C1" pin="1"/>
       <node ref="TP4" pin="1"/>
       <node ref="D1" pin="1"/>
+      <node ref="C1" pin="1"/>
+      <node ref="R6" pin="1"/>
     </net>
     <net code="4" name="/Csen+">
       <node ref="D1" pin="2"/>
-      <node ref="Cpara1" pin="2"/>
       <node ref="R5" pin="1"/>
+      <node ref="Cpara1" pin="2"/>
       <node ref="R1" pin="2"/>
     </net>
     <net code="5" name="/FAST_DISCH_EN">
@@ -627,22 +634,22 @@
       <node ref="U1" pin="2"/>
     </net>
     <net code="6" name="Net-(Q1-Pad3)">
-      <node ref="R3" pin="2"/>
-      <node ref="Q1" pin="3"/>
       <node ref="Q2" pin="1"/>
+      <node ref="Q1" pin="3"/>
+      <node ref="R3" pin="2"/>
     </net>
     <net code="7" name="Net-(Q2-Pad3)">
-      <node ref="R5" pin="2"/>
       <node ref="Q2" pin="3"/>
+      <node ref="R5" pin="2"/>
     </net>
     <net code="8" name="Net-(C6-Pad1)">
-      <node ref="C6" pin="1"/>
       <node ref="Q1" pin="1"/>
+      <node ref="C6" pin="1"/>
       <node ref="R4" pin="1"/>
     </net>
     <net code="9" name="Net-(D2-Pad2)">
-      <node ref="D2" pin="2"/>
       <node ref="R2" pin="2"/>
+      <node ref="D2" pin="2"/>
     </net>
     <net code="10" name="Net-(BT1-Pad1)">
       <node ref="BT1" pin="1"/>
@@ -658,14 +665,14 @@
       <node ref="U1" pin="17"/>
     </net>
     <net code="14" name="+3V0">
-      <node ref="TP7" pin="1"/>
-      <node ref="U2" pin="1"/>
       <node ref="U1" pin="19"/>
+      <node ref="C2" pin="1"/>
+      <node ref="TP7" pin="1"/>
       <node ref="U1" pin="23"/>
+      <node ref="Q3" pin="2"/>
+      <node ref="U2" pin="1"/>
       <node ref="R7" pin="2"/>
       <node ref="R8" pin="1"/>
-      <node ref="C2" pin="1"/>
-      <node ref="Q3" pin="2"/>
     </net>
     <net code="15" name="Net-(U1-Pad25)">
       <node ref="U1" pin="25"/>
@@ -684,22 +691,22 @@
       <node ref="U1" pin="31"/>
     </net>
     <net code="20" name="/SCL">
-      <node ref="U2" pin="2"/>
-      <node ref="U1" pin="33"/>
       <node ref="R8" pin="2"/>
+      <node ref="U1" pin="33"/>
+      <node ref="U2" pin="2"/>
     </net>
     <net code="21" name="/SDA">
-      <node ref="U2" pin="3"/>
       <node ref="U1" pin="35"/>
       <node ref="R7" pin="1"/>
+      <node ref="U2" pin="3"/>
     </net>
     <net code="22" name="Net-(TP1-Pad1)">
-      <node ref="U1" pin="37"/>
       <node ref="TP1" pin="1"/>
+      <node ref="U1" pin="37"/>
     </net>
     <net code="23" name="Net-(TP2-Pad1)">
-      <node ref="U1" pin="39"/>
       <node ref="TP2" pin="1"/>
+      <node ref="U1" pin="39"/>
     </net>
     <net code="24" name="/LED">
       <node ref="U1" pin="4"/>
@@ -716,27 +723,28 @@
     </net>
     <net code="28" name="/PHOTO_OUT">
       <node ref="U1" pin="7"/>
-      <node ref="R9" pin="1"/>
+      <node ref="TP3" pin="1"/>
+      <node ref="Q4" pin="2"/>
       <node ref="R10" pin="2"/>
     </net>
     <net code="29" name="Net-(U1-Pad9)">
       <node ref="U1" pin="9"/>
     </net>
     <net code="30" name="Net-(C3-Pad1)">
-      <node ref="U1" pin="11"/>
       <node ref="C3" pin="1"/>
       <node ref="Y1" pin="1"/>
+      <node ref="U1" pin="11"/>
     </net>
     <net code="31" name="Net-(C4-Pad2)">
-      <node ref="U1" pin="13"/>
       <node ref="C4" pin="2"/>
       <node ref="Y1" pin="2"/>
+      <node ref="U1" pin="13"/>
     </net>
     <net code="32" name="Net-(U2-Pad5)">
       <node ref="U2" pin="5"/>
     </net>
     <net code="33" name="/PHOTO_V">
-      <node ref="R9" pin="2"/>
+      <node ref="Q4" pin="1"/>
       <node ref="U1" pin="8"/>
     </net>
   </nets>

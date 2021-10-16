@@ -6,8 +6,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "b-parasite"
-Date "2021-09-02"
-Rev "1.1.0"
+Date "2021-09-12"
+Rev "1.2.0"
 Comp ""
 Comment1 "rbaron.net"
 Comment2 ""
@@ -823,32 +823,28 @@ Wire Wire Line
 $Comp
 L Device:R_Small_US R10
 U 1 1 60AEBA02
-P 10300 4750
-F 0 "R10" V 10505 4750 50  0000 C CNN
-F 1 "10k" V 10414 4750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 10230 4750 50  0001 C CNN
-F 3 "~" H 10300 4750 50  0001 C CNN
-F 4 "C25744" V 10300 4750 50  0001 C CNN "LCSC"
-	1    10300 4750
-	0    1    1    0   
+P 9600 5275
+F 0 "R10" V 9805 5275 50  0000 C CNN
+F 1 "470" V 9714 5275 50  0000 C CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 9530 5275 50  0001 C CNN
+F 3 "~" H 9600 5275 50  0001 C CNN
+F 4 "C25744" V 9600 5275 50  0001 C CNN "LCSC"
+	1    9600 5275
+	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR0119
 U 1 1 60AF79A1
-P 10550 4850
-F 0 "#PWR0119" H 10550 4600 50  0001 C CNN
-F 1 "GND" H 10555 4677 50  0000 C CNN
-F 2 "" H 10550 4850 50  0001 C CNN
-F 3 "" H 10550 4850 50  0001 C CNN
-	1    10550 4850
-	1    0    0    -1  
+P 9500 5525
+F 0 "#PWR0119" H 9500 5275 50  0001 C CNN
+F 1 "GND" H 9505 5352 50  0000 C CNN
+F 2 "" H 9500 5525 50  0001 C CNN
+F 3 "" H 9500 5525 50  0001 C CNN
+	1    9500 5525
+	0    1    1    0   
 $EndComp
 Wire Wire Line
-	10550 4850 10550 4750
-Wire Wire Line
-	9950 4750 9950 5150
-Wire Wire Line
-	9950 4750 10200 4750
+	9500 5525 9600 5525
 $Comp
 L power:GND #PWR0115
 U 1 1 6051D8FF
@@ -880,30 +876,52 @@ Wire Notes Line
 	8700 5775 11050 5775
 Text Label 1875 1800 2    50   ~ 0
 PHOTO_V
-Text Label 9300 4750 2    50   ~ 0
+Text Label 9600 4300 2    50   ~ 0
 PHOTO_V
-$Comp
-L Device:R_PHOTO R9
-U 1 1 60AD36D1
-P 9550 4750
-F 0 "R9" V 9750 4700 50  0000 L CNN
-F 1 "R_PHOTO" V 9650 4600 50  0000 L CNN
-F 2 "OptoDevice:R_LDR_4.9x4.2mm_P2.54mm_Vertical" V 9600 4500 50  0001 L CNN
-F 3 "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf" H 9550 4700 50  0001 C CNN
-F 4 "C125627" V 9550 4750 50  0001 C CNN "LCSC"
-	1    9550 4750
-	0    1    1    0   
-$EndComp
-Text Label 9950 5150 0    50   ~ 0
+Text Label 9775 5000 0    50   ~ 0
 PHOTO_OUT
 Wire Wire Line
-	10400 4750 10550 4750
-Wire Wire Line
-	9700 4750 9950 4750
-Connection ~ 9950 4750
-Wire Wire Line
-	9300 4750 9400 4750
+	9600 5375 9600 5525
 Wire Wire Line
 	1875 1800 2025 1800
 NoConn ~ 2025 1100
+$Comp
+L Device:Q_Photo_NPN Q4
+U 1 1 613F6CE6
+P 9500 4675
+F 0 "Q4" H 9690 4721 50  0000 L CNN
+F 1 "Q_Photo_NPN" H 9690 4630 50  0000 L CNN
+F 2 "snapeda:TR8" H 9700 4775 50  0001 C CNN
+F 3 "https://datasheet.lcsc.com/lcsc/1806131537_Everlight-Elec-ALS-PT19-315C-L177-TR8_C146233.pdf" H 9500 4675 50  0001 C CNN
+F 4 "C146233" H 9500 4675 50  0001 C CNN "LCSC"
+	1    9500 4675
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9600 4300 9600 4475
+Wire Wire Line
+	9600 4875 9600 5000
+Wire Wire Line
+	9775 5000 9600 5000
+Connection ~ 9600 5000
+$Comp
+L Connector:TestPoint TP3
+U 1 1 61614EDB
+P 8975 5000
+F 0 "TP3" H 9033 5118 50  0000 L CNN
+F 1 "PHOTO_OUT" H 9033 5027 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9175 5000 50  0001 C CNN
+F 3 "~" H 9175 5000 50  0001 C CNN
+	1    8975 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9600 5000 9600 5100
+Connection ~ 9600 5100
+Wire Wire Line
+	9600 5100 9600 5175
+Wire Wire Line
+	8975 5100 8975 5000
+Wire Wire Line
+	8975 5100 9600 5100
 $EndSCHEMATC
