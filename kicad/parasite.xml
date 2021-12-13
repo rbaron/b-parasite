@@ -2,7 +2,7 @@
 <export version="D">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.sch</source>
-    <date>2021 October 09, Saturday 10:11:05</date>
+    <date>2021 December 13, Monday 18:41:33</date>
     <tool>Eeschema (5.1.2-1)-1</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
@@ -317,7 +317,7 @@
       <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
       <datasheet>~</datasheet>
       <fields>
-        <field name="LCSC">C25744</field>
+        <field name="LCSC">C227095</field>
       </fields>
       <libsource lib="Device" part="R_Small_US" description="Resistor, small US symbol"/>
       <sheetpath names="/" tstamps="/"/>
