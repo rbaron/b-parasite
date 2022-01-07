@@ -118,16 +118,8 @@ static void init_advertisement_data() {
   service_data[0] |= 1;
 #endif
 
-  // Parses configured MAC address from PRST_BLE_MAC_ADDR.
-  int mac_bytes[6];
-  sscanf(PRST_BLE_MAC_ADDR, "%x:%x:%x:%x:%x:%x", &mac_bytes[0], &mac_bytes[1],
-         &mac_bytes[2], &mac_bytes[3], &mac_bytes[4], &mac_bytes[5]);
-
   // Bytes 10-15 (inclusive) contain the whole MAC address.
-  for (int i = 0; i < 6; i++) {
-    gap_addr_.addr[5 - i] = (uint8_t)mac_bytes[i];
-    service_data[10 + i] = (uint8_t)mac_bytes[i];
-  }
+  memcpy(service_data + 10, gap_addr_.addr, 6);
 }
 
 void prst_ble_init() {
@@ -146,9 +138,23 @@ void prst_ble_init() {
   err_code = nrf_sdh_ble_enable(&ram_start);
   APP_ERROR_CHECK(err_code);
 
-  init_advertisement_data();
-
+#ifdef PRST_BLE_MAC_ADDR
+  // Parses configured MAC address from PRST_BLE_MAC_ADDR.
+  int mac_bytes[6];
+  sscanf(PRST_BLE_MAC_ADDR, "%x:%x:%x:%x:%x:%x", &mac_bytes[0], &mac_bytes[1],
+         &mac_bytes[2], &mac_bytes[3], &mac_bytes[4], &mac_bytes[5]);
+  for (int i = 0; i < 6; i++) {
+    gap_addr_.addr[5 - i] = (uint8_t)mac_bytes[i];
+  }
   APP_ERROR_CHECK(sd_ble_gap_addr_set(&gap_addr_));
+#endif
+
+  APP_ERROR_CHECK(sd_ble_gap_addr_get(&gap_addr_));
+  NRF_LOG_INFO("[ble] MAC address: %02x:%02x:%02x:%02x:%02x:%02x\n",
+               gap_addr_.addr[5], gap_addr_.addr[4], gap_addr_.addr[3],
+               gap_addr_.addr[2], gap_addr_.addr[1], gap_addr_.addr[0]);
+
+  init_advertisement_data();
 }
 
 void prst_ble_update_adv_data(uint16_t batt_millivolts,
