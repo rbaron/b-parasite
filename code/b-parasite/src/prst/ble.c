@@ -118,8 +118,10 @@ static void init_advertisement_data() {
   service_data[0] |= 1;
 #endif
 
-  // Bytes 10-15 (inclusive) contain the whole MAC address.
-  memcpy(service_data + 10, gap_addr_.addr, 6);
+  // Bytes 10-15 (inclusive) contain the whole MAC address in big-endian.
+  for (int i = 0; i < 6; i++) {
+    service_data[10 + i] = gap_addr_.addr[5 - i];
+  }
 }
 
 void prst_ble_init() {
