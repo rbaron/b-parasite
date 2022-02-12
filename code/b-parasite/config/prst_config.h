@@ -11,6 +11,9 @@
 #define PRST_VERSION_1_2_X
 
 // Built-in LED.
+// Wether or not to turn the LED on/off during the wake-up cycle. Impacts
+// battery life.
+#define PRST_BLINK_LED 0
 #define PRST_LED_PIN NRF_GPIO_PIN_MAP(0, 28)
 
 // Deep sleep.

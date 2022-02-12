@@ -56,7 +56,9 @@ static void power_manage(void) {
 // - Turn on BLE advertising for a while;
 // - Turn everything off and return back to sleep.
 static void rtc_callback() {
+#if PRST_BLINK_LED
   nrf_gpio_pin_set(PRST_LED_PIN);
+#endif
   prst_shtc3_read_t temp_humi = prst_shtc3_read();
   nrf_gpio_pin_set(PRST_FAST_DISCH_PIN);
   prst_pwm_init();
@@ -81,7 +83,9 @@ static void rtc_callback() {
   prst_adv_start();
   nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
   prst_adv_stop();
+#if PRST_BLINK_LED
   nrf_gpio_pin_clear(PRST_LED_PIN);
+#endif
   NRF_LOG_FLUSH();
   run_counter++;
 }
@@ -93,6 +97,11 @@ int main(void) {
   prst_ble_init();
   prst_adc_init();
   prst_shtc3_init();
+
+  // Quick LED flash.
+  nrf_gpio_pin_set(PRST_LED_PIN);
+  nrf_delay_ms(200);
+  nrf_gpio_pin_clear(PRST_LED_PIN);
 
   // Set up RTC. It will call our custom callback at a regular interval, defined
   // by PRST_DEEP_SLEEP_IN_SECONDS.
