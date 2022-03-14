@@ -77,7 +77,7 @@ static void rtc_callback() {
   nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
 #endif
 
-  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_millicelcius,
+  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_celsius,
                            temp_humi.humidity, soil_read.relative, lux,
                            run_counter);
   prst_adv_start();

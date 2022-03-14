@@ -29,7 +29,7 @@
 | 0          | Protocol version (4 bits) + reserved (3 bits) + has_lux* (1 bit)|
 | 1          | Reserved (4 bits) + increasing, wrap-around counter (4 bits)    |
 | 2-3        | Battery voltage in millivolts                                   |
-| 4-5        | Temperature in millidegrees Celcius                             |
+| 4-5        | Temp in 1000  * Celsius  (protocol v1) or 100 * Celsius (v2)    |
 | 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)      |
 | 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)         |
 | 10-15      | b-parasite's own MAC address                                    |
@@ -159,10 +159,9 @@ void prst_ble_init() {
   init_advertisement_data();
 }
 
-void prst_ble_update_adv_data(uint16_t batt_millivolts,
-                              uint16_t temp_millicelcius, uint16_t humidity,
-                              uint16_t soil_moisture, uint16_t brightness,
-                              uint8_t run_counter) {
+void prst_ble_update_adv_data(uint16_t batt_millivolts, float temp_celsius,
+                              uint16_t humidity, uint16_t soil_moisture,
+                              uint16_t brightness, uint8_t run_counter) {
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
   service_data[1] = run_counter & 0x0f;
@@ -170,8 +169,17 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts,
   service_data[2] = batt_millivolts >> 8;
   service_data[3] = batt_millivolts & 0xff;
 
-  service_data[4] = temp_millicelcius >> 8;
-  service_data[5] = temp_millicelcius & 0xff;
+#if PRST_BLE_PROTOCOL_VERSION == 1
+  uint16_t temp_millicelsius = temp_celsius * 1000;
+  service_data[4] = temp_millicelsius >> 8;
+  service_data[5] = temp_millicelsius & 0xff;
+#elif PRST_BLE_PROTOCOL_VERSION == 2
+  int16_t temp_centicelsius = temp_celsius * 100;
+  service_data[4] = temp_centicelsius >> 8;
+  service_data[5] = temp_centicelsius & 0xff;
+#else
+#error "[ble] Unsupported  BLE protocol version"
+#endif  // PRST_BLE_PROTOCOL_VERSION
 
   service_data[6] = humidity >> 8;
   service_data[7] = humidity & 0xff;
