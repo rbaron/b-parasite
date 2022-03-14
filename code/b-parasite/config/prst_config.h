@@ -27,7 +27,7 @@
 
 // BLE.
 // Prints out BLE debug info, such as the final encoded advertisement packet.
-#define PRST_BLE_DEBUG 1
+#define PRST_BLE_DEBUG 0
 #define PRST_BLE_PROTOCOL_VERSION 2
 
 // There are two options for configuring the MAC address of b-parasites:
@@ -60,7 +60,7 @@
 #endif
 
 // SHT3C temp/humidity sensor.
-#define PRST_SHT3C_DEBUG 1
+#define PRST_SHT3C_DEBUG 0
 
 // Version-specific configuration.
 #if defined(PRST_VERSION_1_1_X)
