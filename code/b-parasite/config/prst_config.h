@@ -28,7 +28,9 @@
 // BLE.
 // Prints out BLE debug info, such as the final encoded advertisement packet.
 #define PRST_BLE_DEBUG 0
-#define PRST_BLE_PROTOCOL_VERSION 2
+// The BLE protocol version defines how the sensors' data is encoded inside the
+// BLE advertisement packet.
+#define PRST_BLE_PROTOCOL_VERSION 1
 
 // There are two options for configuring the MAC address of b-parasites:
 // 1. Comment out the PRST_BLE_MAC_ADDR to use a random static MAC address that
