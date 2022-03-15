@@ -178,7 +178,7 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts, float temp_celsius,
   service_data[4] = temp_centicelsius >> 8;
   service_data[5] = temp_centicelsius & 0xff;
 #else
-#error "[ble] Unsupported  BLE protocol version"
+#error "[ble] Unsupported BLE protocol version"
 #endif  // PRST_BLE_PROTOCOL_VERSION
 
   service_data[6] = humidity >> 8;

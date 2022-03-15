@@ -29,7 +29,7 @@
 // Prints out BLE debug info, such as the final encoded advertisement packet.
 #define PRST_BLE_DEBUG 0
 // The BLE protocol version defines how the sensors' data is encoded inside the
-// BLE advertisement packet.
+// BLE advertisement packet. Possible values are 1 and 2.
 #define PRST_BLE_PROTOCOL_VERSION 1
 
 // There are two options for configuring the MAC address of b-parasites:
