@@ -35,7 +35,7 @@ Sensor data is encoded in unsigned 16 bits (2 bytes), and whenever multiple
 | 0          | Protocol version (4 bits) + reserved (3 bits) + `has_lux`* (1 bit)|
 | 1          | Reserved (4 bits) + increasing, wrap-around counter (4 bits)      |
 | 2-3        | Battery voltage in millivolts                                     |
-| 4-5        | Temperature in millidegrees Celcius                               |
+| 4-5        | Temp in 1000  * Celsius  (protocol v1) or 100 * Celsius (v2)      |
 | 6-7        | Relative air humidity, scaled from 0 (0%) to 0xffff (100%)        |
 | 8-9        | Soil moisture, scaled from from 0 (0%) to 0xffff (100%)           |
 | 10-15      | b-parasite's own MAC address                                      |

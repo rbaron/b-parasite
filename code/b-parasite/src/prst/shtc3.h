@@ -14,9 +14,8 @@
 #define PRST_SHTC3_CMD_MEASURE_TFIRST_NORMAL 0x7866
 
 typedef struct prst_shtc3_values {
-  // Temperature in millicelcius. To get the temp in Celcius, divide this by
-  // 1000.0.
-  int16_t temp_millicelcius;
+  // Temperature in degrees Celsius.
+  float temp_celsius;
   // Relative humidity, from 0 to 2^16.
   uint16_t humidity;
 } prst_shtc3_read_t;

@@ -3,21 +3,11 @@ esphome:
   platform: ESP32
   board: lolin32
 
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-  power_save_mode: none
-
-mqtt:
-  broker: !secret mqtt_broker
-  username: !secret mqtt_user
-  password: !secret mqtt_password
-
 esp32_ble_tracker:
 
 sensor:
   - platform: b_parasite
-    mac_address: "f0:ca:f0:ca:00:01"
+    mac_address: "f0:ca:f0:ca:01:01"
     humidity:
       name: "bprst1 humidity"
     temperature:
@@ -28,7 +18,3 @@ sensor:
       name: "bprst1 battery_voltage"
 
 logger:
-  # level: VERY_VERBOSE
-
-ota:
-  password: !secret ota_password

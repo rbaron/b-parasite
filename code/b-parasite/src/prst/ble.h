@@ -11,9 +11,8 @@ void prst_adv_start();
 
 void prst_adv_stop();
 
-void prst_ble_update_adv_data(uint16_t batt_millivolts,
-                              uint16_t temp_millicelcius, uint16_t humidity,
-                              uint16_t soil_moisture, uint16_t brightness,
-                              uint8_t run_counter);
+void prst_ble_update_adv_data(uint16_t batt_millivolts, float temp_celsius,
+                              uint16_t humidity, uint16_t soil_moisture,
+                              uint16_t brightness, uint8_t run_counter);
 
 #endif  // _PRST_BLE_H_
