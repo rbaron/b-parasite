@@ -1,6 +1,6 @@
 # Overview
 
-This is the b-parasite formware based on Nordic's [nRF5 SDK](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_sdk%2Fstruct%2Fsdk_nrf5_latest.html&cp=7_1).
+This is the b-parasite firmware based on Nordic's [nRF5 SDK](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fstruct_sdk%2Fstruct%2Fsdk_nrf5_latest.html&cp=7_1).
 
 It uses Nordic's SoftDevice, which should additionally be flashed to the chip before running our firmware.
 
@@ -13,7 +13,7 @@ The b-parasite specific configuration, such as active/sleep time  and transmitti
 ```bash
 # Flash softdevice
 $ SDK_ROOT=~/dev/nrf52/sdk/nRF5_SDK_17.0.2_d674dde make flash_softdevice
-# Compile annd flash our firmware
+# Compile and flash our firmware
 $ SDK_ROOT=~/dev/nrf52/sdk/nRF5_SDK_17.0.2_d674dde make flash
 ```
 
