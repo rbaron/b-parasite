@@ -72,7 +72,11 @@ static ble_advdata_service_data_t advdata_service_data_ = {
 // Warning: do not update this while advertising.
 static ble_advdata_t adv_data_ = {
     .name_type = BLE_ADVDATA_FULL_NAME,
+#if PRST_BLE_EXPERIMENTAL_LONG_RANGE
+    .flags = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE,
+#else
     .flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED,
+#endif
     .p_service_data_array = &advdata_service_data_,
     .service_data_count = 1,
 };
@@ -91,10 +95,16 @@ static ble_gap_addr_t gap_addr_ = {.addr_type =
 static void init_advertisement_data() {
   // We'll just broadcast our data, so we disallow connections and scan
   // requests.
+#if PRST_BLE_EXPERIMENTAL_LONG_RANGE
+  adv_params_.properties.type =
+      BLE_GAP_ADV_TYPE_EXTENDED_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED;
+  adv_params_.primary_phy = BLE_GAP_PHY_CODED;
+  adv_params_.secondary_phy = BLE_GAP_PHY_CODED;
+#else
   adv_params_.properties.type =
       BLE_GAP_ADV_TYPE_NONCONNECTABLE_NONSCANNABLE_UNDIRECTED;
+#endif
 
-  // No particular peer - undirected advertisement.
   adv_params_.p_peer_addr = NULL;
   adv_params_.filter_policy = BLE_GAP_ADV_FP_ANY;
   adv_params_.interval = NON_CONNECTABLE_ADV_INTERVAL;

@@ -2,7 +2,6 @@
 #define _PRST_CONFIG_H_
 
 #include "nrf_gpio.h"
-
 // Some configurations are version-specific. Uncomment the line corresponding
 // the the version you're programming. The version can be found on the
 // b-parasite board.
@@ -51,6 +50,11 @@
 #define PRST_BLE_ADV_INTERVAL_IN_MS 30
 // Possible values are ..., -8, -4, 0, 4, 8.
 #define PRST_BLE_ADV_TX_POWER 8
+// Experimental support for "long range" BLE, introduced in Bluetooth 5. It uses
+// a different type of physical layer - the Coded PHY. Receivers should also
+// scan using Coded PHY in order to find this device when operating in this
+// mode.
+#define PRST_BLE_EXPERIMENTAL_LONG_RANGE 0
 
 // PWM.
 #define PRST_PWM_PIN NRF_GPIO_PIN_MAP(0, 5)
