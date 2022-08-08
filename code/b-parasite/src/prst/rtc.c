@@ -34,13 +34,14 @@ void prst_rtc_init() {
   // Disable events we're not interested in so they don't trigger interrupts.
   nrf_drv_rtc_tick_disable(&rtc_);
   nrf_drv_rtc_overflow_disable(&rtc_);
+}
 
+void prst_rtc_set_timer(uint16_t seconds) {
   // Make sure we're counting from 0.
   nrf_drv_rtc_counter_clear(&rtc_);
 
   // Set compare channel to trigger interrupt after specified time.
-  err_code = nrf_drv_rtc_cc_set(&rtc_, 2, PRST_DEEP_SLEEP_IN_SECONDS * 8, true);
-  APP_ERROR_CHECK(err_code);
+  APP_ERROR_CHECK(nrf_drv_rtc_cc_set(&rtc_, 2, seconds * 8, true));
 
   // Power on RTC instance.
   nrf_drv_rtc_enable(&rtc_);

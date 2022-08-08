@@ -17,6 +17,13 @@
 // A small wrap-around counter for deduplicating BLE packets on the receiver.
 static uint8_t run_counter = 0;
 
+typedef enum {
+  SLEEPING,
+  ADVERTISING,
+} State;
+
+static State state = SLEEPING;
+
 static void log_init(void) {
   APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
   NRF_LOG_DEFAULT_BACKENDS_INIT();
@@ -59,35 +66,44 @@ static void rtc_callback() {
 #if PRST_BLINK_LED
   nrf_gpio_pin_set(PRST_LED_PIN);
 #endif
-  prst_shtc3_read_t temp_humi = prst_shtc3_read();
-  nrf_gpio_pin_set(PRST_FAST_DISCH_PIN);
-  prst_pwm_init();
-  prst_pwm_start();
-  prst_adc_batt_read_t batt_read = prst_adc_batt_read();
-  prst_adc_soil_moisture_t soil_read = prst_adc_soil_read(batt_read.voltage);
-  prst_pwm_stop();
-  nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
 
-  uint16_t lux = 0;
+  if (state == SLEEPING) {
+    prst_shtc3_read_t temp_humi = prst_shtc3_read();
+    nrf_gpio_pin_set(PRST_FAST_DISCH_PIN);
+    prst_pwm_init();
+    prst_pwm_start();
+    prst_adc_batt_read_t batt_read = prst_adc_batt_read();
+    prst_adc_soil_moisture_t soil_read = prst_adc_soil_read(batt_read.voltage);
+    prst_pwm_stop();
+    nrf_gpio_pin_clear(PRST_FAST_DISCH_PIN);
+
+    uint16_t lux = 0;
 #if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
-  nrf_gpio_pin_set(PRST_PHOTO_V_PIN);
-  nrf_delay_ms(50);
-  prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
-  lux = photo_read.brightness;
-  nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
+    nrf_gpio_pin_set(PRST_PHOTO_V_PIN);
+    nrf_delay_ms(50);
+    prst_adc_photo_sensor_t photo_read = prst_adc_photo_read(batt_read.voltage);
+    lux = photo_read.brightness;
+    nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
 #endif
 
-  prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_celsius,
-                           temp_humi.humidity, soil_read.relative, lux,
-                           run_counter);
-  prst_adv_start();
-  nrf_delay_ms(PRST_BLE_ADV_TIME_IN_MS);
-  prst_adv_stop();
+    prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_celsius,
+                             temp_humi.humidity, soil_read.relative, lux,
+                             run_counter);
+
+    state = ADVERTISING;
+    prst_adv_start();
+    prst_rtc_set_timer(PRST_BLE_ADV_TIME_IN_S);
+    run_counter++;
+  } else if (state == ADVERTISING) {
+    prst_adv_stop();
+    state = SLEEPING;
+    prst_rtc_set_timer(PRST_DEEP_SLEEP_IN_SECONDS);
+  }
 #if PRST_BLINK_LED
   nrf_gpio_pin_clear(PRST_LED_PIN);
 #endif
+
   NRF_LOG_FLUSH();
-  run_counter++;
 }
 
 int main(void) {
