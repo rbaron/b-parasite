@@ -44,7 +44,7 @@
 
 #define PRST_BLE_ADV_NAME "prst"
 // Total time spend advertising.
-#define PRST_BLE_ADV_TIME_IN_MS 1000
+#define PRST_BLE_ADV_TIME_IN_S 1
 // Interval between advertising packets.
 // From the specs, this value has to be greater or equal 20ms.
 #define PRST_BLE_ADV_INTERVAL_IN_MS 30
