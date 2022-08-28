@@ -9,6 +9,7 @@
 #include "nrf_pwr_mgmt.h"
 #include "prst/adc.h"
 #include "prst/ble.h"
+#include "prst/data.h"
 #include "prst/pwm.h"
 #include "prst/rtc.h"
 #include "prst/shtc3.h"
@@ -86,9 +87,16 @@ static void rtc_callback() {
     nrf_gpio_pin_clear(PRST_PHOTO_V_PIN);
 #endif
 
-    prst_ble_update_adv_data(batt_read.millivolts, temp_humi.temp_celsius,
-                             temp_humi.humidity, soil_read.relative, lux,
-                             run_counter);
+    prst_sensor_data_t sensors = {
+        .batt_mv = batt_read.millivolts,
+        .temp_c = temp_humi.temp_celsius,
+        .humi = temp_humi.humidity,
+        .soil_moisture = soil_read.relative,
+        .lux = lux,
+        .run_counter = run_counter,
+    };
+
+    prst_ble_update_adv_data(&sensors);
 
     state = ADVERTISING;
     prst_adv_start();

@@ -3,15 +3,12 @@
 #include <ble_advdata.h>
 #include <ble_gap.h>
 #include <nordic_common.h>
+#include <nrf_delay.h>
 #include <nrf_log.h>
 #include <nrf_sdh.h>
 #include <nrf_sdh_ble.h>
 
 #include "prst_config.h"
-
-// We need to pick a service UUID for broadcasting our sensor data.
-// 0x181a is defined as "environmental sensing", which seems appopriate.
-#define SERVICE_UUID 0x181a
 
 // The connection to configure. We only have the one.
 #define PRST_CONN_CFG_TAG 1
@@ -46,7 +43,16 @@ whether or not they have added the LDR by setting the PRST_HAS_LDR to 1 in
 prst_config.h.
 */
 
+#if PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BPARASITE_V2
+#define SERVICE_UUID 0x181a
 #define SERVICE_DATA_LEN 18
+#elif PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
+#define SERVICE_UUID 0x181c
+#define SERVICE_DATA_LEN 21
+#else
+#error "PRST_BLE_PROTOCOL is not properly configured"
+#endif
+
 static uint8_t service_data[SERVICE_DATA_LEN];
 
 // Stores the encoded advertisement data. As per BLE spec, 31 bytes max.
@@ -112,26 +118,12 @@ static void init_advertisement_data() {
 
   ble_gap_conn_sec_mode_t sec_mode;
   BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-  sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)PRST_BLE_ADV_NAME,
+  sd_ble_gap_device_name_set(&sec_mode, (const uint8_t*)PRST_BLE_ADV_NAME,
                              strlen(PRST_BLE_ADV_NAME));
 
   uint32_t err_code =
       sd_ble_gap_adv_set_configure(&adv_handle_, &gap_adv_data_, &adv_params_);
   APP_ERROR_CHECK(err_code);
-
-  // Four bits for the protocol version.
-  service_data[0] |= (PRST_BLE_PROTOCOL_VERSION << 4) & 0xf0;
-
-  // Bit 0 of byte 0 specifies whether or not ambient light data exists in the
-  // payload.
-#if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
-  service_data[0] |= 1;
-#endif
-
-  // Bytes 10-15 (inclusive) contain the whole MAC address in big-endian.
-  for (int i = 0; i < 6; i++) {
-    service_data[10 + i] = gap_addr_.addr[5 - i];
-  }
 }
 
 void prst_ble_init() {
@@ -169,37 +161,111 @@ void prst_ble_init() {
   init_advertisement_data();
 }
 
-void prst_ble_update_adv_data(uint16_t batt_millivolts, float temp_celsius,
-                              uint16_t humidity, uint16_t soil_moisture,
-                              uint16_t brightness, uint8_t run_counter) {
+#if PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BPARASITE_V2
+static void set_service_data_bparasite_protocol(
+    const prst_sensor_data_t* sensors) {
+  // Four bits for the protocol version.
+  service_data[0] |= (2 << 4) & 0xf0;
+
+  // Bit 0 of byte 0 specifies whether or not ambient light data exists in the
+  // payload.
+#if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
+  service_data[0] |= 1;
+#endif
+
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
-  service_data[1] = run_counter & 0x0f;
+  service_data[1] = sensors->run_counter & 0x0f;
 
-  service_data[2] = batt_millivolts >> 8;
-  service_data[3] = batt_millivolts & 0xff;
+  service_data[2] = sensors->batt_mv >> 8;
+  service_data[3] = sensors->batt_mv & 0xff;
 
-#if PRST_BLE_PROTOCOL_VERSION == 1
-  uint16_t temp_millicelsius = temp_celsius * 1000;
-  service_data[4] = temp_millicelsius >> 8;
-  service_data[5] = temp_millicelsius & 0xff;
-#elif PRST_BLE_PROTOCOL_VERSION == 2
-  int16_t temp_centicelsius = temp_celsius * 100;
+  int16_t temp_centicelsius = 100 * sensors->temp_c;
   service_data[4] = temp_centicelsius >> 8;
   service_data[5] = temp_centicelsius & 0xff;
-#else
-#error "[ble] Unsupported BLE protocol version"
-#endif  // PRST_BLE_PROTOCOL_VERSION
 
-  service_data[6] = humidity >> 8;
-  service_data[7] = humidity & 0xff;
+  service_data[6] = sensors->humi >> 8;
+  service_data[7] = sensors->humi & 0xff;
 
-  service_data[8] = soil_moisture >> 8;
-  service_data[9] = soil_moisture & 0xff;
+  service_data[8] = sensors->soil_moisture >> 8;
+  service_data[9] = sensors->soil_moisture & 0xff;
+
+  // Bytes 10-15 (inclusive) contain the whole MAC address in big-endian.
+  for (int i = 0; i < 6; i++) {
+    service_data[10 + i] = gap_addr_.addr[5 - i];
+  }
 
 #if PRST_HAS_LDR || PRST_HAS_PHOTOTRANSISTOR
-  service_data[16] = brightness >> 8;
-  service_data[17] = brightness & 0xff;
+  service_data[16] = sensors->lux >> 8;
+  service_data[17] = sensors->lux & 0xff;
+#endif
+}
+#endif  // PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BPARASITE_V2
+
+#if PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
+static void set_service_data_bthome_protocol(
+    const prst_sensor_data_t* sensors) {
+  // See values in https://bthome.io/.
+
+  // 1. Soil moisture.
+  // uint16_t.
+  service_data[0] = (0b000 << 5) | 2;
+  // Type of measurement. Temporarily using humidity.
+  service_data[1] = 0x03;
+  // Value. Factor of 0.01, so we need to multiply our the value in 100% by
+  // 1/0.01 = 100.
+  uint16_t soil_val = (10000 * sensors->soil_moisture) / UINT16_MAX;
+  service_data[2] = soil_val & 0xff;
+  service_data[3] = soil_val >> 8;
+
+  // 2. Temp.
+  // int16_t.
+  service_data[4] = (0b001 << 5) | 2;
+  // Type of measurement - temperature.
+  service_data[5] = 0x02;
+  // Value. Factor 0.01.
+  int16_t temp_val = 100 * sensors->temp_c;
+  service_data[6] = temp_val & 0xff;
+  service_data[7] = temp_val >> 8;
+
+  // 3. Humidity
+  // uint16_t.
+  service_data[8] = (0b000 << 5) | 2;
+  // Type - humidity.
+  service_data[9] = 0x03;
+  // Value. Factor 0.01.
+  uint16_t humi_val = (100 * sensors->humi) / UINT16_MAX;
+  service_data[10] = humi_val & 0xff;
+  service_data[11] = humi_val >> 8;
+
+  // 4. Battery voltage.
+  // uint16_t.
+  service_data[12] = (0b000 << 5) | 2;
+  // Type - voltage.
+  service_data[13] = 0x0c;
+  // Value. Factor of 0.001.
+  uint16_t batt_val = sensors->batt_mv;
+  service_data[14] = batt_val & 0xff;
+  service_data[15] = batt_val >> 8;
+
+  // 5. Illuminance
+  // uint24_t.
+  service_data[16] = (0b000 << 5) | 2;
+  // Type - illuminance.
+  service_data[17] = 0x05;
+  // Value. Factor 0.01.
+  uint32_t illu_value = 100 * sensors->lux;
+  service_data[18] = illu_value & 0xff;
+  service_data[19] = (illu_value >> 8) & 0xff;
+  service_data[20] = (illu_value >> 16) & 0xff;
+}
+#endif  // PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
+
+void prst_ble_update_adv_data(const prst_sensor_data_t* sensors) {
+#if PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BPARASITE_V2
+  set_service_data_bparasite_protocol(sensors);
+#elif PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
+  set_service_data_bthome_protocol(sensors);
 #endif
 
   // Encodes adv_data_ into .gap_adv_data_.
@@ -210,7 +276,8 @@ void prst_ble_update_adv_data(uint16_t batt_millivolts, float temp_celsius,
 #if PRST_BLE_DEBUG
   NRF_LOG_INFO("[ble] Encoded BLE adv packet:");
   for (int i = 0; i < sizeof(encoded_adv_data_); i++) {
-    NRF_LOG_INFO("[ble] 0x%02x", encoded_adv_data_[i]);
+    NRF_LOG_INFO("[ble] byte %02d: 0x%02x", i, encoded_adv_data_[i]);
+    nrf_delay_ms(50);
   }
 #endif
 }
