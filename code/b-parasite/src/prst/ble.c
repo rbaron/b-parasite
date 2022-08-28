@@ -210,8 +210,8 @@ static void set_service_data_bthome_protocol(
   // 1. Soil moisture.
   // uint16_t.
   service_data[0] = (0b000 << 5) | 2;
-  // Type of measurement. Temporarily using humidity.
-  service_data[1] = 0x03;
+  // Type of measurement - Moisture.
+  service_data[1] = 0x14;
   // Value. Factor of 0.01, so we need to multiply our the value in 100% by
   // 1/0.01 = 100.
   uint16_t soil_val = (10000 * sensors->soil_moisture) / UINT16_MAX;
@@ -248,16 +248,16 @@ static void set_service_data_bthome_protocol(
   service_data[14] = batt_val & 0xff;
   service_data[15] = batt_val >> 8;
 
-  // 5. Illuminance
-  // uint24_t.
-  service_data[16] = (0b000 << 5) | 2;
-  // Type - illuminance.
-  service_data[17] = 0x05;
-  // Value. Factor 0.01.
-  uint32_t illu_value = 100 * sensors->lux;
-  service_data[18] = illu_value & 0xff;
-  service_data[19] = (illu_value >> 8) & 0xff;
-  service_data[20] = (illu_value >> 16) & 0xff;
+  // // 5. Illuminance
+  // // uint24_t.
+  // service_data[16] = (0b000 << 5) | 2;
+  // // Type - illuminance.
+  // service_data[17] = 0x05;
+  // // Value. Factor 0.01.
+  // uint32_t illu_value = 100 * sensors->lux;
+  // service_data[18] = illu_value & 0xff;
+  // service_data[19] = (illu_value >> 8) & 0xff;
+  // service_data[20] = (illu_value >> 16) & 0xff;
 }
 #endif  // PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
 
