@@ -48,7 +48,7 @@ prst_config.h.
 #define SERVICE_DATA_LEN 18
 #elif PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
 #define SERVICE_UUID 0x181c
-#define SERVICE_DATA_LEN 21
+#define SERVICE_DATA_LEN 16
 #else
 #error "PRST_BLE_PROTOCOL is not properly configured"
 #endif
@@ -233,8 +233,8 @@ static void set_service_data_bthome_protocol(
   service_data[8] = (0b000 << 5) | 2;
   // Type - humidity.
   service_data[9] = 0x03;
-  // Value. Factor 0.01.
-  uint16_t humi_val = (100 * sensors->humi) / UINT16_MAX;
+  // Value. Factor 0.01, over 100%.
+  uint16_t humi_val = (10000 * sensors->humi) / UINT16_MAX;
   service_data[10] = humi_val & 0xff;
   service_data[11] = humi_val >> 8;
 
@@ -247,17 +247,6 @@ static void set_service_data_bthome_protocol(
   uint16_t batt_val = sensors->batt_mv;
   service_data[14] = batt_val & 0xff;
   service_data[15] = batt_val >> 8;
-
-  // // 5. Illuminance
-  // // uint24_t.
-  // service_data[16] = (0b000 << 5) | 2;
-  // // Type - illuminance.
-  // service_data[17] = 0x05;
-  // // Value. Factor 0.01.
-  // uint32_t illu_value = 100 * sensors->lux;
-  // service_data[18] = illu_value & 0xff;
-  // service_data[19] = (illu_value >> 8) & 0xff;
-  // service_data[20] = (illu_value >> 16) & 0xff;
 }
 #endif  // PRST_BLE_PROTOCOL == PRST_BLE_PROTOCOL_BTHOME
 
