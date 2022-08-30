@@ -209,7 +209,7 @@ static void set_service_data_bthome_protocol(
 
   // 1. Soil moisture.
   // uint16_t.
-  service_data[0] = (0b000 << 5) | 2;
+  service_data[0] = (0b000 << 5) | 3;
   // Type of measurement - Moisture.
   service_data[1] = 0x14;
   // Value. Factor of 0.01, so we need to multiply our the value in 100% by
@@ -220,7 +220,7 @@ static void set_service_data_bthome_protocol(
 
   // 2. Temp.
   // int16_t.
-  service_data[4] = (0b001 << 5) | 2;
+  service_data[4] = (0b001 << 5) | 3;
   // Type of measurement - temperature.
   service_data[5] = 0x02;
   // Value. Factor 0.01.
@@ -230,7 +230,7 @@ static void set_service_data_bthome_protocol(
 
   // 3. Humidity
   // uint16_t.
-  service_data[8] = (0b000 << 5) | 2;
+  service_data[8] = (0b000 << 5) | 3;
   // Type - humidity.
   service_data[9] = 0x03;
   // Value. Factor 0.01, over 100%.
@@ -240,7 +240,7 @@ static void set_service_data_bthome_protocol(
 
   // 4. Battery voltage.
   // uint16_t.
-  service_data[12] = (0b000 << 5) | 2;
+  service_data[12] = (0b000 << 5) | 3;
   // Type - voltage.
   service_data[13] = 0x0c;
   // Value. Factor of 0.001.
