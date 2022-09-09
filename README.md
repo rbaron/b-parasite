@@ -53,22 +53,14 @@ This is the quickest way to collect and visualize data from b-parasites, and I p
 Sensor data is transmitted via BLE advertisement broadcasts. [Here](./code/b-parasite/README.md) you can find a byte-by-byte description of the data as it is encoded inside the advertisement packet.
 
 # Battery Life
-**tl;dr:** By taking readings 10 minutes apart, the battery should last for over a year.
+**tl;dr:** By taking readings 10 minutes apart, the battery should last for over a couple of years.
 
 The main parameters involved in estimating the battery life are:
 * Current consumption (both in operation and during sleep)
 * Duty cycle (how much time it spends in operation vs. sleeping)
-* Battery capacity - this is roughly 230 mAh for CR2032 cells
+* Battery capacity - this is roughly 200 mAh for CR2032 cells
 
-In the following screenshot, I measured the voltage of a 10 Ohm series resistor during the on-cycle, for a 8dBm transmitting power (the voltage is negative, so it is upside down):
-
-<p align="center">
-  <img src="img/scope/8dbm-across-10ohm.png" border="0" alt="A screenshot of an oscilloscope used to measure current consumption" />
-</p>
-
-The short high peaks correspond to when the radio is active, sending broadcasting packets. The average current consumption during this active time is roughly 9mA. Let's round it to 10mA. During off time, I measure a current of less than 3uA.
-
-With these parameters in hand, I put together [this spreadsheet](https://docs.google.com/spreadsheets/d/157JQiX20bGkTrlbvWbWRrs_WViL3MgVZffSCWRR7uAI/edit#gid=0) in which you can estimate the battery life. For example, for an active time of one second and sleep time of ten minutes, we see a runtime of 488.10 days.
+Details and power comsumption measurements in the #48. [This spreadsheet](https://docs.google.com/spreadsheets/d/157JQiX20bGkTrlbvWbWRrs_WViL3MgVZffSCWRR7uAI/edit#gid=0) can be used to estimate battery life for different parameters.
 
 <p align="center">
   <img src="img/resized/img2.jpg" border="0" alt="b-parasite stuck into a small plant vase" />
