@@ -54,8 +54,8 @@ prst_config.h.
 # Supported Modules
 
 This code supports two E73 modules:
- * E73-2G4M08S1C (nrf2480, default)
- * E73-2G4M08S1E (nrf2833)
+ * E73-2G4M08S1C (nRF52840, default)
+ * E73-2G4M08S1E (nRF52833)
 
 To choose for which one you want to compile, just pass PLATFORM as an env variable to make, and set it to the platform you want to use. For example, to compile for E73-2G4M08S1E:
 

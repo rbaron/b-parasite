@@ -1,6 +1,6 @@
 # Supported platforms:
-# * E73_2G4M08S1C (nrf2480, default)
-# * E73_2G4M08S1E (nrf2833) 
+# * E73_2G4M08S1C (nRF52840, default)
+# * E73_2G4M08S1E (nRF52833) 
 # note: the missing whitespace after the = is on purpose here
 PLATFORM ?=E73_2G4M08S1C
 
