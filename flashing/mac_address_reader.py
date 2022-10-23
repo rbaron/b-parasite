@@ -1,9 +1,9 @@
 from pyocd.core.target import Target
 
 
-class MacConverter():
+class MacAddressReader():
 
-    MEMORY_ADDRESS = 268435620 # 0x100000A4
+    MEMORY_ADDRESS = 0x100000A4
     
     def __init__(self, target: Target) -> None:
         self.target = target
@@ -21,7 +21,7 @@ class MacConverter():
     def _convert_blocks(self, memory_blocks: list[int]) -> str:
         first_block = f'{memory_blocks[0]:x}'.rjust(8, '0')
 
-        modified_second_block = memory_blocks[1] | 49152 # Bitwise OR with 0xc000
+        modified_second_block = memory_blocks[1] | 0xc000 # Bitwise OR
 
         second_block = f'{modified_second_block:x}'
 

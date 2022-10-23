@@ -6,7 +6,7 @@ from pyocd.core.helpers import ConnectHelper
 from pyocd.core.target import Target
 from pyocd.flash.file_programmer import FileProgrammer
 
-from mac_converter import MacConverter
+from mac_address_reader import MacAddressReader
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a", "--all", action="store_true", help="Flash softdevice and firmware.")
@@ -37,6 +37,6 @@ with ConnectHelper.session_with_chosen_probe() as session:
         target.reset_and_halt()
         target.resume()
     
-    mac_converter = MacConverter(target)
+    mac_converter = MacAddressReader(target)
     mac_address = mac_converter.get_mac_address()
     print(f'Device MAC Address: {mac_address}')
