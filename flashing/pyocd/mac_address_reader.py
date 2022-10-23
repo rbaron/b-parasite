@@ -8,7 +8,12 @@ class MacAddressReader():
     def __init__(self, target: Target) -> None:
         self.target = target
 
-    def get_mac_address(self) -> str:
+    def get_static_mac_address(self) -> str:
+        '''
+        Reads the static mac address assigned by the manufacturer. 
+        
+        This chip property is readonly and may be different from the mac address in the application code.
+        '''
         memory_blocks = self._get_blocks()
 
         return self._convert_blocks(memory_blocks)
