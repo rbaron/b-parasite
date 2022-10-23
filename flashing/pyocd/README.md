@@ -6,7 +6,7 @@ This is a different approach to flash the firmware on the b-parasites. It is com
 
 (Based on the discussion in issue #67)
 
-The instructions will probably differ alot depending on your debugging probe and hardware setup.
+The instructions will probably differ slightly depending on your debugging probe and hardware setup.
 
 The setup is fairly straightforward and documented in the `pyocd` [docs](https://pyocd.io/).
 
