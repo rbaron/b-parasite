@@ -37,6 +37,6 @@ with ConnectHelper.session_with_chosen_probe() as session:
         target.reset_and_halt()
         target.resume()
     
-    mac_converter = MacAddressReader(target)
-    mac_address = mac_converter.get_static_mac_address()
-    print(f'Static manufacturer MAC address: {mac_address}')
+    mac_address_reader = MacAddressReader(target)
+    mac_address = mac_address_reader.get_static_mac_address()
+    print(f'Static manufacturer MAC address (DEVICEADDR): {mac_address}')
