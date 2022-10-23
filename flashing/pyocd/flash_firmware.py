@@ -9,8 +9,8 @@ from pyocd.flash.file_programmer import FileProgrammer
 from mac_address_reader import MacAddressReader
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-s", "--softdevice", action="store", help="Optional file path to softdevice file.", default="../sdk/s140nrf52720/s140_nrf52_7.2.0_softdevice.hex", type=Path)
-parser.add_argument("-f", "--firmware", action="store", help="Optional file path to firmware file.", default="../code/b-parasite/_build/nrf52840_xxaa.hex", type=Path)
+parser.add_argument("-s", "--softdevice", action="store", help="Optional file path to softdevice file.", default="../../sdk/s140nrf52720/s140_nrf52_7.2.0_softdevice.hex", type=Path)
+parser.add_argument("-f", "--firmware", action="store", help="Optional file path to firmware file.", default="../../code/b-parasite/_build/nrf52840_xxaa.hex", type=Path)
 parser.add_argument("--skip-softdevice", action="store_true", help="Skip flashing of the softdevice.")
 parser.add_argument("--skip-firmware", action="store_true", help="Skip flashing of firmware.")
 
