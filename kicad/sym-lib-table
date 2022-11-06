@@ -1,5 +1,7 @@
 (sym_lib_table
-  (lib (name AO3407A)(type Legacy)(uri ${KIPRJMOD}/lib/snapeda/AO3407A.lib)(options "")(descr ""))
-  (lib (name nrfmicro)(type Legacy)(uri ${KIPRJMOD}/lib/nrfmicro/nrfmicro.lib)(options "")(descr ""))
-  (lib (name Sensor_Humidity)(type Legacy)(uri ${KIPRJMOD}/lib/kicad/Sensor_Humidity.lib)(options "")(descr ""))
+  (lib (name "AO3407A")(type "Legacy")(uri "${KIPRJMOD}/lib/snapeda/AO3407A.lib")(options "")(descr ""))
+  (lib (name "nrfmicro")(type "Legacy")(uri "${KIPRJMOD}/lib/nrfmicro/nrfmicro.lib")(options "")(descr ""))
+  (lib (name "Sensor_Humidity")(type "Legacy")(uri "${KIPRJMOD}/lib/kicad/Sensor_Humidity.lib")(options "")(descr ""))
+  (lib (name "E73")(type "Legacy")(uri "${KIPRJMOD}/lib/snapeda/E73-2G4M08S1C.lib")(options "")(descr ""))
+  (lib (name "B3U-1000P")(type "Legacy")(uri "${KIPRJMOD}/lib/snapeda/B3U-1000P.lib")(options "")(descr ""))
 )

@@ -1,0 +1,29 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# B3U-1000P
+#
+DEF B3U-1000P S 0 40 Y N 1 L N
+F0 "S" -100 100 50 H V L BNN
+F1 "B3U-1000P" -100 -100 50 H V L BNN
+F2 "SW_B3U-1000P" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "None" 0 0 50 H I L BNN "PACKAGE"
+F5 "B3U-1000P" 0 0 50 H I L BNN "MP"
+F6 "Omron" 0 0 50 H I L BNN "MF"
+F7 "Unavailable" 0 0 50 H I L BNN "AVAILABILITY"
+F8 "Tactile Switch SPST-NO Top Actuated Surface Mount" 0 0 50 H I L BNN "DESCRIPTION"
+F9 "None" 0 0 50 H I L BNN "PRICE"
+DRAW
+P 2 0 0 6 -100 0 110 84 N
+C 100 0 13 0 0 6 N
+P 2 0 0 6 200 0 115 0 N
+P 2 0 0 6 -100 0 -200 0 N
+X ~ 1 -300 0 100 R 40 40 0 0 P 
+X ~ 2 300 0 100 L 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library
