@@ -1,0 +1,19 @@
+G04 #@! TF.GenerationSoftware,KiCad,Pcbnew,(6.0.7)*
+G04 #@! TF.CreationDate,2022-09-04T16:16:14-05:00*
+G04 #@! TF.ProjectId,parasite-mini-test,70617261-7369-4746-952d-6d696e692d74,1.2.0*
+G04 #@! TF.SameCoordinates,Original*
+G04 #@! TF.FileFunction,Paste,Bot*
+G04 #@! TF.FilePolarity,Positive*
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW (6.0.7)) date 2022-09-04 16:16:14*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%ADD10R,5.100000X5.100000*%
+G04 APERTURE END LIST*
+D10*
+X67100000Y-42100000D03*
+X67100000Y-67700000D03*
+M02*

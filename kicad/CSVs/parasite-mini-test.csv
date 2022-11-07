@@ -1,0 +1,17 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"C1";"C_0402_1005Metric";1;"1n";;;
+2;"C6";"C_0402_1005Metric";1;"100p";;;
+3;"R6";"R_0402_1005Metric";1;"1M";;;
+4;"R5,R3,R2";"R_0402_1005Metric";3;"1k";;;
+5;"R4,R1,R7,R8";"R_0402_1005Metric";4;"10k";;;
+6;"Q1,Q2";"SOT-23";2;"MMBT3904";;;
+7;"C2";"C_0402_1005Metric";1;"100n";;;
+8;"Q3";"SOT-23";1;"AO3407";;;
+9;"Y1";"Crystal_SMD_3215-2Pin_3.2x1.5mm";1;"32.768kHz";;;
+10;"D2";"LED_0603_1608Metric";1;"LED";;;
+11;"C4,C3";"C_0402_1005Metric";2;"12p";;;
+12;"Cpara1";"C_0805_2012Metric";1;"5p";;;
+13;"U2";"Sensirion_DFN-4-1EP_2x2mm_P1mm_EP0.7x1.6mm";1;"SHTC3";;;
+14;"D1";"D_MiniMELF";1;"LL4148";;;
+15;"U1";"E73-2G4M08S1C-52840";1;"E73-2G4M08S1C-52840";;;
+16;"BT1";"BatteryHolder_Keystone_3002_1x2032";1;"Battery_Cell";;;
