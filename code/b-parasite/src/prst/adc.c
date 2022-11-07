@@ -102,8 +102,8 @@ prst_adc_batt_read_t prst_adc_batt_read() {
 static inline double get_soil_moisture_percent(
     double battery_voltage, nrf_saadc_value_t raw_adc_output) {
   const double x = battery_voltage;
-  const double dry = -12.9 * x * x + 111 * x + 228;
-  const double wet = -5.71 * x * x + 60.2 * x + 126;
+  const double dry = 59.66 * x + 331;
+  const double wet = 34.44 * x + 173;
 #if PRST_ADC_SOIL_DEBUG
   NRF_LOG_INFO("[adc] batt: " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(x));
   NRF_LOG_INFO("[adc] dry: " NRF_LOG_FLOAT_MARKER " wet: " NRF_LOG_FLOAT_MARKER,
