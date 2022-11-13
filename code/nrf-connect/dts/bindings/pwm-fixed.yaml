@@ -1,0 +1,18 @@
+# Hello
+
+description: A fixed frequency & pulse PWM.
+
+compatible: pwm-fixed
+
+include: base.yaml
+
+properties:
+  pwms:
+    type: phandle-array
+    required: true
+    description: the PWM spec.
+
+  pulse:
+    required: true
+    type: int
+    description: The period of the PWM pulse.
