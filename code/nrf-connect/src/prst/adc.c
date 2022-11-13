@@ -5,6 +5,8 @@
 #include <logging/log.h>
 #include <zephyr/zephyr.h>
 
+#include "macros.h"
+
 LOG_MODULE_REGISTER(adc, LOG_LEVEL_DBG);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
@@ -40,24 +42,12 @@ static inline float get_soil_moisture_percent(float battery_voltage,
 }
 
 static int read_adc_spec(const struct adc_dt_spec* spec, prst_adc_read_t* out) {
-  int err;
-  err = adc_sequence_init_dt(spec, &sequence);
-  if (err) {
-    LOG_ERR("Error in adc_sequence_init_dt");
-    return err;
-  }
-  err = adc_read(spec->dev, &sequence);
-  if (err) {
-    LOG_ERR("Error in adc_read");
-    return err;
-  }
+  RET_IF_ERR(adc_sequence_init_dt(spec, &sequence));
+
+  RET_IF_ERR(adc_read(spec->dev, &sequence));
 
   int32_t val_mv = buf;
-  err = adc_raw_to_millivolts_dt(spec, &val_mv);
-  if (err) {
-    LOG_ERR("Error in adc_read");
-    return err;
-  }
+  RET_IF_ERR(adc_raw_to_millivolts_dt(spec, &val_mv));
 
   out->raw = buf;
   out->millivolts = val_mv;
@@ -71,61 +61,34 @@ int prst_adc_init() {
       &adc_lux_spec,
       &adc_batt_spec,
   };
-  int err;
   for (int i = 0; i < sizeof(all_specs) / sizeof(all_specs[0]); i++) {
-    err = adc_channel_setup_dt(all_specs[i]);
-    if (err) {
-      LOG_ERR("Error setting up adc_soil_spec");
-      return err;
-    }
+    RET_IF_ERR(adc_channel_setup_dt(all_specs[i]));
   }
   return 0;
 }
 
 int prst_adc_batt_read(prst_adc_read_t* out) {
-  int err;
-  err = read_adc_spec(&adc_batt_spec, out);
-  if (err) {
-    LOG_ERR("Error in prst_adc_batt_read");
-    return err;
-  }
+  RET_IF_ERR(read_adc_spec(&adc_batt_spec, out));
   return 0;
 }
 
 int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
-  int err;
   // Start PWM.
-  err = pwm_set_pulse_dt(&soil_pwm_dt, pulse);
-  if (err) {
-    LOG_ERR("Error in pwm_set_pulse_dt");
-    return err;
-  }
+  RET_IF_ERR(pwm_set_pulse_dt(&soil_pwm_dt, pulse));
+
   k_msleep(30);
 
-  err = read_adc_spec(&adc_soil_spec, &out->adc_read);
-  if (err) {
-    LOG_ERR("Error in prst_adc_batt_read");
-    return err;
-  }
+  RET_IF_ERR(read_adc_spec(&adc_soil_spec, &out->adc_read));
 
   // Stop PWM.
-  err = pwm_set_pulse_dt(&soil_pwm_dt, 0);
-  if (err) {
-    LOG_ERR("Error in pwm_set_pulse_dt");
-    return err;
-  }
+  RET_IF_ERR(pwm_set_pulse_dt(&soil_pwm_dt, 0));
 
   out->percentage = get_soil_moisture_percent(battery_voltage, buf);
   return 0;
 }
 
 int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out) {
-  int err;
-  err = read_adc_spec(&adc_soil_spec, &out->adc_read);
-  if (err) {
-    LOG_ERR("Error in prst_adc_batt_read");
-    return err;
-  }
+  RET_IF_ERR(read_adc_spec(&adc_soil_spec, &out->adc_read));
 
   // The ALS-PT19 phototransistor is a device in which the current flow between
   // its two terminals is controlled by how much light there is in the ambient.
