@@ -11,13 +11,18 @@ void main(void) {
     LOG_ERR("Error initializing ADC.");
   }
 
+  prst_adc_read_t batt;
+  prst_adc_soil_moisture_t soil;
+  prst_adc_photo_sensor_t photo;
   while (true) {
-    prst_adc_read_t batt = prst_adc_batt_read();
-    prst_adc_soil_moisture_t soil = prst_adc_soil_read(batt.voltage);
+    prst_adc_batt_read(&batt);
+    prst_adc_soil_read(batt.voltage, &soil);
+    prst_adc_photo_read(batt.voltage, &photo);
 
     // LOG_INF("Batt: %d mV", batt.millivolts);
-    LOG_INF("Soil: %.0f %% (%.3f mV)", 100 * soil.percentage,
-            soil.adc_read.voltage);
+    // LOG_INF("Soil: %.0f %% (%.3f mV)", 100 * soil.percentage,
+    //         soil.adc_read.voltage);
+    LOG_INF("Photo: %u lx (%.3f mV)", photo.brightness, soil.adc_read.voltage);
 
     k_msleep(500);
   }

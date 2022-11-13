@@ -17,18 +17,17 @@ typedef struct {
 } prst_adc_soil_moisture_t;
 
 typedef struct prst_adc_photo_sensor {
-  int16_t raw;
-  float voltage;
+  prst_adc_read_t adc_read;
   // Value in lux.
   uint16_t brightness;
 } prst_adc_photo_sensor_t;
 
 int prst_adc_init();
 
-prst_adc_read_t prst_adc_batt_read();
+int prst_adc_batt_read(prst_adc_read_t* out);
 
-prst_adc_soil_moisture_t prst_adc_soil_read(float battery_voltage);
+int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out);
 
-prst_adc_photo_sensor_t prst_adc_photo_read(float battery_voltage);
+int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out);
 
 #endif  // _PRST_ADC_H_

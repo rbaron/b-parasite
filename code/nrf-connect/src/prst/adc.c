@@ -82,58 +82,62 @@ int prst_adc_init() {
   return 0;
 }
 
-prst_adc_read_t prst_adc_batt_read() {
+int prst_adc_batt_read(prst_adc_read_t* out) {
   int err;
-  prst_adc_read_t adc_read;
-  err = read_adc_spec(&adc_batt_spec, &adc_read);
+  err = read_adc_spec(&adc_batt_spec, out);
   if (err) {
     LOG_ERR("Error in prst_adc_batt_read");
+    return err;
   }
-  return adc_read;
+  return 0;
 }
 
-prst_adc_soil_moisture_t prst_adc_soil_read(float battery_voltage) {
+int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
   int err;
   // Start PWM.
   err = pwm_set_pulse_dt(&soil_pwm_dt, pulse);
   if (err) {
     LOG_ERR("Error in pwm_set_pulse_dt");
+    return err;
   }
   k_msleep(30);
 
-  prst_adc_soil_moisture_t adc_soil_read;
-  err = read_adc_spec(&adc_soil_spec, &adc_soil_read.adc_read);
+  err = read_adc_spec(&adc_soil_spec, &out->adc_read);
   if (err) {
     LOG_ERR("Error in prst_adc_batt_read");
+    return err;
   }
 
   // Stop PWM.
   err = pwm_set_pulse_dt(&soil_pwm_dt, 0);
   if (err) {
     LOG_ERR("Error in pwm_set_pulse_dt");
+    return err;
   }
 
-  adc_soil_read.percentage = get_soil_moisture_percent(battery_voltage, buf);
-  return adc_soil_read;
+  out->percentage = get_soil_moisture_percent(battery_voltage, buf);
+  return 0;
 }
 
-prst_adc_photo_sensor_t prst_adc_photo_read(float battery_voltage) {
-  // int err;
-  // // Start PWM.
-  // err = pwm_set_pulse_dt(&soil_pwm_dt, pulse);
-  // if (err) {
-  //   LOG_ERR("Error in pwm_set_pulse_dt");
-  // }
-  // k_msleep(30);
+int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out) {
+  int err;
+  err = read_adc_spec(&adc_soil_spec, &out->adc_read);
+  if (err) {
+    LOG_ERR("Error in prst_adc_batt_read");
+    return err;
+  }
 
-  // err = adc_sequence_init_dt(&adc_soil_spec, &sequence);
-  // if (err) {
-  //   LOG_ERR("Error in adc_sequence_init_dt");
-  // }
-  // err = adc_read(adc_soil_spec.dev, &sequence);
-  // if (err) {
-  //   LOG_ERR("Error in adc_read");
-  // }
-  prst_adc_photo_sensor_t ret;
-  return ret;
+  // The ALS-PT19 phototransistor is a device in which the current flow between
+  // its two terminals is controlled by how much light there is in the ambient.
+  // We measure that current by calculating the voltage across a resistor that
+  // is connected in series with the phototransistor.
+  const float phototransistor_resistor = 470.0f;
+  const float current_sun = 3.59e-3f;
+  // Assuming 10000 lux for the saturation test. Calibration with a proper light
+  // meter would be better.
+  const float lux_sun = 10000.0f;
+  const float current = out->adc_read.voltage / phototransistor_resistor;
+  out->brightness = MAX(0, MIN(lux_sun * current / current_sun, UINT16_MAX));
+
+  return 0;
 }

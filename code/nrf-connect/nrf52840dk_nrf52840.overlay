@@ -58,7 +58,8 @@
 		zephyr,gain = "ADC_GAIN_1_6";
 		zephyr,reference = "ADC_REF_INTERNAL";
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-		zephyr,input-positive = <NRF_SAADC_AIN1>;
+		// P0.02.
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
 		zephyr,resolution = <10>;
 	};
 
@@ -69,7 +70,6 @@
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
 		zephyr,input-positive = <NRF_SAADC_VDD>;
 		zephyr,resolution = <10>;
-		// zephyr,oversampling = <8>;
 	};
 };
 
