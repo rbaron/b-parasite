@@ -7,7 +7,7 @@
 
 #include "macros.h"
 
-LOG_MODULE_REGISTER(adc, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(adc, LOG_LEVEL_WRN);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
 static const struct pwm_dt_spec soil_pwm_dt =

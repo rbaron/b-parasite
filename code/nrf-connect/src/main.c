@@ -12,8 +12,6 @@ int main(void) {
     LOG_ERR("Error initializing ADC.");
   }
 
-  // RET_IF_ERR_MSG(123, "TEST");
-
   prst_adc_read_t batt;
   prst_adc_soil_moisture_t soil;
   prst_adc_photo_sensor_t photo;
