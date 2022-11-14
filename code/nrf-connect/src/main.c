@@ -2,6 +2,7 @@
 #include <zephyr/zephyr.h>
 
 #include "prst/adc.h"
+#include "prst/button.h"
 #include "prst/led.h"
 #include "prst/macros.h"
 #include "prst/shtc3.h"
@@ -11,6 +12,9 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 int main(void) {
   RET_IF_ERR(prst_adc_init());
   RET_IF_ERR(prst_led_init());
+  RET_IF_ERR(prst_button_init());
+
+  RET_IF_ERR(prst_led_flash(2));
 
   prst_adc_read_t batt;
   prst_adc_soil_moisture_t soil;
@@ -24,8 +28,6 @@ int main(void) {
     LOG_INF("Soil: %.0f %% (%.3f mV)", 100 * soil.percentage,
             soil.adc_read.voltage);
     LOG_INF("Photo: %u lx (%.3f mV)", photo.brightness, soil.adc_read.voltage);
-
-    prst_led_flash(3);
 
     k_msleep(500);
   }

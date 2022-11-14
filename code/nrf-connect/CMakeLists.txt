@@ -4,4 +4,10 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(b_parasite)
 
-target_sources(app PRIVATE src/main.c src/prst/shtc3.c src/prst/adc.c src/prst/led.c)
+target_sources(app PRIVATE
+	src/main.c
+	src/prst/shtc3.c
+	src/prst/adc.c
+	src/prst/led.c
+	src/prst/button.c
+)

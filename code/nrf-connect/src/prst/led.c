@@ -9,9 +9,6 @@ LOG_MODULE_REGISTER(led, LOG_LEVEL_DBG);
 struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
 
 int prst_led_init() {
-  if (!device_is_ready(led.port)) {
-    LOG_ERR("DEV NOT READY");
-    return -1;
-  }
+  RET_IF_ERR(!device_is_ready(led.port));
   return gpio_pin_configure_dt(&led, GPIO_OUTPUT);
 }

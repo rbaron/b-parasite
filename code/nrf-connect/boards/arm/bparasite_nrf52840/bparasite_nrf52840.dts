@@ -24,6 +24,14 @@
 		};
 	};
 
+	buttons {
+		compatible = "gpio-keys";
+		button0: button_0 {
+			gpios = <&gpio0 12 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button switch 0";
+		};
+	};
+
 	soil_pwm: soil_pwm {
 		compatible = "pwm-fixed";
 		pwms = <&pwm0 0 PWM_MSEC(100) PWM_POLARITY_INVERTED>;
