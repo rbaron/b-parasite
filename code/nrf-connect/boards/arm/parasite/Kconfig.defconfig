@@ -1,0 +1,7 @@
+
+if BOARD_PARASITE
+
+config BOARD
+	default "parasite"
+
+endif  # BOARD_PARASITE
