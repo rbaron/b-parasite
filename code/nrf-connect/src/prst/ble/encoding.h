@@ -1,0 +1,3 @@
+#ifndef _PRST_BLE_ENCODING_H_
+#define _PRST_BLE_ENCODING_H_
+#endif  // _PRST_BLE_ENCODING_H_
