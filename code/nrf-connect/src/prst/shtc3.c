@@ -4,28 +4,31 @@
 #include <logging/log.h>
 #include <zephyr/zephyr.h>
 
-LOG_MODULE_REGISTER(shtc3, LOG_LEVEL_DBG);
+#include "prst/macros.h"
+
+LOG_MODULE_REGISTER(shtc3, LOG_LEVEL_INF);
 
 static const struct i2c_dt_spec shtc3 = I2C_DT_SPEC_GET(DT_NODELABEL(shtc3));
 
 static uint8_t buff[6];
 
-static void write_cmd(uint16_t command) {
+static int write_cmd(uint16_t command) {
   static uint8_t cmd[2];
   cmd[0] = command >> 8;
   cmd[1] = command & 0xff;
-  if (i2c_write_dt(&shtc3, cmd, sizeof(cmd)) != 0) {
-    LOG_ERR("Error writing command");
-  }
+  RET_IF_ERR(i2c_write_dt(&shtc3, cmd, sizeof(cmd)));
+  return 0;
 }
 
-prst_shtc3_read_t prst_shtc3_read() {
+int prst_shtc3_read(prst_shtc3_read_t *out) {
+  RET_IF_ERR_MSG(!device_is_ready(shtc3.bus), "SHTC3 is not ready");
+
   // Wake the sensor up.
-  write_cmd(PRST_SHTC3_CMD_WAKEUP);
+  RET_IF_ERR(write_cmd(PRST_SHTC3_CMD_WAKEUP));
   k_msleep(1);
 
   // Request measurement.
-  write_cmd(PRST_SHTC3_CMD_MEASURE_TFIRST_NORMAL);
+  RET_IF_ERR(write_cmd(PRST_SHTC3_CMD_MEASURE_TFIRST_NORMAL));
 
   // Reading in normal (not low power) mode can take up to 12.1 ms, according to
   // the datasheet.
@@ -36,19 +39,17 @@ prst_shtc3_read_t prst_shtc3_read() {
   }
 
   // Put the sensor in sleep mode.
-  write_cmd(PRST_SHTC3_CMD_SLEEP);
+  RET_IF_ERR(write_cmd(PRST_SHTC3_CMD_SLEEP));
 
   // TODO: Uninit i2c to save power?
 
   // TODO: verify the CRC of the measurements. The function is described in the
   // datasheet.
 
-  float temp_c = -45 + 175 * ((float)((buff[0] << 8) | buff[1])) / (1 << 16);
-  float humi = ((float)((buff[3] << 8) | buff[4])) / UINT16_MAX;
+  out->temp_c = -45 + 175 * ((float)((buff[0] << 8) | buff[1])) / (1 << 16);
+  out->rel_humi = ((float)((buff[3] << 8) | buff[4])) / UINT16_MAX;
 
-  prst_shtc3_read_t ret = {.temp_c = temp_c, .rel_humi = humi};
-
-  LOG_INF("Read temp: %f oC (%d)", ret.temp_c, (int)temp_c);
-  LOG_INF("Read humi: %.0f %%", 100.0 * ret.rel_humi);
-  return ret;
+  LOG_DBG("Read temp: %f oC (%d)", out->temp_c, (int)out->temp_c);
+  LOG_DBG("Read humi: %.0f %%", 100.0 * out->rel_humi);
+  return 0;
 }

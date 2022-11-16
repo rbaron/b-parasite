@@ -15,6 +15,6 @@ typedef struct {
   float rel_humi;
 } prst_shtc3_read_t;
 
-prst_shtc3_read_t prst_shtc3_read();
+int prst_shtc3_read(prst_shtc3_read_t *out);
 
 #endif  // _PRST_SHT3C_H_
