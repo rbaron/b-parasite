@@ -28,13 +28,6 @@ static int get_mac_addr(bt_addr_le_t *out) {
   LOG_HEXDUMP_DBG(oob.addr.a.val, ARRAY_SIZE(oob.addr.a.val),
                   "Read address using bt_le_oob_get_local");
   *out = oob.addr;
-
-  // This API doesn't seem to work here.
-  // static bt_addr_le_t addrs[CONFIG_BT_ID_MAX];
-  // static size_t count;
-  // bt_id_get(addrs, &count);
-  // LOG_DBG("[bt_id_get] Received %d addresses", count);
-
   return 0;
 }
 
@@ -66,7 +59,6 @@ int prst_ble_adv_stop() {
 int prst_ble_adv_set_data(const prst_sensors_t *sensors) {
   bt_addr_le_t addr;
   RET_IF_ERR(get_mac_addr(&addr));
-  LOG_HEXDUMP_WRN(addr.a.val, ARRAY_SIZE(addr.a.val), "GOT ADDR: ");
   return prst_ble_encode_service_data(sensors, &addr, service_data,
                                       sizeof(service_data));
 }
