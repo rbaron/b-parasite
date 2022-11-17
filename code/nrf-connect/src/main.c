@@ -19,10 +19,7 @@ int main(void) {
 
   RET_IF_ERR(prst_led_flash(2));
 
-  RET_IF_ERR(prst_ble_adv_start());
-
   prst_sensors_t sensors;
-
   while (true) {
     RET_IF_ERR(prst_adc_batt_read(&sensors.batt));
     RET_IF_ERR(prst_adc_soil_read(sensors.batt.voltage, &sensors.soil));
@@ -38,6 +35,12 @@ int main(void) {
             (int)sensors.shtc3.temp_c);
     LOG_INF("Humi: %.0f %%", 100.0 * sensors.shtc3.rel_humi);
     LOG_INF("--------------------------------------------------");
-    k_msleep(500);
+
+    RET_IF_ERR(prst_ble_adv_set_data(&sensors));
+    RET_IF_ERR(prst_ble_adv_start());
+
+    k_msleep(5000);
+
+    RET_IF_ERR(prst_ble_adv_stop());
   }
 }

@@ -13,4 +13,5 @@ target_sources(app PRIVATE
 	src/prst/led.c
 	src/prst/button.c
 	src/prst/ble/ble.c
+	src/prst/ble/encoding.c
 )
