@@ -31,8 +31,7 @@ int main(void) {
             sensors.soil.adc_read.voltage);
     LOG_INF("Photo: %u lx (%.3f mV)", sensors.photo.brightness,
             sensors.soil.adc_read.voltage);
-    LOG_INF("Temp: %f oC (%d)", sensors.shtc3.temp_c,
-            (int)sensors.shtc3.temp_c);
+    LOG_INF("Temp: %f oC", sensors.shtc3.temp_c);
     LOG_INF("Humi: %.0f %%", 100.0 * sensors.shtc3.rel_humi);
     LOG_INF("--------------------------------------------------");
 

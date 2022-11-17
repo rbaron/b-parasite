@@ -1,0 +1,32 @@
+
+source "Kconfig.zephyr"
+
+choice PRST_NETWORK
+	prompt "b-parasite Network"
+	default PRST_NETWORK_BLE
+
+config PRST_NETWORK_NONE
+    bool "Network disabled"
+
+config PRST_NETWORK_BLE
+    bool "Uses BLE as the network"
+    depends on BT
+
+endchoice
+
+###
+### BLE configs
+###
+
+choice PRST_BLE_ENCODING
+	prompt "b-parasite BLE encoding"
+	depends on PRST_NETWORK_BLE
+	default PRST_BLE_ENCODING_BPARASITE_V2
+
+config PRST_BLE_ENCODING_BPARASITE_V2
+	bool "Uses the custom b-parasite protocol v2 for encoding advertising packets"
+
+config PRST_BLE_ENCODING_BTHOME
+	bool "Uses the BTHome (bthome.io) BLE encoding"
+
+endchoice
