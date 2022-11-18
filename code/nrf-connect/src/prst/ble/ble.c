@@ -36,11 +36,6 @@ int prst_ble_init() {
   if (IS_ENABLED(CONFIG_SETTINGS)) {
     RET_IF_ERR_MSG(settings_load(), "Error in settings_load()");
   }
-
-  struct bt_le_oob oob;
-  RET_IF_ERR(bt_le_oob_get_local(BT_ID_DEFAULT, &oob));
-  LOG_INF("ADDR: ");
-  LOG_HEXDUMP_INF(oob.addr.a.val, 6, ":");
   return 0;
 }
 
