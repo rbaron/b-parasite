@@ -9,7 +9,7 @@
 
 LOG_MODULE_REGISTER(ble, LOG_LEVEL_DBG);
 
-static uint8_t service_data[PRST_BLE_ENCODING_SERVICE_DATA_LEN] = {0};
+static uint8_t service_data[CONFIG_PRST_BLE_ENCODING_SERVICE_DATA_LEN] = {0};
 
 static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),

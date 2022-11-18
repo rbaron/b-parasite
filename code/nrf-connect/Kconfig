@@ -12,7 +12,7 @@ config PRST_NETWORK_BLE
     bool "Uses BLE as the network"
     depends on BT
 
-endchoice
+endchoice  # PRST_NETWORK
 
 ###
 ### BLE configs
@@ -29,4 +29,11 @@ config PRST_BLE_ENCODING_BPARASITE_V2
 config PRST_BLE_ENCODING_BTHOME
 	bool "Uses the BTHome (bthome.io) BLE encoding"
 
-endchoice
+endchoice  # PRST_BLE_ENCODING
+
+config PRST_BLE_ENCODING_SERVICE_DATA_LEN
+	int
+	help
+		Size of the service data buffer
+	default 20 if PRST_BLE_ENCODING_BPARASITE_V2
+	default 18 if PRST_BLE_ENCODING_BTHOME
