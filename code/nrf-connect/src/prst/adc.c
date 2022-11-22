@@ -74,14 +74,14 @@ int prst_adc_batt_read(prst_adc_read_t* out) {
 
 int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
   // Start PWM.
-  RET_IF_ERR(pwm_set_pulse_dt(&soil_pwm_dt, pulse));
+  RET_IF_ERR(pwm_set_dt(&soil_pwm_dt, soil_pwm_dt.period, pulse));
 
   k_msleep(30);
 
   RET_IF_ERR(read_adc_spec(&adc_soil_spec, &out->adc_read));
 
   // Stop PWM.
-  RET_IF_ERR(pwm_set_pulse_dt(&soil_pwm_dt, 0));
+  RET_IF_ERR(pwm_set_dt(&soil_pwm_dt, 0, 0));
 
   out->percentage = get_soil_moisture_percent(battery_voltage, buf);
   return 0;

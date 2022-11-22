@@ -1,4 +1,7 @@
 #include <logging/log.h>
+#include <zephyr/pm/device.h>
+#include <zephyr/pm/pm.h>
+#include <zephyr/pm/policy.h>
 #include <zephyr/zephyr.h>
 
 #include "prst/adc.h"
@@ -38,8 +41,16 @@ int main(void) {
     RET_IF_ERR(prst_ble_adv_set_data(&sensors));
     RET_IF_ERR(prst_ble_adv_start());
 
-    k_msleep(5000);
+    k_sleep(K_SECONDS(2));
 
     RET_IF_ERR(prst_ble_adv_stop());
+
+    k_sleep(K_SECONDS(2));
+
+    prst_led_flash(1);
+
+    // Example: go to deep sleep.
+    pm_state_force(0u, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
+    k_sleep(K_SECONDS(2));
   }
 }

@@ -22,7 +22,8 @@ static void button_pressed(const struct device *dev, struct gpio_callback *cb,
 int prst_button_init() {
   RET_IF_ERR(!device_is_ready(button.port));
   RET_IF_ERR(gpio_pin_configure_dt(&button, GPIO_INPUT));
-  RET_IF_ERR(gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE));
+  // EDGE interrupts consume more power! Just use a LEVEL one.
+  RET_IF_ERR(gpio_pin_interrupt_configure_dt(&button, GPIO_INT_LEVEL_ACTIVE));
   gpio_init_callback(&cb_data, button_pressed, BIT(button.pin));
   RET_IF_ERR(gpio_add_callback(button.port, &cb_data));
   return 0;

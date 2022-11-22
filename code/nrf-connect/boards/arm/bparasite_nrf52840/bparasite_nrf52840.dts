@@ -27,6 +27,7 @@
 	buttons {
 		compatible = "gpio-keys";
 		button0: button_0 {
+			// P0.12.
 			gpios = <&gpio0 12 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
 			label = "Push button switch 0";
 		};
@@ -34,8 +35,17 @@
 
 	soil_pwm: soil_pwm {
 		compatible = "pwm-fixed";
-		pwms = <&pwm0 0 PWM_MSEC(100) PWM_POLARITY_INVERTED>;
+		pwms = <&pwm0 0 PWM_MSEC(100) PWM_POLARITY_NORMAL>;
 		pulse = <PWM_MSEC(50)>;
+	};
+
+	ctrl {
+		compatible = "gpio-keys";
+		fast_disch: fast_disch {
+			// P1.10.
+			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			label = "Fast discharge circuitry";
+		};
 	};
 };
 
@@ -53,7 +63,7 @@
 
 &uart0 {
 	compatible = "nordic,nrf-uart";
-	status = "okay";
+	status = "disabled";
 	current-speed = <115200>;
 	pinctrl-0 = <&uart0_default>;
 	pinctrl-1 = <&uart0_sleep>;
