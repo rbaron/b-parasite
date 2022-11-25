@@ -1,18 +1,22 @@
 #include "adc.h"
 
 #include <drivers/adc.h>
+#include <drivers/gpio.h>
 #include <drivers/pwm.h>
 #include <logging/log.h>
 #include <zephyr/zephyr.h>
 
 #include "macros.h"
 
-LOG_MODULE_REGISTER(adc, LOG_LEVEL_WRN);
+LOG_MODULE_REGISTER(adc, LOG_LEVEL_DBG);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
 static const struct pwm_dt_spec soil_pwm_dt =
     PWM_DT_SPEC_GET(DT_NODELABEL(soil_pwm));
 static const uint32_t pulse = DT_PROP(DT_NODELABEL(soil_pwm), pulse);
+
+struct gpio_dt_spec fast_disch_dt =
+    GPIO_DT_SPEC_GET(DT_NODELABEL(fast_disch), gpios);
 
 // Shared buffer and adc_sequennce.
 static int16_t buf;
@@ -36,8 +40,8 @@ static inline float get_soil_moisture_percent(float battery_voltage,
   const double x = battery_voltage;
   const double dry = -12.9 * x * x + 111 * x + 228;
   const double wet = -5.71 * x * x + 60.2 * x + 126;
-  LOG_DBG("Batt: %.2f", x);
-  LOG_DBG("Dry: %.2f | wet: %.2f", dry, wet);
+  LOG_DBG("Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f", raw_adc_output, x, dry,
+          wet);
   return (raw_adc_output - dry) / (wet - dry);
 }
 
@@ -64,6 +68,9 @@ int prst_adc_init() {
   for (int i = 0; i < sizeof(all_specs) / sizeof(all_specs[0]); i++) {
     RET_IF_ERR(adc_channel_setup_dt(all_specs[i]));
   }
+
+  RET_IF_ERR(!device_is_ready(fast_disch_dt.port));
+  return gpio_pin_configure_dt(&fast_disch_dt, GPIO_OUTPUT);
   return 0;
 }
 
@@ -73,6 +80,9 @@ int prst_adc_batt_read(prst_adc_read_t* out) {
 }
 
 int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
+  // Enable fast discharge circuit.
+  RET_IF_ERR(gpio_pin_set_dt(&fast_disch_dt, 1));
+
   // Start PWM.
   RET_IF_ERR(pwm_set_dt(&soil_pwm_dt, soil_pwm_dt.period, pulse));
 
@@ -82,6 +92,9 @@ int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
 
   // Stop PWM.
   RET_IF_ERR(pwm_set_dt(&soil_pwm_dt, 0, 0));
+
+  // Turn off fast discharge circuit.
+  RET_IF_ERR(gpio_pin_set_dt(&fast_disch_dt, 0));
 
   out->percentage = get_soil_moisture_percent(battery_voltage, buf);
   return 0;

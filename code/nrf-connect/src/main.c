@@ -41,16 +41,12 @@ int main(void) {
     RET_IF_ERR(prst_ble_adv_set_data(&sensors));
     RET_IF_ERR(prst_ble_adv_start());
 
-    k_sleep(K_SECONDS(2));
+    k_sleep(K_SECONDS(CONFIG_PRST_BLE_ADV_DURATION_SEC));
+    k_msleep(200);
+    k_busy_wait(200 * 1000);
 
     RET_IF_ERR(prst_ble_adv_stop());
 
-    k_sleep(K_SECONDS(2));
-
-    prst_led_flash(1);
-
-    // Example: go to deep sleep.
-    pm_state_force(0u, &(struct pm_state_info){PM_STATE_SOFT_OFF, 0, 0});
-    k_sleep(K_SECONDS(2));
+    k_sleep(K_SECONDS(CONFIG_PRST_SLEEP_DURATION_SEC));
   }
 }
