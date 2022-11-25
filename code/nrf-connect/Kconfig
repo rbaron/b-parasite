@@ -16,7 +16,7 @@ endchoice  # PRST_NETWORK
 
 config PRST_SLEEP_DURATION_SEC
 	int "Sleep duration in seconds"
-	default 1
+	default 600
 
 ###
 ### BLE configs

@@ -42,8 +42,6 @@ int main(void) {
     RET_IF_ERR(prst_ble_adv_start());
 
     k_sleep(K_SECONDS(CONFIG_PRST_BLE_ADV_DURATION_SEC));
-    k_msleep(200);
-    k_busy_wait(200 * 1000);
 
     RET_IF_ERR(prst_ble_adv_stop());
 

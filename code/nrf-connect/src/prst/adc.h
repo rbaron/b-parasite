@@ -13,6 +13,7 @@ typedef struct {
   prst_adc_read_t adc_read;
   // A value from 0 (completely dry) to 2^10 (completely wet).
   uint16_t relative;
+  // In [0, 1.0].
   float percentage;
 } prst_adc_soil_moisture_t;
 

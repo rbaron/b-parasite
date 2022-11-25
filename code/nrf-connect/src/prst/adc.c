@@ -38,8 +38,8 @@ static const struct adc_dt_spec adc_batt_spec =
 static inline float get_soil_moisture_percent(float battery_voltage,
                                               int16_t raw_adc_output) {
   const double x = battery_voltage;
-  const double dry = -12.9 * x * x + 111 * x + 228;
-  const double wet = -5.71 * x * x + 60.2 * x + 126;
+  const double dry = -11.7f * x * x + 101.0f * x + 306.0f;
+  const double wet = 3.42f * x * x - 4.98f * x + 19.0f;
   LOG_DBG("Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f", raw_adc_output, x, dry,
           wet);
   return (raw_adc_output - dry) / (wet - dry);
@@ -96,7 +96,8 @@ int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out) {
   // Turn off fast discharge circuit.
   RET_IF_ERR(gpio_pin_set_dt(&fast_disch_dt, 0));
 
-  out->percentage = get_soil_moisture_percent(battery_voltage, buf);
+  out->percentage =
+      MAX(0.0f, MIN(1.0f, get_soil_moisture_percent(battery_voltage, buf)));
   return 0;
 }
 
