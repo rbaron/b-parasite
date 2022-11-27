@@ -4,7 +4,7 @@
 #include <drivers/gpio.h>
 #include <logging/log.h>
 
-#include "macros.h"
+#include "prstlib/macros.h"
 
 #define PRST_LED_FLASH_PERIOD_MS 400
 

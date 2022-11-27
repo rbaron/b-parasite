@@ -1,11 +1,11 @@
 #include "ble.h"
 
 #include <logging/log.h>
+#include <prstlib/macros.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/settings/settings.h>
 
-#include "prst/ble/encoding.h"
-#include "prst/macros.h"
+#include "encoding.h"
 
 LOG_MODULE_REGISTER(ble, LOG_LEVEL_DBG);
 

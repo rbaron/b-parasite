@@ -1,10 +1,10 @@
-#include "button.h"
+#include "prstlib/button.h"
 
 #include <drivers/gpio.h>
 #include <logging/log.h>
 
-#include "led.h"
-#include "macros.h"
+#include "prstlib/led.h"
+#include "prstlib/macros.h"
 
 LOG_MODULE_REGISTER(button, LOG_LEVEL_DBG);
 

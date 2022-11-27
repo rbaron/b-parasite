@@ -1,10 +1,10 @@
-#include "shtc3.h"
+#include "prstlib/shtc3.h"
 
 #include <drivers/i2c.h>
 #include <logging/log.h>
 #include <zephyr/zephyr.h>
 
-#include "prst/macros.h"
+#include "prstlib/macros.h"
 
 LOG_MODULE_REGISTER(shtc3, LOG_LEVEL_INF);
 

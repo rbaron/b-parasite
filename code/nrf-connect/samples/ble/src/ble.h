@@ -1,7 +1,7 @@
 #ifndef _PRST_BLE_BLE_H_
 #define _PRST_BLE_BLE_H_
 
-#include "prst/data.h"
+#include <prstlib/sensors.h>
 
 int prst_ble_init();
 int prst_ble_adv_start();

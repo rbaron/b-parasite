@@ -1,4 +1,4 @@
-#include "adc.h"
+#include "prstlib/adc.h"
 
 #include <drivers/adc.h>
 #include <drivers/gpio.h>
@@ -6,7 +6,7 @@
 #include <logging/log.h>
 #include <zephyr/zephyr.h>
 
-#include "macros.h"
+#include "prstlib/macros.h"
 
 LOG_MODULE_REGISTER(adc, LOG_LEVEL_DBG);
 

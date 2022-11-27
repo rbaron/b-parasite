@@ -1,8 +1,8 @@
-#include "led.h"
+#include "prstlib/led.h"
 
 #include <drivers/gpio.h>
 
-#include "macros.h"
+#include "prstlib/macros.h"
 
 LOG_MODULE_REGISTER(led, LOG_LEVEL_DBG);
 

@@ -1,8 +1,7 @@
-#include "prst/ble/encoding.h"
+#include "encoding.h"
 
 #include <logging/log.h>
-
-#include "prst/macros.h"
+#include <prstlib/macros.h>
 
 LOG_MODULE_DECLARE(ble, LOG_LEVEL_DBG);
 
