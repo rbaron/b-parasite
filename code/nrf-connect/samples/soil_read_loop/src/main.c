@@ -2,24 +2,10 @@
 #include <drivers/gpio.h>
 #include <drivers/pwm.h>
 #include <logging/log.h>
+#include <prstlib/macros.h>
 #include <zephyr/zephyr.h>
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
-
-#define PRST_STRINGIFY(x) #x
-#define PRST_TO_STRING(x) PRST_STRINGIFY(x)
-#define PRST_LOCATION __FILE__ ":" PRST_TO_STRING(__LINE__)
-
-#define RET_IF_ERR_MSG(expr, msg)                  \
-  {                                                \
-    int err = (expr);                              \
-    if (err) {                                     \
-      LOG_ERR("Error: " msg " in " PRST_LOCATION); \
-      return err;                                  \
-    }                                              \
-  }
-
-#define RET_IF_ERR(expr) RET_IF_ERR_MSG(expr, "")
 
 static const struct pwm_dt_spec soil_pwm_dt =
     PWM_DT_SPEC_GET(DT_NODELABEL(soil_pwm));
