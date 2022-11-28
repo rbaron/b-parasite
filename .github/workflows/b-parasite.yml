@@ -9,9 +9,38 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Checks format & builds b-parasite's firmware
+    name: Checks format & builds samples
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build
+        uses: actions/checkout@v3
+      - name: Run clang-format style check
+        uses: jidicula/clang-format-action@v4.9.0
+        with:
+          check-path: 'code/nrf-connect'
+      # Builds and upload blinky.hex.
+      - name: Build the blinky sample
         uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/blinky
+      - uses: actions/upload-artifact@v3
+        with:
+          name: blinky
+          path: code/nrf-connect/samples/blinky/build/zephyr/zephyr.hex
+      # Builds and upload soil_read_loop.hex.
+      - name: Build the soil_read_loop sample
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/soil_read_loop
+      - uses: actions/upload-artifact@v3
+        with:
+          name: soil_read_loop
+          path: code/nrf-connect/samples/soil_read_loop/build/zephyr/zephyr.hex
+      # Builds and upload ble.hex.
+      - name: Build the ble sample
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ble
+          path: code/nrf-connect/samples/ble/build/zephyr/zephyr.hex

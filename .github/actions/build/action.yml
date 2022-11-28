@@ -1,5 +1,11 @@
 name: 'Build'
-description: 'Builds b-parasite firmware'
+description: 'Builds a nrf-connect sample for b-parasite'
+inputs:
+  sample-dir:
+    description: 'Sample directory to build'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - ${{ inputs.sample-dir }}
