@@ -24,7 +24,7 @@ config PRST_SLEEP_DURATION_SEC
 
 config PRST_BLE_ADV_DURATION_SEC
 	int "Advertising duration in seconds"
-	default 1
+	default 600
 
 choice PRST_BLE_ENCODING
 	prompt "b-parasite BLE encoding"
