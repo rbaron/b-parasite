@@ -4,7 +4,7 @@
 
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(led, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(led, LOG_LEVEL_WRN);
 
 struct gpio_dt_spec led = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
 

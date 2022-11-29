@@ -8,7 +8,7 @@
 
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(adc, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(adc, LOG_LEVEL_WRN);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
 static const struct pwm_dt_spec soil_pwm_dt =
@@ -115,6 +115,5 @@ int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out) {
   const float lux_sun = 10000.0f;
   const float current = out->adc_read.voltage / phototransistor_resistor;
   out->brightness = MAX(0, MIN(lux_sun * current / current_sun, UINT16_MAX));
-
   return 0;
 }

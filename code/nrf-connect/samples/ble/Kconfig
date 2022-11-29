@@ -34,8 +34,11 @@ choice PRST_BLE_ENCODING
 config PRST_BLE_ENCODING_BPARASITE_V2
 	bool "Uses the custom b-parasite protocol v2 for encoding advertising packets"
 
-config PRST_BLE_ENCODING_BTHOME
-	bool "Uses the BTHome (bthome.io) BLE encoding"
+config PRST_BLE_ENCODING_BTHOME_V1
+	bool "Uses the BTHome (bthome.io) BLE encoding (v1)"
+
+config PRST_BLE_ENCODING_BTHOME_V2
+	bool "Uses the BTHome (bthome.io) BLE encoding (v2)"
 
 endchoice  # PRST_BLE_ENCODING
 
@@ -44,4 +47,5 @@ config PRST_BLE_ENCODING_SERVICE_DATA_LEN
 	help
 		Size of the service data buffer
 	default 20 if PRST_BLE_ENCODING_BPARASITE_V2
-	default 18 if PRST_BLE_ENCODING_BTHOME
+	default 18 if PRST_BLE_ENCODING_BTHOME_V1
+	default 19 if PRST_BLE_ENCODING_BTHOME_V2

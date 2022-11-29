@@ -7,7 +7,7 @@
 
 #include "encoding.h"
 
-LOG_MODULE_REGISTER(ble, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(ble, LOG_LEVEL_INF);
 
 static uint8_t service_data[CONFIG_PRST_BLE_ENCODING_SERVICE_DATA_LEN] = {0};
 
@@ -17,16 +17,17 @@ static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME),
 };
 
-static const struct bt_data sd[] = {
-    BT_DATA_BYTES(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME),
-};
+static const struct bt_data sd[] = {};
+
+static bt_addr_le_t mac_addr;
 
 // bt_addr_le_t.a holds the MAC address in big-endian.
 static int get_mac_addr(bt_addr_le_t *out) {
   struct bt_le_oob oob;
   RET_IF_ERR(bt_le_oob_get_local(BT_ID_DEFAULT, &oob));
-  LOG_HEXDUMP_DBG(oob.addr.a.val, ARRAY_SIZE(oob.addr.a.val),
-                  "Read address using bt_le_oob_get_local");
+  const uint8_t *addr = oob.addr.a.val;
+  LOG_INF("MAC Address: %02x:%02x:%02x:%02x:%02x:%02x",
+          addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
   *out = oob.addr;
   return 0;
 }
@@ -36,6 +37,8 @@ int prst_ble_init() {
   if (IS_ENABLED(CONFIG_SETTINGS)) {
     RET_IF_ERR_MSG(settings_load(), "Error in settings_load()");
   }
+
+  RET_IF_ERR(get_mac_addr(&mac_addr));
   return 0;
 }
 
@@ -52,8 +55,6 @@ int prst_ble_adv_stop() {
 }
 
 int prst_ble_adv_set_data(const prst_sensors_t *sensors) {
-  bt_addr_le_t addr;
-  RET_IF_ERR(get_mac_addr(&addr));
-  return prst_ble_encode_service_data(sensors, &addr, service_data,
+  return prst_ble_encode_service_data(sensors, &mac_addr, service_data,
                                       sizeof(service_data));
 }
