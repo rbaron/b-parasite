@@ -41,8 +41,6 @@ int prst_shtc3_read(prst_shtc3_read_t *out) {
   // Put the sensor in sleep mode.
   RET_IF_ERR(write_cmd(PRST_SHTC3_CMD_SLEEP));
 
-  // TODO: Uninit i2c to save power?
-
   // TODO: verify the CRC of the measurements. The function is described in the
   // datasheet.
 
