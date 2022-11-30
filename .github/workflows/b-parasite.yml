@@ -17,30 +17,70 @@ jobs:
         uses: jidicula/clang-format-action@v4.9.0
         with:
           check-path: 'code/nrf-connect'
-      # Builds and upload blinky.hex.
+      # Build and upload blinky.hex.
       - name: Build the blinky sample
         uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/blinky
+          output-bin: blinky.hex
       - uses: actions/upload-artifact@v3
         with:
-          name: blinky
-          path: code/nrf-connect/samples/blinky/build/zephyr/zephyr.hex
-      # Builds and upload soil_read_loop.hex.
+          name: sample-binaries
+          path: code/nrf-connect/samples/blinky/build/zephyr/blinky.hex
+      # Build and upload soil_read_loop.hex.
       - name: Build the soil_read_loop sample
         uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/soil_read_loop
+          output-bin: soil_read_loop.hex
       - uses: actions/upload-artifact@v3
         with:
-          name: soil_read_loop
-          path: code/nrf-connect/samples/soil_read_loop/build/zephyr/zephyr.hex
-      # Builds and upload ble.hex.
-      - name: Build the ble sample
+          name: sample-binaries
+          path: code/nrf-connect/samples/soil_read_loop/build/zephyr/soil_read_loop.hex
+      # Build and upload ble_nrf52840_default.hex.
+      - name: Build the ble sample with default config (nRF52840)
         uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          output-bin: ble_nrf52840_default.hex
       - uses: actions/upload-artifact@v3
         with:
-          name: ble
-          path: code/nrf-connect/samples/ble/build/zephyr/zephyr.hex
+          name: sample-binaries
+          path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52840_default.hex
+      # Build and upload ble_nrf52840_bthomev1.hex.
+      - name: Build ble_nrf52840_bthomev1.hex
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V1=y
+          output-bin: ble_nrf52840_bthomev1.hex
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sample-binaries
+          path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52840_bthomev1.hex
+      # Build and upload ble_nrf52840_test_bthomev1_sleep1s.hex
+      - name: Build the ble sample for testing @ nRF52840
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          cmake-extra: -DCONFIG_PRST_SLEEP_DURATION_SEC=1 -DCONFIG_PRST_BLE_ENCODING_BTHOME_V1=y
+          output-bin: ble_nrf52840_test_bthomev1_sleep1s.hex
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sample-binaries
+          path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52840_test_bthomev1_sleep1s.hex
+      # Build and upload ble_nrf52840_test_bthomev2_sleep1s.hex
+      - name: Build the ble sample for testing @ nRF52840
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          cmake-extra: -DCONFIG_PRST_SLEEP_DURATION_SEC=1 -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y
+          output-bin: ble_nrf52840_test_bthomev2_sleep1s.hex
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sample-binaries
+          path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52840_test_bthomev2_sleep1s.hex

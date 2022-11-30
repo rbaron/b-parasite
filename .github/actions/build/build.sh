@@ -1,6 +1,13 @@
 #!/bin/bash
 set -eux -o pipefail
 
-cd "${GITHUB_WORKSPACE}/${1}"
+SAMPLE_DIR=$1
+BOARD=$2
+CMAKE_EXTRA=$3
+OUTPUT_BIN=$4
 
-west build --build-dir ./build --pristine --board bparasite_nrf52840
+cd "${GITHUB_WORKSPACE}/${SAMPLE_DIR}"
+
+west build --build-dir ./build --pristine --board "${BOARD}" -- $CMAKE_EXTRA
+
+mv build/zephyr/zephyr.hex build/zephyr/"${OUTPUT_BIN}"

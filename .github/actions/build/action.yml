@@ -4,8 +4,20 @@ inputs:
   sample-dir:
     description: 'Sample directory to build'
     required: true
+  board:
+    description: 'Board definition to use'
+    default: bparasite_nrf52840
+  cmake-extra:
+    description: 'Extra CMake arguments'
+    default: ''
+  output-bin:
+    description: 'Name of the .hex output'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.sample-dir }}
+    - ${{ inputs.board }}
+    - ${{ inputs.cmake-extra }}
+    - ${{ inputs.output-bin }}
