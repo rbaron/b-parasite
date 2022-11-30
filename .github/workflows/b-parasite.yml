@@ -48,6 +48,17 @@ jobs:
         with:
           name: sample-binaries
           path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52840_default.hex
+      # Build and upload ble_nrf52833_default.hex.
+      - name: Build the ble sample with default config (nRF52833)
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52833
+          output-bin: ble_nrf52833_default.hex
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sample-binaries
+          path: code/nrf-connect/samples/ble/build/zephyr/ble_nrf52833_default.hex
       # Build and upload ble_nrf52840_bthomev1.hex.
       - name: Build ble_nrf52840_bthomev1.hex
         uses: ./.github/actions/build
