@@ -1,0 +1,4 @@
+
+config BOARD_BPARASITE_NRF52833
+	bool "b-parasite nRF52833 board"
+	depends on SOC_NRF52833_QIAA
