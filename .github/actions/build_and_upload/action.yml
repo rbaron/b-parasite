@@ -18,7 +18,6 @@ runs:
   using: "composite"
   steps:
     - uses: ./.github/actions/build
-      image: 'Dockerfile'
       with:
         sample-dir: ${{ inputs.sample-dir }}
         board: ${{ inputs.board }}

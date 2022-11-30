@@ -9,41 +9,47 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Checks format & builds samples
+    name: Check format & build samples
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Run clang-format style check
+      - name: Check clang-format
         uses: jidicula/clang-format-action@v4.9.0
         with:
           check-path: 'code/nrf-connect'
-      - uses: ./.github/actions/build
+      - name: Build blinky
+        uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/blinky
           board: bparasite_nrf52840
           output-bin: blinky_nrf52840.hex
-      - uses: ./.github/actions/build
+      - name: Build soil_read_loop
+        uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/soil_read_loop
           board: bparasite_nrf52840
           output-bin: soil_read_loop_nrf52840.hex
-      - uses: ./.github/actions/build_and_upload
+      - name: Build ble_nrf52840_default.hex
+        uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_nrf52840
           output-bin: ble_nrf52840_default.hex
-      - uses: ./.github/actions/build_and_upload
+      - name: Build ble_nrf52840_bthomev1.hex
+        uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_nrf52840
           cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V1=y
           output-bin: ble_nrf52840_bthomev1.hex
-      - uses: ./.github/actions/build_and_upload
+      - name: Build ble_nrf52833_default.hex
+        uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_nrf52833
           output-bin: ble_nrf52833_default.hex
-      - uses: ./.github/actions/build_and_upload
+      - name: Build ble_nrf52833_bthomev1.hex
+        uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_nrf52833
