@@ -21,6 +21,13 @@ static const struct bt_data sd[] = {};
 
 static bt_addr_le_t mac_addr;
 
+static int set_user_defined_bt_addr(const char *addr_str) {
+  bt_addr_le_t addr;
+  RET_IF_ERR(bt_addr_le_from_str(addr_str, "random", &addr));
+  RET_IF_ERR(bt_id_create(&addr, NULL));
+  return 0;
+}
+
 // bt_addr_le_t.a holds the MAC address in big-endian.
 static int get_mac_addr(bt_addr_le_t *out) {
   struct bt_le_oob oob;
@@ -33,6 +40,12 @@ static int get_mac_addr(bt_addr_le_t *out) {
 }
 
 int prst_ble_init() {
+#if CONFIG_PRST_BLE_HAS_USER_DEFINED_RANDOM_STATIC_ADDR
+  RET_IF_ERR(set_user_defined_bt_addr(CONFIG_PRST_BLE_USER_DEFINED_RANDOM_STATIC_ADDR));
+#else
+  UNUSED_OK(set_user_defined_bt_addr);
+#endif  // PRST_BLE_HAS_USER_DEFINED_MAC_ADDR
+
   RET_IF_ERR(bt_enable(/*bt_reader_cb_t=*/NULL));
   if (IS_ENABLED(CONFIG_SETTINGS)) {
     RET_IF_ERR_MSG(settings_load(), "Error in settings_load()");

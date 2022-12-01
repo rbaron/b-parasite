@@ -19,4 +19,6 @@
 // Checks that expr evaluates to true, otherwise return 1.
 #define RET_CHECK(expr, msg) RET_IF_ERR_MSG(!(expr), msg)
 
+#define UNUSED_OK(expr) (void)expr;
+
 #endif  // _PRST_MACROS_H_

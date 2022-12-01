@@ -1,34 +1,16 @@
 
 source "Kconfig.zephyr"
 
-choice PRST_NETWORK
-	prompt "b-parasite Network"
-	default PRST_NETWORK_BLE
-
-config PRST_NETWORK_NONE
-    bool "Network disabled"
-
-config PRST_NETWORK_BLE
-    bool "Uses BLE as the network"
-    depends on BT
-
-endchoice  # PRST_NETWORK
-
 config PRST_SLEEP_DURATION_SEC
 	int "Sleep duration in seconds"
 	default 600
 
-###
-### BLE configs
-###
-
 config PRST_BLE_ADV_DURATION_SEC
 	int "Advertising duration in seconds"
-	default 600
+	default 1
 
 choice PRST_BLE_ENCODING
 	prompt "b-parasite BLE encoding"
-	depends on PRST_NETWORK_BLE
 	default PRST_BLE_ENCODING_BPARASITE_V2
 
 config PRST_BLE_ENCODING_BPARASITE_V2
@@ -45,7 +27,17 @@ endchoice  # PRST_BLE_ENCODING
 config PRST_BLE_ENCODING_SERVICE_DATA_LEN
 	int
 	help
-		Size of the service data buffer
+		Size of the service data buffer.
 	default 20 if PRST_BLE_ENCODING_BPARASITE_V2
 	default 18 if PRST_BLE_ENCODING_BTHOME_V1
 	default 19 if PRST_BLE_ENCODING_BTHOME_V2
+
+
+config PRST_BLE_HAS_USER_DEFINED_RANDOM_STATIC_ADDR
+	bool "Whether to use a custom BLE address"
+
+config PRST_BLE_USER_DEFINED_RANDOM_STATIC_ADDR
+	string "Overrides the device's BT address"
+	help
+		This address has to be random static (e.g.: f0:ca:f0:ca:01:d5).
+	depends on PRST_BLE_HAS_USER_DEFINED_RANDOM_STATIC_ADDR
