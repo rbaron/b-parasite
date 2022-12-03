@@ -7,6 +7,9 @@ inputs:
   board:
     description: 'Board definition to use'
     default: bparasite_nrf52840
+  revision:
+    description: 'Board revision use'
+    default: '1.2.0'
   cmake-extra:
     description: 'Extra CMake arguments'
     default: ''
@@ -19,5 +22,6 @@ runs:
   args:
     - ${{ inputs.sample-dir }}
     - ${{ inputs.board }}
+    - ${{ inputs.revision }}
     - ${{ inputs.cmake-extra }}
     - ${{ inputs.output-bin }}

@@ -18,7 +18,7 @@ static const struct adc_dt_spec adc_soil_spec =
     ADC_DT_SPEC_GET_BY_IDX(DT_PATH(zephyr_user), 0);
 
 static const struct adc_dt_spec adc_batt_spec =
-    ADC_DT_SPEC_GET_BY_IDX(DT_PATH(zephyr_user), 2);
+    ADC_DT_SPEC_GET_BY_IDX(DT_PATH(zephyr_user), 1);
 
 static int16_t soil_buf;
 static struct adc_sequence soil_sequence = {
