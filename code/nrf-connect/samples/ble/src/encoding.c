@@ -19,7 +19,9 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   out[2] |= (2 << 4) & 0xf0;
   // Bit 0 of byte 0 specifies whether or not ambient light data exists in the
   // payload.
+#if DT_NODE_EXISTS(DT_NODELABEL(photo_transistor)) || DT_NODE_EXISTS(DT_NODELABEL(ldr))
   out[2] |= 1;
+#endif
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
   // out[3] = sensors->run_counter & 0x0f;
@@ -42,6 +44,7 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
 // https://bthome.io/v1/
 #elif CONFIG_PRST_BLE_ENCODING_BTHOME_V1
 
+  // 0x181c - User data service UUID.
   out[0] = 0x1c;
   out[1] = 0x18;
 
@@ -55,7 +58,6 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   uint16_t soil_val = 10000 * sensors->soil.percentage;
   out[4] = soil_val & 0xff;
   out[5] = soil_val >> 8;
-
   // 2. Temp.
   // int16_t.
   out[6] = (0b001 << 5) | 3;
@@ -65,7 +67,6 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   int16_t temp_val = 100 * sensors->shtc3.temp_c;
   out[8] = temp_val & 0xff;
   out[9] = temp_val >> 8;
-
   // 3. Humidity
   // uint16_t.
   out[10] = (0b000 << 5) | 3;
@@ -75,7 +76,6 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   uint16_t humi_val = 10000 * sensors->shtc3.rel_humi;
   out[12] = humi_val & 0xff;
   out[13] = humi_val >> 8;
-
   // 4. Battery voltage.
   // uint16_t.
   out[14] = (0b000 << 5) | 3;
@@ -95,40 +95,36 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // Service header - no encryption, bt home v2.
   out[2] = 0x40;
 
-  // Soil moisture.
-  out[3] = 0x14;
-  // Factor of 0.01, so we need to multiply our the value in 100% by 1/0.01 = 100.
-  uint16_t soil_val = 10000 * sensors->soil.percentage;
-  out[4] = soil_val & 0xff;
-  out[5] = soil_val >> 8;
-
   // Temperature.
-  out[6] = 0x02;
+  out[3] = 0x02;
   int16_t temp_val = 100 * sensors->shtc3.temp_c;
-  out[7] = temp_val & 0xff;
-  out[8] = temp_val >> 8;
-
+  out[4] = temp_val & 0xff;
+  out[5] = temp_val >> 8;
   // Humidity.
-  out[9] = 0x03;
+  out[6] = 0x03;
   // Value. Factor 0.01, over 100%.
   uint16_t humi_val = 10000 * sensors->shtc3.rel_humi;
-  out[10] = humi_val & 0xff;
-  out[11] = humi_val >> 8;
-
+  out[7] = humi_val & 0xff;
+  out[8] = humi_val >> 8;
+  // Illuminance.
+  out[9] = 0x05;
+  out[10] = sensors->photo.brightness >> 16;
+  out[11] = (sensors->photo.brightness >> 8) & 0xff;
+  out[12] = sensors->photo.brightness & 0xff;
   // Battery voltage.
-  out[12] = 0x0c;
+  out[13] = 0x0c;
   // Value. Factor of 0.001.
   uint16_t batt_val = sensors->batt.millivolts;
-  out[13] = batt_val & 0xff;
-  out[14] = batt_val >> 8;
+  out[14] = batt_val & 0xff;
+  out[15] = batt_val >> 8;
+  // Soil moisture.
+  out[16] = 0x14;
+  // Factor of 0.01, so we need to multiply our the value in 100% by 1/0.01 = 100.
+  uint16_t soil_val = 10000 * sensors->soil.percentage;
+  out[17] = soil_val & 0xff;
+  out[18] = soil_val >> 8;
 
-  // Illuminance.
-  out[15] = 0x05;
-  out[16] = sensors->photo.brightness >> 16;
-  out[17] = (sensors->photo.brightness >> 8) & 0xff;
-  out[18] = sensors->photo.brightness & 0xff;
-
-#endif  // Enccoding protocols
+#endif  // Encoding protocols
 
   LOG_HEXDUMP_DBG(out, out_len, "Encoded BLE adv: ");
   return 0;
