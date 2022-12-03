@@ -7,6 +7,9 @@ inputs:
   board:
     description: 'Board definition to use'
     required: true
+  revision:
+    description: 'Board revision use'
+    default: '1.2.0'
   cmake-extra:
     description: 'Extra CMake arguments'
     default: ''
@@ -21,6 +24,7 @@ runs:
       with:
         sample-dir: ${{ inputs.sample-dir }}
         board: ${{ inputs.board }}
+        revision: ${{ inputs.revision }}
         cmake-extra: ${{ inputs.cmake-extra }}
         output-bin: ${{ inputs.output-bin }}
     - uses: actions/upload-artifact@v3
