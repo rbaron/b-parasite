@@ -1,10 +1,10 @@
 #include "prstlib/adc.h"
 
-#include <drivers/adc.h>
-#include <drivers/gpio.h>
-#include <drivers/pwm.h>
-#include <logging/log.h>
 #include <math.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/pwm.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/zephyr.h>
 
 #include "prstlib/macros.h"

@@ -1,7 +1,7 @@
 #include "encoding.h"
 
-#include <logging/log.h>
 #include <prstlib/macros.h>
+#include <zephyr/logging/log.h>
 
 LOG_MODULE_DECLARE(ble, LOG_LEVEL_INF);
 

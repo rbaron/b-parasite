@@ -1,6 +1,6 @@
 #include "prstlib/sensors.h"
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 
 #include "prstlib/adc.h"
 #include "prstlib/led.h"

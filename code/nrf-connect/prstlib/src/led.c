@@ -1,6 +1,6 @@
 #include "prstlib/led.h"
 
-#include <drivers/gpio.h>
+#include <zephyr/drivers/gpio.h>
 
 #include "prstlib/macros.h"
 

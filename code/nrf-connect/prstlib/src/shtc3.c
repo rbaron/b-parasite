@@ -1,7 +1,7 @@
 #include "prstlib/shtc3.h"
 
-#include <drivers/i2c.h>
-#include <logging/log.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/zephyr.h>
 
 #include "prstlib/macros.h"

@@ -1,7 +1,7 @@
 #include "prstlib/button.h"
 
-#include <drivers/gpio.h>
-#include <logging/log.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
 
 #include "prstlib/led.h"
 #include "prstlib/macros.h"

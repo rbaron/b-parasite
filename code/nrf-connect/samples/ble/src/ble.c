@@ -1,8 +1,8 @@
 #include "ble.h"
 
-#include <logging/log.h>
 #include <prstlib/macros.h>
 #include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
 
 #include "encoding.h"

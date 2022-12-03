@@ -1,10 +1,10 @@
-#include <logging/log.h>
 #include <prstlib/adc.h>
 #include <prstlib/button.h>
 #include <prstlib/led.h>
 #include <prstlib/macros.h>
 #include <prstlib/sensors.h>
 #include <prstlib/shtc3.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/pm/device.h>
 #include <zephyr/pm/pm.h>
 #include <zephyr/pm/policy.h>

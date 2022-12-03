@@ -1,8 +1,8 @@
 #ifndef _PRST_LED_H_
 #define _PRST_LED_H_
 
-#include <drivers/gpio.h>
-#include <logging/log.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
 
 #include "prstlib/macros.h"
 
