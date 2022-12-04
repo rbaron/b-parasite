@@ -1,5 +1,5 @@
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/zephyr.h>
+#include <zephyr/kernel.h>
 
 #define SLEEP_TIME_MS 1000
 

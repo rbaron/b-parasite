@@ -2,6 +2,7 @@
 #define _PRST_LED_H_
 
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
 #include "prstlib/macros.h"
