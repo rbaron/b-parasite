@@ -24,7 +24,7 @@
 /** @cond internals_doc */
 
 /** Range extender IN (server) clusters number */
-#define ZB_RANGE_EXTENDER_IN_CLUSTER_NUM 3
+#define ZB_RANGE_EXTENDER_IN_CLUSTER_NUM 4
 
 /** Range extender OUT (client) clusters number */
 #define ZB_RANGE_EXTENDER_OUT_CLUSTER_NUM 0
@@ -37,13 +37,16 @@
 
 typedef struct {
   zb_uint16_t rel_humidity;
-} prst_rel_humidity_t;
+  zb_uint16_t min_val;
+  zb_uint16_t max_val;
+} prst_rel_humidity_attrs_t;
 
 #define ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(                             \
     cluster_list_name,                                                      \
     basic_attr_list,                                                        \
     identify_attr_list,                                                     \
-    temp_measurement_attr_list)                                             \
+    temp_measurement_attr_list,                                             \
+    rel_humidity_attr_list)                                                 \
   zb_zcl_cluster_desc_t cluster_list_name[] =                               \
       {                                                                     \
           ZB_ZCL_CLUSTER_DESC(                                              \
@@ -62,6 +65,12 @@ typedef struct {
               ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                           \
               ZB_ZCL_ARRAY_SIZE(temp_measurement_attr_list, zb_zcl_attr_t), \
               (temp_measurement_attr_list),                                 \
+              ZB_ZCL_CLUSTER_SERVER_ROLE,                                   \
+              ZB_ZCL_MANUF_CODE_INVALID),                                   \
+          ZB_ZCL_CLUSTER_DESC(                                              \
+              ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                   \
+              ZB_ZCL_ARRAY_SIZE(rel_humidity_attr_list, zb_zcl_attr_t),     \
+              (rel_humi_attr_list),                                         \
               ZB_ZCL_CLUSTER_SERVER_ROLE,                                   \
               ZB_ZCL_MANUF_CODE_INVALID)}
 
@@ -87,7 +96,9 @@ typedef struct {
           in_clust_num,                                                                        \
           out_clust_num,                                                                       \
           {ZB_ZCL_CLUSTER_ID_BASIC,                                                            \
-           ZB_ZCL_CLUSTER_ID_IDENTIFY, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT}}
+           ZB_ZCL_CLUSTER_ID_IDENTIFY,                                                         \
+           ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                                                 \
+           ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT}}
 
 /** @endcond */ /* internals_doc */
 

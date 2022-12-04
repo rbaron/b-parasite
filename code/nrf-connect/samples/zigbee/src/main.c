@@ -11,6 +11,7 @@
 
 #include <dk_buttons_and_leds.h>
 #include <prstlib/adc.h>
+#include <prstlib/shtc3.h>
 #include <zb_nrf_platform.h>
 #include <zboss_api.h>
 #include <zboss_api_addons.h>
@@ -51,10 +52,12 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 /* Main application customizable context.
  * Stores all settings and static values.
  */
+
 struct zb_device_ctx {
   zb_zcl_basic_attrs_ext_t basic_attr;
   zb_zcl_identify_attrs_t identify_attr;
   zb_zcl_temp_measurement_attrs_t temp_measure_attrs;
+  prst_rel_humidity_attrs_t rel_humidity_attrs;
 };
 
 /* Zigbee device application context storage. */
@@ -84,11 +87,18 @@ ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST(temp_measurement_attr_list,
                                             &dev_ctx.temp_measure_attrs.max_measure_value,
                                             &dev_ctx.temp_measure_attrs.tolerance);
 
+ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
+    rel_humi_attr_list,
+    &dev_ctx.rel_humidity_attrs.rel_humidity,
+    &dev_ctx.rel_humidity_attrs.min_val,
+    &dev_ctx.rel_humidity_attrs.max_val);
+
 ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     app_template_clusters,
     basic_attr_list,
     identify_attr_list,
-    temp_measurement_attr_list);
+    temp_measurement_attr_list,
+    rel_humi_attr_list);
 
 ZB_DECLARE_RANGE_EXTENDER_EP(
     app_template_ep,
@@ -119,6 +129,11 @@ static void app_clusters_attr_init(void) {
   zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
                       (zb_uint8_t*)&temperature_value, ZB_FALSE);
+
+  static zb_int16_t rel_humidity = 3 * (UINT16_MAX / 4);
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
+                      (zb_uint8_t*)&rel_humidity, ZB_FALSE);
 
   /* Identify cluster attributes data. */
   dev_ctx.identify_attr.identify_time =
