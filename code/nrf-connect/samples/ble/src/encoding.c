@@ -108,9 +108,9 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   out[8] = humi_val >> 8;
   // Illuminance.
   out[9] = 0x05;
-  out[10] = sensors->photo.brightness >> 16;
-  out[11] = (sensors->photo.brightness >> 8) & 0xff;
-  out[12] = sensors->photo.brightness & 0xff;
+  out[10] = sensors->photo.brightness & 0xff;
+  out[11] = sensors->photo.brightness >> 8;
+  out[12] = 0;
   // Battery voltage.
   out[13] = 0x0c;
   // Value. Factor of 0.001.
