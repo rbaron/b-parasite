@@ -53,6 +53,7 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 struct zb_device_ctx {
   zb_zcl_basic_attrs_ext_t basic_attr;
   zb_zcl_identify_attrs_t identify_attr;
+  zb_zcl_temp_measurement_attrs_t temp_measure_attrs;
 };
 
 /* Zigbee device application context storage. */
@@ -76,10 +77,17 @@ ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_EXT(
     &dev_ctx.basic_attr.ph_env,
     dev_ctx.basic_attr.sw_ver);
 
+ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST(temp_measurement_attr_list,
+                                            &dev_ctx.temp_measure_attrs.measure_value,
+                                            &dev_ctx.temp_measure_attrs.min_measure_value,
+                                            &dev_ctx.temp_measure_attrs.max_measure_value,
+                                            &dev_ctx.temp_measure_attrs.tolerance);
+
 ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     app_template_clusters,
     basic_attr_list,
-    identify_attr_list);
+    identify_attr_list,
+    temp_measurement_attr_list);
 
 ZB_DECLARE_RANGE_EXTENDER_EP(
     app_template_ep,
@@ -105,6 +113,11 @@ static void app_clusters_attr_init(void) {
       dev_ctx.basic_attr.model_id,
       PRST_BASIC_MODEL_ID,
       ZB_ZCL_STRING_CONST_SIZE(PRST_BASIC_MODEL_ID));
+
+  static zb_int16_t temperature_value = 27;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+                      (zb_uint8_t*)&temperature_value, ZB_FALSE);
 
   /* Identify cluster attributes data. */
   dev_ctx.identify_attr.identify_time =
