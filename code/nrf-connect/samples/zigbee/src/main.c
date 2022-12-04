@@ -10,6 +10,7 @@
  */
 
 #include <dk_buttons_and_leds.h>
+#include <prstlib/adc.h>
 #include <zb_nrf_platform.h>
 #include <zboss_api.h>
 #include <zboss_api_addons.h>

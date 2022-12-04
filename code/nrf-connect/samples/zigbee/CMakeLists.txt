@@ -1,19 +1,19 @@
-#
-# Copyright (c) 2021 Nordic Semiconductor ASA
-#
-# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
-#
-
 cmake_minimum_required(VERSION 3.20.0)
+
+# Pull in the dts/ and boards/ from prstlib.
+set(DTS_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../prstlib)
+set(BOARD_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../prstlib)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
-project("Zigbee application template")
+project("b-parasite Zigbee sample")
 
-# NORDIC SDK APP START
+include_directories(src)
+
 target_sources(app PRIVATE
   src/main.c
 )
 
-target_include_directories(app PRIVATE include)
-# NORDIC SDK APP END
+add_subdirectory(../../prstlib prstlib)
+target_include_directories(app PRIVATE ../../prstlib/include)
+target_link_libraries(app PUBLIC prstlib)

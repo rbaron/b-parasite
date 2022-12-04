@@ -35,6 +35,10 @@
 /** Number of attribute for reporting on Range extender device */
 #define ZB_RANGE_EXTENDER_REPORT_ATTR_COUNT 0
 
+typedef struct {
+  zb_uint16_t rel_humidity;
+} prst_rel_humidity_t;
+
 #define ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(                             \
     cluster_list_name,                                                      \
     basic_attr_list,                                                        \
