@@ -32,10 +32,10 @@
 #define TEMPLATE_INIT_BASIC_POWER_SOURCE ZB_ZCL_BASIC_POWER_SOURCE_BATTERY
 
 /* LED indicating that device successfully joined Zigbee network. */
-#define ZIGBEE_NETWORK_STATE_LED DK_LED3
+// #define ZIGBEE_NETWORK_STATE_LED DK_LED3
 
 /* LED used for device identification. */
-#define IDENTIFY_LED DK_LED4
+// #define IDENTIFY_LED DK_LED4
 
 /* Button used to enter the Identify mode. */
 #define IDENTIFY_MODE_BUTTON DK_BTN4_MSK
@@ -45,7 +45,7 @@
 
 #define PRST_BASIC_MANUF_NAME "b-parasite"
 
-#define PRST_BASIC_MODEL_ID "b-parasite 1.2.0"
+#define PRST_BASIC_MODEL_ID "b-parasite"
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
@@ -147,7 +147,7 @@ static void app_clusters_attr_init(void) {
 static void toggle_identify_led(zb_bufid_t bufid) {
   static int blink_status;
 
-  dk_set_led(IDENTIFY_LED, (++blink_status) % 2);
+  // dk_set_led(IDENTIFY_LED, (++blink_status) % 2);
   ZB_SCHEDULE_APP_ALARM(toggle_identify_led, bufid, ZB_MILLISECONDS_TO_BEACON_INTERVAL(100));
 }
 
@@ -166,7 +166,7 @@ static void identify_cb(zb_bufid_t bufid) {
     zb_err_code = ZB_SCHEDULE_APP_ALARM_CANCEL(toggle_identify_led, ZB_ALARM_ANY_PARAM);
     ZVUNUSED(zb_err_code);
 
-    dk_set_led(IDENTIFY_LED, 0);
+    // dk_set_led(IDENTIFY_LED, 0);
   }
 }
 
@@ -238,10 +238,10 @@ static void configure_gpio(void) {
     LOG_ERR("Cannot init buttons (err: %d)", err);
   }
 
-  err = dk_leds_init();
-  if (err) {
-    LOG_ERR("Cannot init LEDs (err: %d)", err);
-  }
+  // err = dk_leds_init();
+  // if (err) {
+  //   LOG_ERR("Cannot init LEDs (err: %d)", err);
+  // }
 }
 
 /**@brief Zigbee stack event handler.
@@ -251,7 +251,7 @@ static void configure_gpio(void) {
  */
 void zboss_signal_handler(zb_bufid_t bufid) {
   /* Update network status LED. */
-  zigbee_led_status_update(bufid, ZIGBEE_NETWORK_STATE_LED);
+  // zigbee_led_status_update(bufid, ZIGBEE_NETWORK_STATE_LED);
 
   /* No application-specific behavior is required.
    * Call default signal handler.
@@ -281,8 +281,10 @@ void main(void) {
   /* Register handlers to identify notifications */
   ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(APP_TEMPLATE_ENDPOINT, identify_cb);
 
+  zb_bdb_set_legacy_device_support(1);
   /* Start Zigbee default thread */
   zigbee_enable();
+  zb_bdb_set_legacy_device_support(1);
 
   LOG_INF("Zigbee application template started");
 }
