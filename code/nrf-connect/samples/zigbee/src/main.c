@@ -15,6 +15,7 @@
 #include <zb_nrf_platform.h>
 #include <zboss_api.h>
 #include <zboss_api_addons.h>
+#include <zcl/zb_zcl_power_config.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zigbee/zigbee_app_utils.h>
@@ -56,8 +57,11 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 struct zb_device_ctx {
   zb_zcl_basic_attrs_ext_t basic_attr;
   zb_zcl_identify_attrs_t identify_attr;
+  // In units of 0.01 C.
   zb_zcl_temp_measurement_attrs_t temp_measure_attrs;
   prst_rel_humidity_attrs_t rel_humidity_attrs;
+  // In units of 100 mV.
+  prst_batt_attrs_t batt_attrs;
 };
 
 /* Zigbee device application context storage. */
@@ -93,12 +97,42 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
     &dev_ctx.rel_humidity_attrs.min_val,
     &dev_ctx.rel_humidity_attrs.max_val);
 
+// ZB_ZCL_DECLARE_POWER_CONFIG_ATTRIB_LIST(
+//     batt_attr_list,
+//     &dev_ctx.batt_voltage,
+//     NULL,
+//     NULL,
+//     NULL,
+//     NULL,
+//     NULL);
+
+// https://devzone.nordicsemi.com/f/nordic-q-a/85315/zboss-declare-power-config-attribute-list-for-battery-bat_num
+#define bat_num
+ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
+    batt_attr_list,
+    &dev_ctx.batt_attrs.voltage,
+    /*battery_size=*/NULL,
+    /*battery_quantity=*/&dev_ctx.batt_attrs.quantity,
+    /*battery_rated_voltage=*/&dev_ctx.batt_attrs.size,
+    /*battery_alarm_mask=*/NULL,
+    /*battery_voltage_min_threshold=*/&dev_ctx.batt_attrs.voltage_min_thres,
+    /*battery_percentage_remaining=*/&dev_ctx.batt_attrs.percentage,
+    /*battery_voltage_threshold1=*/NULL,
+    /*battery_voltage_threshold2=*/NULL,
+    /*battery_voltage_threshold3=*/NULL,
+    /*battery_percentage_min_threshold=*/&dev_ctx.batt_attrs.percentage_min_thres,
+    /*battery_percentage_threshold1=*/NULL,
+    /*battery_percentage_threshold2=*/NULL,
+    /*battery_percentage_threshold3=*/NULL,
+    /*battery_alarm_state=*/NULL);
+
 ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     app_template_clusters,
     basic_attr_list,
     identify_attr_list,
     temp_measurement_attr_list,
-    rel_humi_attr_list);
+    rel_humi_attr_list,
+    basic_attr_list);
 
 ZB_DECLARE_RANGE_EXTENDER_EP(
     app_template_ep,
@@ -134,6 +168,21 @@ static void app_clusters_attr_init(void) {
   zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
                       (zb_uint8_t*)&rel_humidity, ZB_FALSE);
+
+  static zb_uint8_t batt_voltage = 33;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
+                      (zb_uint8_t*)&batt_voltage, ZB_FALSE);
+
+  static zb_uint8_t batt_percentage = 33;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_REMAINING_ID,
+                      (zb_uint8_t*)&batt_percentage, ZB_FALSE);
+
+  static zb_uint8_t batt_quantity = 31;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_QUANTITY_ID,
+                      (zb_uint8_t*)&batt_quantity, ZB_FALSE);
 
   /* Identify cluster attributes data. */
   dev_ctx.identify_attr.identify_time =
@@ -266,6 +315,36 @@ void zboss_signal_handler(zb_bufid_t bufid) {
   }
 }
 
+void update_sensors_cb(zb_uint8_t arg) {
+  static zb_uint8_t batt = 10;
+  batt += 1;
+
+  LOG_INF("Updating sensonrs");
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
+                      (zb_uint8_t*)&batt, ZB_FALSE);
+
+  static zb_uint8_t batt_percentage = 10;
+  batt_percentage += 1;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_REMAINING_ID,
+                      (zb_uint8_t*)&batt_percentage, ZB_FALSE);
+
+  static zb_int16_t temperature_value = 27;
+  temperature_value += 1;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+                      (zb_uint8_t*)&temperature_value, ZB_FALSE);
+
+  static zb_int16_t rel_humi = 12;
+  rel_humi += 1;
+  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
+                      (zb_uint8_t*)&rel_humi, ZB_FALSE);
+
+  ZB_SCHEDULE_APP_ALARM(update_sensors_cb, NULL, ZB_TIME_ONE_SECOND * 1);
+}
+
 void main(void) {
   LOG_INF("Starting Zigbee application template example");
 
@@ -281,10 +360,14 @@ void main(void) {
   /* Register handlers to identify notifications */
   ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(APP_TEMPLATE_ENDPOINT, identify_cb);
 
+  update_sensors_cb(/*arg=*/0);
+
   zb_bdb_set_legacy_device_support(1);
   /* Start Zigbee default thread */
   zigbee_enable();
   zb_bdb_set_legacy_device_support(1);
+
+  // zigbee_configure_sleepy_behavior(/*enable=*/true);
 
   LOG_INF("Zigbee application template started");
 }
