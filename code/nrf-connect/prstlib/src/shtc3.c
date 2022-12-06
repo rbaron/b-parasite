@@ -1,8 +1,8 @@
 #include "prstlib/shtc3.h"
 
 #include <zephyr/drivers/i2c.h>
+#include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/zephyr.h>
 
 #include "prstlib/macros.h"
 
