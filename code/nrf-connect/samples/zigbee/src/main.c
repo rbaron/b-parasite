@@ -21,38 +21,17 @@
 #include <zigbee/zigbee_app_utils.h>
 #include <zigbee/zigbee_error_handler.h>
 
+#include "attrs.h"
+#include "prst_zb_soil_moisture_defs.h"
 #include "zb_range_extender.h"
 
-/* Device endpoint, used to receive ZCL commands. */
-#define APP_TEMPLATE_ENDPOINT 10
-
-/* Type of power sources available for the device.
- * For possible values see section 3.2.2.2.8 of ZCL specification.
- */
-// #define TEMPLATE_INIT_BASIC_POWER_SOURCE ZB_ZCL_BASIC_POWER_SOURCE_DC_SOURCE
-#define TEMPLATE_INIT_BASIC_POWER_SOURCE ZB_ZCL_BASIC_POWER_SOURCE_BATTERY
-
-/* LED indicating that device successfully joined Zigbee network. */
-// #define ZIGBEE_NETWORK_STATE_LED DK_LED3
-
-/* LED used for device identification. */
-// #define IDENTIFY_LED DK_LED4
-
-/* Button used to enter the Identify mode. */
+#define PRST_ZIGBEE_ENDPOINT 10
 #define IDENTIFY_MODE_BUTTON DK_BTN4_MSK
-
-/* Button to start Factory Reset */
 #define FACTORY_RESET_BUTTON IDENTIFY_MODE_BUTTON
-
 #define PRST_BASIC_MANUF_NAME "b-parasite"
-
 #define PRST_BASIC_MODEL_ID "b-parasite"
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
-
-/* Main application customizable context.
- * Stores all settings and static values.
- */
 
 struct zb_device_ctx {
   zb_zcl_basic_attrs_ext_t basic_attr;
@@ -62,9 +41,9 @@ struct zb_device_ctx {
   prst_rel_humidity_attrs_t rel_humidity_attrs;
   // In units of 100 mV.
   prst_batt_attrs_t batt_attrs;
+  prst_soil_moisture_attrs_t soil_moisture_attrs;
 };
 
-/* Zigbee device application context storage. */
 static struct zb_device_ctx dev_ctx;
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(
@@ -97,34 +76,45 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
     &dev_ctx.rel_humidity_attrs.min_val,
     &dev_ctx.rel_humidity_attrs.max_val);
 
-// ZB_ZCL_DECLARE_POWER_CONFIG_ATTRIB_LIST(
-//     batt_attr_list,
-//     &dev_ctx.batt_voltage,
-//     NULL,
-//     NULL,
-//     NULL,
-//     NULL,
-//     NULL);
-
 // https://devzone.nordicsemi.com/f/nordic-q-a/85315/zboss-declare-power-config-attribute-list-for-battery-bat_num
 #define bat_num
 ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
     batt_attr_list,
     &dev_ctx.batt_attrs.voltage,
     /*battery_size=*/NULL,
-    /*battery_quantity=*/&dev_ctx.batt_attrs.quantity,
-    /*battery_rated_voltage=*/&dev_ctx.batt_attrs.size,
+    /*battery_quantity=*/NULL,
+    /*battery_rated_voltage=*/NULL,
     /*battery_alarm_mask=*/NULL,
-    /*battery_voltage_min_threshold=*/&dev_ctx.batt_attrs.voltage_min_thres,
+    /*battery_voltage_min_threshold=*/NULL,
     /*battery_percentage_remaining=*/&dev_ctx.batt_attrs.percentage,
     /*battery_voltage_threshold1=*/NULL,
     /*battery_voltage_threshold2=*/NULL,
     /*battery_voltage_threshold3=*/NULL,
-    /*battery_percentage_min_threshold=*/&dev_ctx.batt_attrs.percentage_min_thres,
+    /*battery_percentage_min_threshold=*/NULL,
     /*battery_percentage_threshold1=*/NULL,
     /*battery_percentage_threshold2=*/NULL,
     /*battery_percentage_threshold3=*/NULL,
     /*battery_alarm_state=*/NULL);
+
+PRST_ZB_ZCL_DECLARE_SOIL_MOISTURE_ATTRIB_LIST(
+    soil_moisture_attr_list,
+    &dev_ctx.soil_moisture_attrs.percentage);
+
+// ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST2(
+//     soil_moisture_attr_list2,
+//     &dev_ctx.soil_moisture_attrs.percentage);
+
+void prst_zcl_soil_moisture_init_server(void) {
+  zb_zcl_add_cluster_handlers(PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,
+                              ZB_ZCL_CLUSTER_SERVER_ROLE,
+                              /*cluster_check_value=*/NULL,
+                              /*cluster_write_attr_hook=*/NULL,
+                              /*cluster_handler=*/NULL);
+}
+
+void prst_zcl_soil_moisture_init_client(void) {
+  // Nothing.
+}
 
 ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     app_template_clusters,
@@ -132,23 +122,21 @@ ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     identify_attr_list,
     temp_measurement_attr_list,
     rel_humi_attr_list,
-    basic_attr_list);
+    basic_attr_list,
+    soil_moisture_attr_list);
 
 ZB_DECLARE_RANGE_EXTENDER_EP(
     app_template_ep,
-    APP_TEMPLATE_ENDPOINT,
+    PRST_ZIGBEE_ENDPOINT,
     app_template_clusters);
 
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
     app_template_ctx,
     app_template_ep);
 
-/**@brief Function for initializing all clusters attributes. */
 static void app_clusters_attr_init(void) {
-  /* Basic cluster attributes data */
   dev_ctx.basic_attr.zcl_version = ZB_ZCL_VERSION;
-  dev_ctx.basic_attr.power_source = TEMPLATE_INIT_BASIC_POWER_SOURCE;
-  // dev_ctx.basic_attr.mf_name
+  dev_ctx.basic_attr.power_source = ZB_ZCL_BASIC_POWER_SOURCE_BATTERY;
   ZB_ZCL_SET_STRING_VAL(
       dev_ctx.basic_attr.mf_name,
       PRST_BASIC_MANUF_NAME,
@@ -159,81 +147,34 @@ static void app_clusters_attr_init(void) {
       PRST_BASIC_MODEL_ID,
       ZB_ZCL_STRING_CONST_SIZE(PRST_BASIC_MODEL_ID));
 
-  static zb_int16_t temperature_value = 27;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
-                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
-                      (zb_uint8_t*)&temperature_value, ZB_FALSE);
-
-  static zb_int16_t rel_humidity = 3 * (UINT16_MAX / 4);
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
-                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
-                      (zb_uint8_t*)&rel_humidity, ZB_FALSE);
-
-  static zb_uint8_t batt_voltage = 33;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
-                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
-                      (zb_uint8_t*)&batt_voltage, ZB_FALSE);
-
-  static zb_uint8_t batt_percentage = 33;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
-                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_REMAINING_ID,
-                      (zb_uint8_t*)&batt_percentage, ZB_FALSE);
-
-  static zb_uint8_t batt_quantity = 31;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
-                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_QUANTITY_ID,
-                      (zb_uint8_t*)&batt_quantity, ZB_FALSE);
-
-  /* Identify cluster attributes data. */
   dev_ctx.identify_attr.identify_time =
       ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE;
 }
 
-/**@brief Function to toggle the identify LED
- *
- * @param  bufid  Unused parameter, required by ZBOSS scheduler API.
- */
 static void toggle_identify_led(zb_bufid_t bufid) {
   static int blink_status;
-
-  // dk_set_led(IDENTIFY_LED, (++blink_status) % 2);
   ZB_SCHEDULE_APP_ALARM(toggle_identify_led, bufid, ZB_MILLISECONDS_TO_BEACON_INTERVAL(100));
 }
 
-/**@brief Function to handle identify notification events on the first endpoint.
- *
- * @param  bufid  Unused parameter, required by ZBOSS scheduler API.
- */
 static void identify_cb(zb_bufid_t bufid) {
   zb_ret_t zb_err_code;
 
   if (bufid) {
-    /* Schedule a self-scheduling function that will toggle the LED */
     ZB_SCHEDULE_APP_CALLBACK(toggle_identify_led, bufid);
   } else {
-    /* Cancel the toggling function alarm and turn off LED */
     zb_err_code = ZB_SCHEDULE_APP_ALARM_CANCEL(toggle_identify_led, ZB_ALARM_ANY_PARAM);
     ZVUNUSED(zb_err_code);
-
-    // dk_set_led(IDENTIFY_LED, 0);
   }
 }
 
-/**@brief Starts identifying the device.
- *
- * @param  bufid  Unused parameter, required by ZBOSS scheduler API.
- */
 static void start_identifying(zb_bufid_t bufid) {
   ZVUNUSED(bufid);
 
   if (ZB_JOINED()) {
-    /* Check if endpoint is in identifying mode,
-     * if not put desired endpoint in identifying mode.
-     */
     if (dev_ctx.identify_attr.identify_time ==
         ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) {
       zb_ret_t zb_err_code = zb_bdb_finding_binding_target(
-          APP_TEMPLATE_ENDPOINT);
+          PRST_ZIGBEE_ENDPOINT);
 
       if (zb_err_code == RET_OK) {
         LOG_INF("Enter identify mode");
@@ -251,25 +192,13 @@ static void start_identifying(zb_bufid_t bufid) {
   }
 }
 
-/**@brief Callback for button events.
- *
- * @param[in]   button_state  Bitmask containing buttons state.
- * @param[in]   has_changed   Bitmask containing buttons
- *                            that have changed their state.
- */
 static void button_changed(uint32_t button_state, uint32_t has_changed) {
   if (IDENTIFY_MODE_BUTTON & has_changed) {
     if (IDENTIFY_MODE_BUTTON & button_state) {
-      /* Button changed its state to pressed */
     } else {
-      /* Button changed its state to released */
       if (was_factory_reset_done()) {
-        /* The long press was for Factory Reset */
         LOG_DBG("After Factory Reset - ignore button release");
       } else {
-        /* Button released before Factory Reset */
-
-        /* Start identification mode */
         ZB_SCHEDULE_APP_CALLBACK(start_identifying, 0);
       }
     }
@@ -278,92 +207,61 @@ static void button_changed(uint32_t button_state, uint32_t has_changed) {
   check_factory_reset_button(button_state, has_changed);
 }
 
-/**@brief Function for initializing LEDs and Buttons. */
-static void configure_gpio(void) {
-  int err;
-
-  err = dk_buttons_init(button_changed);
-  if (err) {
-    LOG_ERR("Cannot init buttons (err: %d)", err);
-  }
-
-  // err = dk_leds_init();
-  // if (err) {
-  //   LOG_ERR("Cannot init LEDs (err: %d)", err);
-  // }
-}
-
-/**@brief Zigbee stack event handler.
- *
- * @param[in]   bufid   Reference to the Zigbee stack buffer
- *                      used to pass signal.
- */
 void zboss_signal_handler(zb_bufid_t bufid) {
-  /* Update network status LED. */
-  // zigbee_led_status_update(bufid, ZIGBEE_NETWORK_STATE_LED);
-
-  /* No application-specific behavior is required.
-   * Call default signal handler.
-   */
   ZB_ERROR_CHECK(zigbee_default_signal_handler(bufid));
-
-  /* All callbacks should either reuse or free passed buffers.
-   * If bufid == 0, the buffer is invalid (not passed).
-   */
   if (bufid) {
     zb_buf_free(bufid);
   }
 }
 
 void update_sensors_cb(zb_uint8_t arg) {
+  LOG_INF("Updating sensors");
+
   static zb_uint8_t batt = 10;
   batt += 1;
-
-  LOG_INF("Updating sensonrs");
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+  zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
                       (zb_uint8_t*)&batt, ZB_FALSE);
 
   static zb_uint8_t batt_percentage = 10;
   batt_percentage += 1;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
+  zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_REMAINING_ID,
                       (zb_uint8_t*)&batt_percentage, ZB_FALSE);
 
   static zb_int16_t temperature_value = 27;
   temperature_value += 1;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+  zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
                       (zb_uint8_t*)&temperature_value, ZB_FALSE);
 
   static zb_int16_t rel_humi = 12;
   rel_humi += 1;
-  zb_zcl_set_attr_val(APP_TEMPLATE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+  zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
                       (zb_uint8_t*)&rel_humi, ZB_FALSE);
+
+  static zb_int16_t soil_moisture = 69;
+  soil_moisture += 1;
+  zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,
+                      ZB_ZCL_CLUSTER_SERVER_ROLE, PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,
+                      (zb_uint8_t*)&soil_moisture, ZB_FALSE);
 
   ZB_SCHEDULE_APP_ALARM(update_sensors_cb, NULL, ZB_TIME_ONE_SECOND * 1);
 }
 
 void main(void) {
-  LOG_INF("Starting Zigbee application template example");
-
-  /* Initialize */
-  configure_gpio();
   register_factory_reset_button(FACTORY_RESET_BUTTON);
-
-  /* Register device context (endpoints). */
-  ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
 
   app_clusters_attr_init();
 
-  /* Register handlers to identify notifications */
-  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(APP_TEMPLATE_ENDPOINT, identify_cb);
+  ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
+
+  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);
 
   update_sensors_cb(/*arg=*/0);
 
   zb_bdb_set_legacy_device_support(1);
-  /* Start Zigbee default thread */
   zigbee_enable();
   zb_bdb_set_legacy_device_support(1);
 
