@@ -9,9 +9,66 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Checks format & builds b-parasite's firmware
+    name: Check format & build samples
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build
+        uses: actions/checkout@v3
+      - name: Check clang-format
+        uses: jidicula/clang-format-action@v4.9.0
+        with:
+          check-path: 'code/nrf-connect'
+      - name: Build blinky
         uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/blinky
+          board: bparasite_nrf52840
+          output-bin: blinky_nrf52840.hex
+      - name: Build soil_read_loop
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/soil_read_loop
+          board: bparasite_nrf52840
+          output-bin: soil_read_loop_nrf52840.hex
+      - name: Build ble_nrf52840_1_2_0_default.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '1.2.0'
+          output-bin: ble_nrf52840_1_2_0_default.hex
+      - name: Build ble_nrf52840_1_1_0_default.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '1.1.0'
+          output-bin: ble_nrf52840_1_1_0_default.hex
+      - name: Build ble_nrf52840_1_0_0_default.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '1.0.0'
+          output-bin: ble_nrf52840_1_0_0_default.hex
+      - name: Build ble_test_nrf52840_bthomev1_1s.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '1.2.0'
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V1=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
+          output-bin: ble_test_nrf52840_bthomev1_1s.hex
+      - name: Build ble_test_nrf52840_bthomev2_1s.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '1.2.0'
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
+          output-bin: ble_test_nrf52840_bthomev2_1s.hex
+      - name: Build ble_nrf52833_default.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52833
+          output-bin: ble_nrf52833_default.hex

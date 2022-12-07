@@ -1,0 +1,13 @@
+{
+	"name": "nrf-connect:v2.1",
+	"image": "nordicplayground/nrfconnect-sdk:v2.1-branch",
+	"features": {
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"nordic-semiconductor.nrf-connect"
+			]
+		}
+	}
+}

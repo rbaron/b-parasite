@@ -1,0 +1,10 @@
+
+if BOARD_BPARASITE_NRF52840
+
+config BOARD
+	default "bparasite_nrf52840"
+
+config BT_CTLR
+	default BT
+
+endif  # BOARD_BPARASITE_NRF52840

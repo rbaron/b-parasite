@@ -1,0 +1,86 @@
+&pinctrl {
+	/* Configure pwm0 instance to use pin 5. */
+	pwm0_default: pwm0_default {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 0, 5)>;
+			nordic,invert;
+		};
+	};
+
+	pwm0_sleep: pwm0_sleep {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 0, 5)>;
+			low-power-enable;
+		};
+	};
+
+	/* Configure i2c0 instance to use pins 24 (SDA) & 13 (SCL). */
+	i2c0_default: i2c0_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>,
+							<NRF_PSEL(TWIM_SCL, 0, 13)>;
+		};
+	};
+
+	i2c0_sleep: i2c0_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 24)>,
+							<NRF_PSEL(TWIM_SCL, 0, 13)>;
+			low-power-enable;
+		};
+	};
+};
+
+&i2c0 {
+	shtc3: shtc3@70 {
+		compatible = "i2c-device";
+		reg = <0x70>;
+		label = "SHTC3";
+	};
+};
+
+&adc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_6";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		// P0.03.
+		zephyr,input-positive = <NRF_SAADC_AIN1>;
+		zephyr,resolution = <10>;
+
+	};
+
+	channel@1 {
+		reg = <1>;
+		zephyr,gain = "ADC_GAIN_1_6";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		// P0.02.
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
+		zephyr,resolution = <10>;
+	};
+
+	channel@2 {
+		reg = <2>;
+		zephyr,gain = "ADC_GAIN_1_6";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_VDD>;
+		zephyr,resolution = <10>;
+	};
+};
+
+/ {
+	zephyr,user {
+		io-channels = <&adc 0>, <&adc 1>, <&adc 2>;
+	};
+
+	soil_pwm: soil_pwm {
+		compatible = "pwm-fixed";
+		pwms = <&pwm0 0 PWM_MSEC(100) PWM_POLARITY_INVERTED>;
+		pulse = <PWM_MSEC(50)>;
+	};
+};
