@@ -3,6 +3,10 @@
 
 #include "prst_zb_soil_moisture_defs.h"
 
+#define PRST_ZIGBEE_ENDPOINT 10
+#define PRST_BASIC_MANUF_NAME "b-parasite"
+#define PRST_BASIC_MODEL_ID "b-parasite"
+
 #define PRST_ZB_DEVICE_ID 0x0008
 #define PRST_ZB_DEVICE_VERSION 0
 #define PRST_ZB_IN_CLUSTER_NUM 6

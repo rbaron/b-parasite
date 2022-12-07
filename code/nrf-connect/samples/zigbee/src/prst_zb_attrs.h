@@ -19,16 +19,23 @@ typedef struct {
   zb_uint8_t voltage;
   // Units of 0.5%. 0x00 (0%) - 0xc8 (100%) (optional, reportable).
   zb_uint8_t percentage;
-  // zb_uint8_t quantity;
-  // zb_uint8_t size;
-  // zb_uint8_t rated_voltage;
-  // zb_uint8_t voltage_min_thres;
-  // zb_uint8_t percentage_min_thres;
 } prst_batt_attrs_t;
 
 // Soil moisture cluster.
 typedef struct {
+  // 0-100, units of 0.01?
   zb_uint16_t percentage;
 } prst_soil_moisture_attrs_t;
+
+struct zb_device_ctx {
+  zb_zcl_basic_attrs_ext_t basic_attr;
+  zb_zcl_identify_attrs_t identify_attr;
+  // In units of 0.01 C.
+  zb_zcl_temp_measurement_attrs_t temp_measure_attrs;
+  prst_rel_humidity_attrs_t rel_humidity_attrs;
+  // In units of 100 mV.
+  prst_batt_attrs_t batt_attrs;
+  prst_soil_moisture_attrs_t soil_moisture_attrs;
+};
 
 #endif  // _PRST_ZB_ATTRS_H_

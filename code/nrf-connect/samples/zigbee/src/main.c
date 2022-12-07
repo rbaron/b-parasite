@@ -11,6 +11,10 @@
 
 #include <dk_buttons_and_leds.h>
 #include <prstlib/adc.h>
+#include <prstlib/button.h>
+#include <prstlib/led.h>
+#include <prstlib/macros.h>
+#include <prstlib/sensors.h>
 #include <prstlib/shtc3.h>
 #include <zb_nrf_platform.h>
 #include <zboss_api.h>
@@ -25,26 +29,14 @@
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
 
-#define PRST_ZIGBEE_ENDPOINT 10
 #define IDENTIFY_MODE_BUTTON DK_BTN4_MSK
 #define FACTORY_RESET_BUTTON IDENTIFY_MODE_BUTTON
-#define PRST_BASIC_MANUF_NAME "b-parasite"
-#define PRST_BASIC_MODEL_ID "b-parasite"
 
 LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 
-struct zb_device_ctx {
-  zb_zcl_basic_attrs_ext_t basic_attr;
-  zb_zcl_identify_attrs_t identify_attr;
-  // In units of 0.01 C.
-  zb_zcl_temp_measurement_attrs_t temp_measure_attrs;
-  prst_rel_humidity_attrs_t rel_humidity_attrs;
-  // In units of 100 mV.
-  prst_batt_attrs_t batt_attrs;
-  prst_soil_moisture_attrs_t soil_moisture_attrs;
-};
-
 static struct zb_device_ctx dev_ctx;
+
+static prst_sensors_t sensors;
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(
     identify_attr_list,
@@ -99,18 +91,6 @@ ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
 PRST_ZB_ZCL_DECLARE_SOIL_MOISTURE_ATTRIB_LIST(
     soil_moisture_attr_list,
     &dev_ctx.soil_moisture_attrs.percentage);
-
-void prst_zcl_soil_moisture_init_server(void) {
-  zb_zcl_add_cluster_handlers(PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,
-                              ZB_ZCL_CLUSTER_SERVER_ROLE,
-                              /*cluster_check_value=*/NULL,
-                              /*cluster_write_attr_hook=*/NULL,
-                              /*cluster_handler=*/NULL);
-}
-
-void prst_zcl_soil_moisture_init_client(void) {
-  // Nothing.
-}
 
 ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(
     app_template_clusters,
@@ -213,6 +193,11 @@ void zboss_signal_handler(zb_bufid_t bufid) {
 void update_sensors_cb(zb_uint8_t arg) {
   LOG_INF("Updating sensors");
 
+  if (prst_sensors_read_all(&sensors)) {
+    LOG_ERR("Unable to read sensors");
+    return;
+  }
+
   static zb_uint8_t batt = 10;
   batt += 1;
   zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
@@ -237,8 +222,7 @@ void update_sensors_cb(zb_uint8_t arg) {
                       ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
                       (zb_uint8_t*)&rel_humi, ZB_FALSE);
 
-  static zb_int16_t soil_moisture = 69;
-  soil_moisture += 1;
+  zb_int16_t soil_moisture = 100 * 100 * sensors.soil.percentage;
   zb_zcl_set_attr_val(PRST_ZIGBEE_ENDPOINT, PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,
                       ZB_ZCL_CLUSTER_SERVER_ROLE, PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,
                       (zb_uint8_t*)&soil_moisture, ZB_FALSE);
@@ -246,7 +230,11 @@ void update_sensors_cb(zb_uint8_t arg) {
   ZB_SCHEDULE_APP_ALARM(update_sensors_cb, NULL, ZB_TIME_ONE_SECOND * 1);
 }
 
-void main(void) {
+int main(void) {
+  RET_IF_ERR(prst_adc_init());
+  RET_IF_ERR(prst_led_init());
+  RET_IF_ERR(prst_button_init());
+
   register_factory_reset_button(FACTORY_RESET_BUTTON);
 
   app_clusters_attr_init();
@@ -257,11 +245,13 @@ void main(void) {
 
   update_sensors_cb(/*arg=*/0);
 
-  // zb_bdb_set_legacy_device_support(1);
-  zigbee_enable();
-  // zb_bdb_set_legacy_device_support(1);
-
   // zigbee_configure_sleepy_behavior(/*enable=*/true);
 
+  RET_IF_ERR(prst_led_flash(2));
+
+  zigbee_enable();
+
   LOG_INF("Zigbee application template started");
+
+  return 0;
 }

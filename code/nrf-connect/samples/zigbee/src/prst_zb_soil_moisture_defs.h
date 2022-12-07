@@ -1,12 +1,14 @@
 #ifndef _PRST_ZB_SOIL_MOISTURE_DEFS_
 #define _PRST_ZB_SOIL_MOISTURE_DEFS_
 
+#include <zboss_api.h>
 #include <zcl/zb_zcl_common.h>
 
 // Most defines in this file are updated from the ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST,
 // adapting attributes and IDs to match the mSoilMoisture cluster spec.
 // Values from https://github.com/Koenkk/zigbee-herdsman/blob/master/src/zcl/definition/cluster.ts#L2570
 // (msSoilMoisture).
+// Cluster attributes definitions in https://www.st.com/resource/en/user_manual/um2977-stm32wb-series-zigbee-cluster-library-api-stmicroelectronics.pdf.
 
 #define PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID 1032
 

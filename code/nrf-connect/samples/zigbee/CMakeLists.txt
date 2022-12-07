@@ -12,6 +12,7 @@ include_directories(src)
 
 target_sources(app PRIVATE
   src/main.c
+  src/prst_zb_soil_moisture_defs.c
 )
 
 add_subdirectory(../../prstlib prstlib)
