@@ -21,9 +21,9 @@
 #include <zigbee/zigbee_app_utils.h>
 #include <zigbee/zigbee_error_handler.h>
 
-#include "attrs.h"
+#include "prst_zb_attrs.h"
+#include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
-#include "zb_range_extender.h"
 
 #define PRST_ZIGBEE_ENDPOINT 10
 #define IDENTIFY_MODE_BUTTON DK_BTN4_MSK
@@ -99,10 +99,6 @@ ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
 PRST_ZB_ZCL_DECLARE_SOIL_MOISTURE_ATTRIB_LIST(
     soil_moisture_attr_list,
     &dev_ctx.soil_moisture_attrs.percentage);
-
-// ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST2(
-//     soil_moisture_attr_list2,
-//     &dev_ctx.soil_moisture_attrs.percentage);
 
 void prst_zcl_soil_moisture_init_server(void) {
   zb_zcl_add_cluster_handlers(PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,
@@ -261,9 +257,9 @@ void main(void) {
 
   update_sensors_cb(/*arg=*/0);
 
-  zb_bdb_set_legacy_device_support(1);
+  // zb_bdb_set_legacy_device_support(1);
   zigbee_enable();
-  zb_bdb_set_legacy_device_support(1);
+  // zb_bdb_set_legacy_device_support(1);
 
   // zigbee_configure_sleepy_behavior(/*enable=*/true);
 
