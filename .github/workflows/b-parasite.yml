@@ -72,3 +72,9 @@ jobs:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_nrf52833
           output-bin: ble_nrf52833_default.hex
+      - name: Build zigbee_nrf528340_default.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/zigbee
+          board: bparasite_nrf52840
+          output-bin: zigbee_nrf52840_default.hex

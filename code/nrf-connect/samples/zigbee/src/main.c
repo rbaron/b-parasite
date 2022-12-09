@@ -167,7 +167,8 @@ int main(void) {
 
   RET_IF_ERR(prst_led_flash(2));
 
-  zb_zdo_pim_set_long_poll_interval(CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
+  zb_zdo_pim_set_long_poll_interval(
+      ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
   power_down_unused_ram();
 
   zigbee_enable();
