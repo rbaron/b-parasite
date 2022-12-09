@@ -5,6 +5,7 @@
 #include <prstlib/macros.h>
 #include <prstlib/sensors.h>
 #include <prstlib/shtc3.h>
+#include <ram_pwrdn.h>
 #include <zb_nrf_platform.h>
 #include <zboss_api.h>
 #include <zboss_api_addons.h>
@@ -143,7 +144,9 @@ void update_sensors_cb(zb_uint8_t arg) {
                          PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,
                          &soil_moisture);
 
-  ZB_SCHEDULE_APP_ALARM(update_sensors_cb, NULL, ZB_TIME_ONE_SECOND * 10);
+  ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
+                        /*param=*/0,
+                        ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
 }
 
 int main(void) {
@@ -154,9 +157,6 @@ int main(void) {
   // We do this to quickly put the shtc3 to sleep.
   prst_sensors_read_all(&sensors);
 
-  zigbee_configure_sleepy_behavior(/*enable=*/true);
-  zb_set_rx_on_when_idle(ZB_FALSE);
-
   register_factory_reset_button(FACTORY_RESET_BUTTON);
 
   prst_zb_attrs_init(&dev_ctx);
@@ -166,8 +166,8 @@ int main(void) {
   update_sensors_cb(/*arg=*/0);
 
   RET_IF_ERR(prst_led_flash(2));
-  // One minute.
-  zb_zdo_pim_set_long_poll_interval(60000);
+
+  zb_zdo_pim_set_long_poll_interval(CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
   power_down_unused_ram();
 
   zigbee_enable();
