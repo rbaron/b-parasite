@@ -1,7 +1,7 @@
 #ifndef _PRST_ZB_ATTRS_H_
 #define _PRST_ZB_ATTRS_H_
 
-#include <zboss_api.h>
+#include <zboss_api_addons.h>
 
 // Relative humimdity cluster - section 4.7.2.2.1.
 typedef struct {
@@ -37,5 +37,9 @@ struct zb_device_ctx {
   prst_batt_attrs_t batt_attrs;
   prst_soil_moisture_attrs_t soil_moisture_attrs;
 };
+
+void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx);
+
+zb_zcl_status_t prst_zb_set_attr_value(zb_uint16_t cluster_id, zb_uint16_t attr_id, void *data);
 
 #endif  // _PRST_ZB_ATTRS_H_

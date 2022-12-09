@@ -25,8 +25,8 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
   // out[3] = sensors->run_counter & 0x0f;
-  out[4] = sensors->batt.millivolts >> 8;
-  out[5] = sensors->batt.millivolts & 0xff;
+  out[4] = sensors->batt.adc_read.millivolts >> 8;
+  out[5] = sensors->batt.adc_read.millivolts & 0xff;
   int16_t temp_centicelsius = 100 * sensors->shtc3.temp_c;
   out[6] = temp_centicelsius >> 8;
   out[7] = temp_centicelsius & 0xff;
@@ -82,7 +82,7 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // Type - voltage.
   out[15] = 0x0c;
   // Value. Factor of 0.001.
-  uint16_t batt_val = sensors->batt.millivolts;
+  uint16_t batt_val = sensors->batt.adc_read.millivolts;
   out[16] = batt_val & 0xff;
   out[17] = batt_val >> 8;
 
@@ -116,7 +116,7 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // Battery voltage.
   out[13] = 0x0c;
   // Value. Factor of 0.001.
-  uint16_t batt_val = sensors->batt.millivolts;
+  uint16_t batt_val = sensors->batt.adc_read.millivolts;
   out[14] = batt_val & 0xff;
   out[15] = batt_val >> 8;
   // Soil moisture.

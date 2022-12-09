@@ -11,6 +11,11 @@ typedef struct {
 
 typedef struct {
   prst_adc_read_t adc_read;
+  float percentage;
+} prst_batt_t;
+
+typedef struct {
+  prst_adc_read_t adc_read;
   // A value from 0 (completely dry) to 2^10 (completely wet).
   uint16_t relative;
   // In [0, 1.0].
@@ -25,7 +30,7 @@ typedef struct prst_adc_photo_sensor {
 
 int prst_adc_init();
 
-int prst_adc_batt_read(prst_adc_read_t* out);
+int prst_adc_batt_read(prst_batt_t* out);
 
 int prst_adc_soil_read(float battery_voltage, prst_adc_soil_moisture_t* out);
 

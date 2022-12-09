@@ -14,7 +14,7 @@
 #define PRST_ZB_CLUSTER_NUM (PRST_ZB_IN_CLUSTER_NUM + PRST_ZB_OUT_CLUSTER_NUM)
 #define PRST_ZB_ATTR_REPORTING_COUNT 4
 
-#define ZB_DECLARE_RANGE_EXTENDER_CLUSTER_LIST(                             \
+#define PRST_ZB_DECLARE_CLUSTER_LIST(                                       \
     cluster_list_name,                                                      \
     basic_attr_list,                                                        \
     identify_attr_list,                                                     \
@@ -61,31 +61,31 @@
               ZB_ZCL_CLUSTER_SERVER_ROLE,                                   \
               ZB_ZCL_MANUF_CODE_INVALID)}
 
-#define ZB_ZCL_DECLARE_RANGE_EXTENDER_SIMPLE_DESC(ep_name, ep_id, in_clust_num, out_clust_num) \
-  ZB_DECLARE_SIMPLE_DESC(in_clust_num, out_clust_num);                                         \
-  ZB_AF_SIMPLE_DESC_TYPE(in_clust_num, out_clust_num)                                          \
-  simple_desc_##ep_name =                                                                      \
-      {                                                                                        \
-          ep_id,                                                                               \
-          ZB_AF_HA_PROFILE_ID,                                                                 \
-          PRST_ZB_DEVICE_ID,                                                                   \
-          PRST_ZB_DEVICE_VERSION,                                                              \
-          0,                                                                                   \
-          in_clust_num,                                                                        \
-          out_clust_num,                                                                       \
-          {                                                                                    \
-              ZB_ZCL_CLUSTER_ID_BASIC,                                                         \
-              ZB_ZCL_CLUSTER_ID_IDENTIFY,                                                      \
-              ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                                              \
-              ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                                      \
-              PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,                                       \
-              ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                                  \
+#define PRST_ZB_DECLARE_SIMPLE_DESC(ep_name, ep_id, in_clust_num, out_clust_num) \
+  ZB_DECLARE_SIMPLE_DESC(in_clust_num, out_clust_num);                           \
+  ZB_AF_SIMPLE_DESC_TYPE(in_clust_num, out_clust_num)                            \
+  simple_desc_##ep_name =                                                        \
+      {                                                                          \
+          ep_id,                                                                 \
+          ZB_AF_HA_PROFILE_ID,                                                   \
+          PRST_ZB_DEVICE_ID,                                                     \
+          PRST_ZB_DEVICE_VERSION,                                                \
+          0,                                                                     \
+          in_clust_num,                                                          \
+          out_clust_num,                                                         \
+          {                                                                      \
+              ZB_ZCL_CLUSTER_ID_BASIC,                                           \
+              ZB_ZCL_CLUSTER_ID_IDENTIFY,                                        \
+              ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                                \
+              ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                        \
+              PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,                         \
+              ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                    \
           }}
 
-#define ZB_DECLARE_RANGE_EXTENDER_EP(ep_name, ep_id, cluster_list)                                  \
+#define PRST_ZB_DECLARE_ENDPOINT(ep_name, ep_id, cluster_list)                                      \
   ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_ctx_##ep_name, PRST_ZB_ATTR_REPORTING_COUNT);        \
-  ZB_ZCL_DECLARE_RANGE_EXTENDER_SIMPLE_DESC(ep_name, ep_id,                                         \
-                                            PRST_ZB_IN_CLUSTER_NUM, PRST_ZB_OUT_CLUSTER_NUM);       \
+  PRST_ZB_DECLARE_SIMPLE_DESC(ep_name, ep_id,                                                       \
+                              PRST_ZB_IN_CLUSTER_NUM, PRST_ZB_OUT_CLUSTER_NUM);                     \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id, ZB_AF_HA_PROFILE_ID,                                  \
                               /*reserved_length=*/0, /*reserved_ptr=*/NULL,                         \
                               ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t), cluster_list, \
