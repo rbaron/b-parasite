@@ -1,4 +1,5 @@
 #include <dk_buttons_and_leds.h>
+#include <math.h>
 #include <prstlib/adc.h>
 #include <prstlib/button.h>
 #include <prstlib/led.h>
@@ -81,6 +82,12 @@ PRST_ZB_ZCL_DECLARE_SOIL_MOISTURE_ATTRIB_LIST(
     soil_moisture_attr_list,
     &dev_ctx.soil_moisture_attrs.percentage);
 
+ZB_ZCL_DECLARE_ILLUMINANCE_MEASUREMENT_ATTRIB_LIST(
+    illuminance_attr_list,
+    /*value=*/&dev_ctx.illuminance_attrs.log_lux,
+    /*min_value=*/NULL,
+    /*max_value*/ NULL);
+
 PRST_ZB_DECLARE_CLUSTER_LIST(
     app_template_clusters,
     basic_attr_list,
@@ -88,7 +95,8 @@ PRST_ZB_DECLARE_CLUSTER_LIST(
     temp_measurement_attr_list,
     rel_humi_attr_list,
     basic_attr_list,
-    soil_moisture_attr_list);
+    soil_moisture_attr_list,
+    illuminance_attr_list);
 
 PRST_ZB_DECLARE_ENDPOINT(
     app_template_ep,
@@ -144,6 +152,12 @@ void update_sensors_cb(zb_uint8_t arg) {
                          PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,
                          &soil_moisture);
 
+  // Illuminance in 10000 * log_10(lux) + 1.
+  zb_int16_t log_lux = 10000 * log10((float)sensors.photo.brightness) + 1;
+  prst_zb_set_attr_value(ZB_ZCL_CLUSTER_ID_ILLUMINANCE_MEASUREMENT,
+                         ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MEASURED_VALUE_ID,
+                         &log_lux);
+
   ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
                         /*param=*/0,
                         ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
@@ -154,9 +168,6 @@ int main(void) {
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
 
-  // We do this to quickly put the shtc3 to sleep.
-  prst_sensors_read_all(&sensors);
-
   register_factory_reset_button(FACTORY_RESET_BUTTON);
 
   prst_zb_attrs_init(&dev_ctx);
@@ -165,14 +176,14 @@ int main(void) {
 
   update_sensors_cb(/*arg=*/0);
 
-  RET_IF_ERR(prst_led_flash(2));
-
   zb_zdo_pim_set_long_poll_interval(
       ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
   power_down_unused_ram();
 
   zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
+
+  RET_IF_ERR(prst_led_flash(2));
 
   return 0;
 }

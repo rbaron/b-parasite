@@ -9,10 +9,10 @@
 
 #define PRST_ZB_DEVICE_ID 0x0008
 #define PRST_ZB_DEVICE_VERSION 0
-#define PRST_ZB_IN_CLUSTER_NUM 6
+#define PRST_ZB_IN_CLUSTER_NUM 7
 #define PRST_ZB_OUT_CLUSTER_NUM 0
 #define PRST_ZB_CLUSTER_NUM (PRST_ZB_IN_CLUSTER_NUM + PRST_ZB_OUT_CLUSTER_NUM)
-#define PRST_ZB_ATTR_REPORTING_COUNT 4
+#define PRST_ZB_ATTR_REPORTING_COUNT 5
 
 #define PRST_ZB_DECLARE_CLUSTER_LIST(                                       \
     cluster_list_name,                                                      \
@@ -21,7 +21,8 @@
     temp_measurement_attr_list,                                             \
     rel_humidity_attr_list,                                                 \
     batt_att_list,                                                          \
-    soil_moisture_attr_list)                                                \
+    soil_moisture_attr_list,                                                \
+    illuminance_attr_list)                                                  \
   zb_zcl_cluster_desc_t cluster_list_name[] =                               \
       {                                                                     \
           ZB_ZCL_CLUSTER_DESC(                                              \
@@ -55,6 +56,12 @@
               ZB_ZCL_CLUSTER_SERVER_ROLE,                                   \
               ZB_ZCL_MANUF_CODE_INVALID),                                   \
           ZB_ZCL_CLUSTER_DESC(                                              \
+              ZB_ZCL_CLUSTER_ID_ILLUMINANCE_MEASUREMENT,                    \
+              ZB_ZCL_ARRAY_SIZE(illuminance_attr_list, zb_zcl_attr_t),      \
+              (illuminance_attr_list),                                      \
+              ZB_ZCL_CLUSTER_SERVER_ROLE,                                   \
+              ZB_ZCL_MANUF_CODE_INVALID),                                   \
+          ZB_ZCL_CLUSTER_DESC(                                              \
               ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                               \
               ZB_ZCL_ARRAY_SIZE(batt_attr_list, zb_zcl_attr_t),             \
               (batt_attr_list),                                             \
@@ -79,6 +86,7 @@
               ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                                \
               ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                        \
               PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_CLUSTER_ID,                         \
+              ZB_ZCL_CLUSTER_ID_ILLUMINANCE_MEASUREMENT,                         \
               ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                    \
           }}
 
