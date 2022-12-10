@@ -1,5 +1,5 @@
 # Zigbee firmware sample
-This sample is adapted from the [zigbee_template](https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/samples/zigbee/template/README.html) from the nRF Connect SDK.
+This sample is adapted from the [zigbee_template](https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/samples/zigbee/template/README.html) from the nRF Connect SDK. It's a basic experimental/educational firmware sample for b-parasite.
 
 ## Clusters
 These [clusters](https://en.wikipedia.org/wiki/Zigbee#Cluster_library) are defined in the sample:
