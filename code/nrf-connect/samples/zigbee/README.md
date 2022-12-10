@@ -38,5 +38,5 @@ The [b-parasite.js](b-parasite.js) file contains a converter that can be install
 ## Battery Life
 While sleeping, the device consumes around 2 uA:
 ![sleeping current](./media/power-profile/sleeping.png)
-In the active cycle, it averages around 370 uA for 2.6 seconds:
+In the active cycle, it averages around 125 uA for 1 second:
 ![active current](media/power-profile/active.png)
