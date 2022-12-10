@@ -1,4 +1,5 @@
 #include <dk_buttons_and_leds.h>
+#include <hal/nrf_power.h>
 #include <math.h>
 #include <prstlib/adc.h>
 #include <prstlib/button.h>
@@ -27,6 +28,18 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
 static struct zb_device_ctx dev_ctx;
 
 static prst_sensors_t sensors;
+
+static void maybe_erase_pairing_info() {
+  uint32_t reset_reason = nrf_power_resetreas_get(NRF_POWER);
+  // If we're resetting via the RESET pin (e.g.: reset pin shorting, firmware flashing).
+  if (reset_reason & 0x1) {
+    LOG_WRN("Manual reset / re-flashing detected - erasing pairing info");
+    zigbee_erase_persistent_storage(/*erase=*/true);
+    // It's a power-on cycle (e.g.: swapping battery, first boot).
+  } else {
+    LOG_INF("Power-on cycle - keeping pairing info");
+  }
+}
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(
     identify_attr_list,
@@ -167,6 +180,8 @@ int main(void) {
   RET_IF_ERR(prst_adc_init());
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
+
+  maybe_erase_pairing_info();
 
   register_factory_reset_button(FACTORY_RESET_BUTTON);
 
