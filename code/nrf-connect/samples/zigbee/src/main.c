@@ -29,17 +29,23 @@ static struct zb_device_ctx dev_ctx;
 
 static prst_sensors_t sensors;
 
-static void maybe_erase_pairing_info() {
+static void maybe_erase_pairing_info(struct k_timer *timer) {
   uint32_t reset_reason = nrf_power_resetreas_get(NRF_POWER);
   // If we're resetting via the RESET pin (e.g.: reset pin shorting, firmware flashing).
   if (reset_reason & 0x1) {
     LOG_WRN("Manual reset / re-flashing detected - erasing pairing info");
+    // TODO: consider zb_bdb_reset_via_local_action(/*param=*/0);
     zigbee_erase_persistent_storage(/*erase=*/true);
-    // It's a power-on cycle (e.g.: swapping battery, first boot).
-  } else {
+  } else {  // It's a power-on cycle (e.g.: swapping battery, first boot).
     LOG_INF("Power-on cycle - keeping pairing info");
   }
 }
+
+static void led_flashing_cb(struct k_timer *timer) {
+  prst_led_toggle();
+}
+
+K_TIMER_DEFINE(led_flashing_timer, led_flashing_cb, /*stop_fn=*/NULL);
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(
     identify_attr_list,
@@ -121,6 +127,28 @@ ZBOSS_DECLARE_DEVICE_CTX_1_EP(
     app_template_ep);
 
 void zboss_signal_handler(zb_bufid_t bufid) {
+  // See zigbee_default_signal_handler() for all available signals.
+  zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/NULL);
+  zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
+  switch (sig) {
+    case ZB_BDB_SIGNAL_STEERING:         // New network.
+    case ZB_BDB_SIGNAL_DEVICE_REBOOT: {  // Previously joined network.
+      LOG_DBG("Steering complete. Status: %d", status);
+      prst_led_flash(/*times=*/3);
+      if (status == RET_OK) {
+        k_timer_stop(&led_flashing_timer);
+        prst_led_off();
+      }
+      break;
+    }
+    case ZB_ZDO_SIGNAL_SKIP_STARTUP:
+    case ZB_ZDO_SIGNAL_LEAVE: {
+      LOG_DBG("Will restart flashing");
+      k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
+      break;
+    }
+  }
+
   ZB_ERROR_CHECK(zigbee_default_signal_handler(bufid));
   if (bufid) {
     zb_buf_free(bufid);
@@ -181,7 +209,7 @@ int main(void) {
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
 
-  maybe_erase_pairing_info();
+  maybe_erase_pairing_info(NULL);
 
   register_factory_reset_button(FACTORY_RESET_BUTTON);
 
@@ -195,10 +223,10 @@ int main(void) {
       ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
   power_down_unused_ram();
 
+  RET_IF_ERR(prst_led_flash(2));
+
   zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
-
-  RET_IF_ERR(prst_led_flash(2));
 
   return 0;
 }
