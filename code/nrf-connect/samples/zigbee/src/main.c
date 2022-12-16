@@ -113,7 +113,7 @@ PRST_ZB_DECLARE_CLUSTER_LIST(
     identify_attr_list,
     temp_measurement_attr_list,
     rel_humi_attr_list,
-    basic_attr_list,
+    batt_attr_list,
     soil_moisture_attr_list,
     illuminance_attr_list);
 
