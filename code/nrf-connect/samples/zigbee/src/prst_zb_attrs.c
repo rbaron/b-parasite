@@ -17,6 +17,11 @@ void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx) {
       PRST_BASIC_MODEL_ID,
       ZB_ZCL_STRING_CONST_SIZE(PRST_BASIC_MODEL_ID));
 
+  ZB_ZCL_SET_STRING_VAL(
+    dev_ctx->basic_attr.date_code,
+    PRST_BASIC_DATE_CODE,
+    ZB_ZCL_STRING_CONST_SIZE(PRST_BASIC_DATE_CODE));
+
   dev_ctx->identify_attr.identify_time =
       ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE;
 }

@@ -7,3 +7,11 @@ config PRST_ZB_SLEEP_DURATION_SEC
 config PRST_ZB_PARENT_POLL_INTERVAL_SEC
 	int "Interval for when b-parasite polls its parent for data (in seconds)"
 	default 60
+
+config BUILD_DATE
+  string "Zigbee app init basic date code. Can be used as build revision."
+  default "20221214"
+
+config MODEL_ID
+  string "Zigbee app model id."
+  default "b-parasite"
