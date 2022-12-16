@@ -6,7 +6,7 @@
 #include "prstlib/led.h"
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(sensors, LOG_LEVEL_WRN);
+LOG_MODULE_REGISTER(sensors, CONFIG_CORE_LOG_LEVEL);
 
 int prst_sensors_read_all(prst_sensors_t *sensors) {
   RET_IF_ERR(prst_adc_batt_read(&sensors->batt));

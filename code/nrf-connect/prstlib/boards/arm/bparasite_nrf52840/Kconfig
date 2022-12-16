@@ -12,3 +12,7 @@ config BOARD_ENABLE_DCDC_HV
 	default y
 
 endif  # BOARD_BPARASITE_NRF52840
+
+config CORE_LOG_LEVEL
+	int "Logging level in core prst library."
+	default 2
