@@ -23,7 +23,7 @@
 
 #define FACTORY_RESET_BUTTON DK_BTN4_MSK
 
-LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
 static struct zb_device_ctx dev_ctx;
 
