@@ -82,8 +82,8 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
 ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
     batt_attr_list,
     &dev_ctx.batt_attrs.voltage,
-    /*battery_size=*/NULL,
-    /*battery_quantity=*/NULL,
+    /*battery_size=*/ZB_ZCL_POWER_CONFIG_BATTERY_SIZE_OTHER,
+    /*battery_quantity=*/1,
     /*battery_rated_voltage=*/NULL,
     /*battery_alarm_mask=*/NULL,
     /*battery_voltage_min_threshold=*/NULL,
@@ -163,7 +163,7 @@ void update_sensors_cb(zb_uint8_t arg) {
     return;
   }
 
-  // Battery voltlage in units of 100 mV.
+  // Battery voltage in units of 100 mV.
   uint8_t batt_voltage = sensors.batt.adc_read.millivolts / 100;
   prst_zb_set_attr_value(ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
                          ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
