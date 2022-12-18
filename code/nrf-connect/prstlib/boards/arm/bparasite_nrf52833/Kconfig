@@ -7,7 +7,3 @@ config BOARD_ENABLE_DCDC
 	default y
 
 endif  # BOARD_BPARASITE_NRF52833
-
-config PRSTLIB_DEFAULT_LOG_LEVEL
-	int "Logging level in core prst library."
-	default 2

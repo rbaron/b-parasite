@@ -8,6 +8,10 @@ config PRST_ZB_PARENT_POLL_INTERVAL_SEC
 	int "Interval for when b-parasite polls its parent for data (in seconds)"
 	default 60
 
+config PRSTLIB_DEFAULT_LOG_LEVEL
+	int "Logging level in core prst library. (0: NONE, 2: WARN, 4: DEBUG) See Zephyr logging for more."
+	default 2
+
 config PRST_ZB_BUILD_DATE
   string "Zigbee app init basic date code. Can be used as build revision. (1 byte)"
   default "20221214"
