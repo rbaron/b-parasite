@@ -6,7 +6,7 @@
 #include "prstlib/led.h"
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(button, CONFIG_CORE_LOG_LEVEL);
+LOG_MODULE_REGISTER(button, CONFIG_PRSTLIB_DEFAULT_LOG_LEVEL);
 
 static struct gpio_dt_spec button =
     GPIO_DT_SPEC_GET(DT_NODELABEL(button0), gpios);
