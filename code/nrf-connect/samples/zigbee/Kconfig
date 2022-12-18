@@ -2,7 +2,7 @@ source "Kconfig.zephyr"
 
 config PRST_ZB_SLEEP_DURATION_SEC
 	int "Sleep duration between waking up and reading sensors (in seconds)"
-	default 60
+	default 600
 
 config PRST_ZB_PARENT_POLL_INTERVAL_SEC
 	int "Interval for when b-parasite polls its parent for data (in seconds)"
