@@ -15,3 +15,7 @@ config PRST_ZB_BUILD_DATE
 config PRST_ZB_MODEL_ID
   string "Zigbee app model id."
   default "b-parasite"
+
+config PRST_ZB_HARDWARE_VERSION
+  int "Zigbee basic cluster hardware version. (1 byte)"
+  default 2
