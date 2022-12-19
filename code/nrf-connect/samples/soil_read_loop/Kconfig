@@ -1,0 +1,2 @@
+source "Kconfig.zephyr"
+rsource "../../prstlib/Kconfig"

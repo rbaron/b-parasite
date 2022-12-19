@@ -1,0 +1,3 @@
+module = PRSTLIB
+module-str = prstlib
+source "subsys/logging/Kconfig.template.log_config"

@@ -21,8 +21,4 @@
 
 #define UNUSED_OK(expr) (void)expr;
 
-#ifndef CONFIG_PRSTLIB_DEFAULT_LOG_LEVEL
-#define CONFIG_PRSTLIB_DEFAULT_LOG_LEVEL LOG_LEVEL_WRN
-#endif
-
 #endif  // _PRST_MACROS_H_

@@ -9,7 +9,7 @@
 
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(adc, CONFIG_PRSTLIB_DEFAULT_LOG_LEVEL);
+LOG_MODULE_REGISTER(adc, CONFIG_PRSTLIB_LOG_LEVEL);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
 static const struct pwm_dt_spec soil_pwm_dt =

@@ -17,6 +17,7 @@ jobs:
         uses: jidicula/clang-format-action@v4.9.0
         with:
           check-path: 'code/nrf-connect'
+          exclude-regex: '\/build\/'
       - name: Build blinky
         uses: ./.github/actions/build
         with:
