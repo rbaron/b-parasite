@@ -2,8 +2,24 @@ source "Kconfig.zephyr"
 
 config PRST_ZB_SLEEP_DURATION_SEC
 	int "Sleep duration between waking up and reading sensors (in seconds)"
-	default 60
+	default 600
 
 config PRST_ZB_PARENT_POLL_INTERVAL_SEC
 	int "Interval for when b-parasite polls its parent for data (in seconds)"
 	default 60
+
+config PRSTLIB_DEFAULT_LOG_LEVEL
+	int "Logging level in core prst library. (0: NONE, 2: WARN, 4: DEBUG) See Zephyr logging for more."
+	default 2
+
+config PRST_ZB_BUILD_DATE
+  string "Zigbee app init basic date code. Can be used as build revision. (1 byte)"
+  default "20221214"
+
+config PRST_ZB_MODEL_ID
+  string "Zigbee app model id."
+  default "b-parasite"
+
+config PRST_ZB_HARDWARE_VERSION
+  int "Zigbee basic cluster hardware version. (1 byte)"
+  default 2

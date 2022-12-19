@@ -23,7 +23,7 @@
 
 #define FACTORY_RESET_BUTTON DK_BTN4_MSK
 
-LOG_MODULE_REGISTER(app, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
 static struct zb_device_ctx dev_ctx;
 
@@ -57,13 +57,13 @@ ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_EXT(
     &dev_ctx.basic_attr.app_version,
     &dev_ctx.basic_attr.stack_version,
     &dev_ctx.basic_attr.hw_version,
-    dev_ctx.basic_attr.mf_name,
-    dev_ctx.basic_attr.model_id,
-    dev_ctx.basic_attr.date_code,
+    &dev_ctx.basic_attr.mf_name,
+    &dev_ctx.basic_attr.model_id,
+    &dev_ctx.basic_attr.date_code,
     &dev_ctx.basic_attr.power_source,
-    dev_ctx.basic_attr.location_id,
+    &dev_ctx.basic_attr.location_id,
     &dev_ctx.basic_attr.ph_env,
-    dev_ctx.basic_attr.sw_ver);
+    &dev_ctx.basic_attr.sw_ver);
 
 ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST(temp_measurement_attr_list,
                                             &dev_ctx.temp_measure_attrs.measure_value,
@@ -82,8 +82,8 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
 ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
     batt_attr_list,
     &dev_ctx.batt_attrs.voltage,
-    /*battery_size=*/NULL,
-    /*battery_quantity=*/NULL,
+    /*battery_size=*/ZB_ZCL_POWER_CONFIG_BATTERY_SIZE_OTHER,
+    /*battery_quantity=*/1,
     /*battery_rated_voltage=*/NULL,
     /*battery_alarm_mask=*/NULL,
     /*battery_voltage_min_threshold=*/NULL,
@@ -113,7 +113,7 @@ PRST_ZB_DECLARE_CLUSTER_LIST(
     identify_attr_list,
     temp_measurement_attr_list,
     rel_humi_attr_list,
-    basic_attr_list,
+    batt_attr_list,
     soil_moisture_attr_list,
     illuminance_attr_list);
 
@@ -163,7 +163,7 @@ void update_sensors_cb(zb_uint8_t arg) {
     return;
   }
 
-  // Battery voltlage in units of 100 mV.
+  // Battery voltage in units of 100 mV.
   uint8_t batt_voltage = sensors.batt.adc_read.millivolts / 100;
   prst_zb_set_attr_value(ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
                          ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID,
