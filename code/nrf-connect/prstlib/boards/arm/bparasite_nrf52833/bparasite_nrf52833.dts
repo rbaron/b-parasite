@@ -13,7 +13,7 @@
 	};
 
 	zephyr,user {
-		io-channels = <&adc 0>, <&adc 1>, <&adc 2>;
+		io-channels = <&adc 0>, <&adc 2>;
 	};
 
 	leds {
@@ -43,7 +43,7 @@
 		compatible = "gpio-keys";
 		fast_disch: fast_disch {
 			// P0.25.
-			gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio0 25 GPIO_ACTIVE_HIGH>;
 			label = "Fast discharge circuitry";
 		};
 	};
@@ -106,17 +106,6 @@
 		zephyr,input-positive = <NRF_SAADC_AIN1>;
 		zephyr,resolution = <10>;
 
-	};
-
-	// Photo.
-	channel@1 {
-		reg = <1>;
-		zephyr,gain = "ADC_GAIN_1_6";
-		zephyr,reference = "ADC_REF_INTERNAL";
-		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-		// P0.02.
-		zephyr,input-positive = <NRF_SAADC_AIN0>;
-		zephyr,resolution = <10>;
 	};
 
 	// Battery.

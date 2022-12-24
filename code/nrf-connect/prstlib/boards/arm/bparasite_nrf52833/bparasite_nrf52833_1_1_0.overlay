@@ -12,7 +12,7 @@
 		ldr_enable: ldr_enable {
 			// P0.29.
 			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
-			label = "Fast discharge circuitry";
+			label = "LDR supply";
 		};
 	};
 };

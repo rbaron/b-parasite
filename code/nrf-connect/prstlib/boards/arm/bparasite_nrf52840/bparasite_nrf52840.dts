@@ -13,7 +13,7 @@
 	};
 
 	zephyr,user {
-		io-channels = <&adc 0>,  <&adc 2>;
+		io-channels = <&adc 0>, <&adc 2>;
 	};
 
 	leds {

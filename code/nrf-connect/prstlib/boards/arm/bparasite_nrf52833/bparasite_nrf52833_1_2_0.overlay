@@ -11,7 +11,7 @@
 		photo_transistor_enable: photo_transistor_enable {
 			// P0.29.
 			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
-			label = "Fast discharge circuitry";
+			label = "Phototransistor supply";
 		};
 	};
 };
