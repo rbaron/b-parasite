@@ -79,3 +79,4 @@ jobs:
           sample-dir: code/nrf-connect/samples/zigbee
           board: bparasite_nrf52840
           output-bin: zigbee_nrf52840_default.hex
+          cmake-extra: -DPRST_ZB_BUILD_DATE=__TODAY__
