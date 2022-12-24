@@ -1,5 +1,5 @@
 # Zigbee firmware sample
-This sample is adapted from the [zigbee_template](https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/samples/zigbee/template/README.html) from the nRF Connect SDK. It's a basic experimental/educational firmware sample for b-parasite.
+This sample is adapted from the [zigbee_template](https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/samples/zigbee/template/README.html) from the nRF Connect SDK. It's a basic experimental/educational/exploratory firmware sample for b-parasite.
 
 ## Clusters
 These [clusters](https://en.wikipedia.org/wiki/Zigbee#Cluster_library) are defined in the sample:
@@ -30,10 +30,14 @@ Available options in `Kconfig`. Notable options:
 * `CONFIG_PRST_ZB_SLEEP_DURATION_SEC`: amount of time (in seconds) the device sleeps between reading all sensors and updating its clusters
 * `CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC`: amount of time (in seconds) the device waits between polling its parent for data
 
-## Zigbee2MQTT & Home Assistant
-This firmware sample has only been tested with [Zigbee2MQTT](https://zigbee2mqtt.io/), an open source Zigbee bridge that [connects seamlessly with Home Assistant](https://github.com/zigbee2mqtt/hassio-zigbee2mqtt).
+## Home Assistant Integration
+This firmware sample has only been tested with Home Assistant, using one of the following integrations.
 
-The [b-parasite.js](b-parasite.js) file contains a converter that can be installed to Zigbee2MQTT to suppoort this sample. See [Support new devices](https://www.zigbee2mqtt.io/advanced/support-new-devices/01_support_new_devices.html) for instructions.
+### Zigbee Home Automation (ZHA)
+With the [ZHA](https://www.home-assistant.io/integrations/zha) Home Assistant integration, b-parasite should work out of the box.
+
+### Zigbee2MQTT & Home Assistant
+With [Zigbee2MQTT](https://zigbee2mqtt.io/), a custom converter is required. The [b-parasite.js](b-parasite.js) file contains such a converter. See [Support new devices](https://www.zigbee2mqtt.io/advanced/support-new-devices/01_support_new_devices.html) for instructions.
 
 ## Battery Life
 While sleeping, the device consumes around 2 uA:
