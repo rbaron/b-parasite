@@ -1,5 +1,6 @@
 
 source "Kconfig.zephyr"
+rsource "../../prstlib/Kconfig"
 
 config PRST_SLEEP_DURATION_SEC
 	int "Sleep duration in seconds"

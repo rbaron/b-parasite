@@ -6,7 +6,7 @@
 
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(shtc3, LOG_LEVEL_WRN);
+LOG_MODULE_REGISTER(shtc3, CONFIG_PRSTLIB_LOG_LEVEL);
 
 static const struct i2c_dt_spec shtc3 = I2C_DT_SPEC_GET(DT_NODELABEL(shtc3));
 

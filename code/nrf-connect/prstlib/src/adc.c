@@ -9,7 +9,7 @@
 
 #include "prstlib/macros.h"
 
-LOG_MODULE_REGISTER(adc, LOG_LEVEL_WRN);
+LOG_MODULE_REGISTER(adc, CONFIG_PRSTLIB_LOG_LEVEL);
 
 // PWM spec for square wave. Input to the soil sensing circuit.
 static const struct pwm_dt_spec soil_pwm_dt =
@@ -47,6 +47,37 @@ struct gpio_dt_spec ldr_enable_dt =
     GPIO_DT_SPEC_GET(DT_NODELABEL(ldr_enable), gpios);
 
 #endif
+
+typedef struct {
+  // High (h) and low (p) voltage (v) and % (p) points.
+  float vh, vl, ph, pl;
+} batt_disch_linear_section_t;
+
+static void set_battery_percent(const prst_adc_read_t* read, prst_batt_t* out) {
+  // Must be sorted by .vh.
+  static const batt_disch_linear_section_t sections[] = {
+      {.vh = 3.00f, .vl = 2.90f, .ph = 1.00f, .pl = 0.42f},
+      {.vh = 2.90f, .vl = 2.74f, .ph = 0.42f, .pl = 0.18f},
+      {.vh = 2.74f, .vl = 2.44f, .ph = 0.18f, .pl = 0.06f},
+      {.vh = 2.44f, .vl = 2.01f, .ph = 0.06f, .pl = 0.00f},
+  };
+
+  const float v = read->voltage;
+
+  if (v > sections[0].vh) {
+    out->percentage = 1.0f;
+    return;
+  }
+  for (int i = 0; i < ARRAY_SIZE(sections); i++) {
+    const batt_disch_linear_section_t* s = &sections[i];
+    if (v > s->vl) {
+      out->percentage = s->pl + (v - s->vl) * ((s->ph - s->pl) / (s->vh - s->vl));
+      return;
+    }
+  }
+  out->percentage = 0.0f;
+  return;
+}
 
 static inline float get_soil_moisture_percent(float battery_voltage,
                                               int16_t raw_adc_output) {
@@ -93,8 +124,9 @@ int prst_adc_init() {
   return 0;
 }
 
-int prst_adc_batt_read(prst_adc_read_t* out) {
-  RET_IF_ERR(read_adc_spec(&adc_batt_spec, out));
+int prst_adc_batt_read(prst_batt_t* out) {
+  RET_IF_ERR(read_adc_spec(&adc_batt_spec, &out->adc_read));
+  set_battery_percent(&out->adc_read, out);
   return 0;
 }
 

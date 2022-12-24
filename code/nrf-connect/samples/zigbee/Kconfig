@@ -1,0 +1,22 @@
+source "Kconfig.zephyr"
+rsource "../../prstlib/Kconfig"
+
+config PRST_ZB_SLEEP_DURATION_SEC
+	int "Sleep duration between waking up and reading sensors in seconds."
+	default 600
+
+config PRST_ZB_PARENT_POLL_INTERVAL_SEC
+	int "Interval for when b-parasite polls its parent for data in seconds."
+	default 60
+
+config PRST_ZB_BUILD_DATE
+  string "Zigbee basic cluster build date attribute. Max 16 bytes."
+  default ""
+
+config PRST_ZB_MODEL_ID
+  string "Zigbee basic cluster model id attribute. Max 32 bytes."
+  default "b-parasite"
+
+config PRST_ZB_HARDWARE_VERSION
+  int "Zigbee basic cluster hardware version attribute. 1 byte."
+  default 2
