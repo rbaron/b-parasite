@@ -30,4 +30,4 @@ runs:
     - uses: actions/upload-artifact@v3
       with:
         name: sample-binaries
-        path: code/nrf-connect/samples/ble/build/zephyr/${{ inputs.output-bin }}
+        path: ${{ inputs.sample-dir }}/build/zephyr/${{ inputs.output-bin }}
