@@ -158,6 +158,10 @@ void zboss_signal_handler(zb_bufid_t bufid) {
 void update_sensors_cb(zb_uint8_t arg) {
   LOG_INF("Updating sensors");
 
+  ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
+                        /*param=*/0,
+                        ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
+
   if (prst_sensors_read_all(&sensors)) {
     LOG_ERR("Unable to read sensors");
     return;
@@ -198,10 +202,6 @@ void update_sensors_cb(zb_uint8_t arg) {
   prst_zb_set_attr_value(ZB_ZCL_CLUSTER_ID_ILLUMINANCE_MEASUREMENT,
                          ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MEASURED_VALUE_ID,
                          &log_lux);
-
-  ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
-                        /*param=*/0,
-                        ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
 }
 
 int main(void) {
