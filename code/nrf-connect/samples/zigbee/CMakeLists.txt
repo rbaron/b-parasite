@@ -12,6 +12,8 @@ include_directories(src)
 
 target_sources(app PRIVATE
   src/main.c
+  src/double_reset_detector.c
+  src/factory_reset.c
   src/prst_zb_attrs.c
   src/prst_zb_soil_moisture_defs.c
 )

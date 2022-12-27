@@ -16,14 +16,23 @@ These [clusters](https://en.wikipedia.org/wiki/Zigbee#Cluster_library) are defin
 The sample will first boot and start looking for a Zigbee coordinator - in pairing mode. The onboard LED will be flashing once a second while in this mode. Once a suitable network is found, the LED will briefly flash 3 times and remain off.
 
 ### Factory Reset
-Most Zigbee devices provide a physical button to "factory reset" it - causing it to forget its joined network and look for a new one.
+A factory reset will make b-parasite forget its network pairing information and switch to pairing mode. There are two (mutually exclusive) methods to perform a factory reset, controlled by the `CONFIG_PRST_ZB_FACTORY_RESET_METHOD` config flag.
 
-b-parasite has no physical buttons, and the implemented work around is to distinguish between two *reset modes*:
+#### Factory Reset Method 1 (default) - Double reset
+Resetting b-parasite twice in the timestamp of 5 seconds will perform a factory reset. With this method, both shorting the `RST` pin to ground and removing-inserting the battery counts as a reset.
+
+For better results, wait > 1 and < 5 seconds second between the resets. The LED will flash a total of 8 times to indicate it worked.
+
+#### Factory Reset Method 2 - Reset Pin
+In this method, there's a distinction between two reset modes.
+
 #### Power up mode
 The device enters this mode when it is powered. For example, swapping an old battery or connecting to eternal power. This is the "usual" reset mode, and joined networks will be remembered.
 
 #### Reset pin mode
 If the device's RESET pin is briefly grounded, the device will effectively be **factory reset**. The device will leave its previous network and start looking for a new one.
+
+While it works, this method can be finicky - an accidental pin reset will perform an unwanted factory reset.
 
 ## Configs
 Available options in `Kconfig`. Notable options:

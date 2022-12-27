@@ -1,5 +1,3 @@
-#include <dk_buttons_and_leds.h>
-#include <hal/nrf_power.h>
 #include <math.h>
 #include <prstlib/adc.h>
 #include <prstlib/button.h>
@@ -17,29 +15,16 @@
 #include <zigbee/zigbee_app_utils.h>
 #include <zigbee/zigbee_error_handler.h>
 
+#include "factory_reset.h"
 #include "prst_zb_attrs.h"
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
-
-#define FACTORY_RESET_BUTTON DK_BTN4_MSK
 
 LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
 static struct zb_device_ctx dev_ctx;
 
 static prst_sensors_t sensors;
-
-static void maybe_erase_pairing_info(struct k_timer *timer) {
-  uint32_t reset_reason = nrf_power_resetreas_get(NRF_POWER);
-  // If we're resetting via the RESET pin (e.g.: reset pin shorting, firmware flashing).
-  if (reset_reason & 0x1) {
-    LOG_WRN("Manual reset / re-flashing detected - erasing pairing info");
-    // TODO: consider zb_bdb_reset_via_local_action(/*param=*/0);
-    zigbee_erase_persistent_storage(/*erase=*/true);
-  } else {  // It's a power-on cycle (e.g.: swapping battery, first boot).
-    LOG_INF("Power-on cycle - keeping pairing info");
-  }
-}
 
 static void led_flashing_cb(struct k_timer *timer) {
   prst_led_toggle();
@@ -209,9 +194,7 @@ int main(void) {
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
 
-  maybe_erase_pairing_info(NULL);
-
-  register_factory_reset_button(FACTORY_RESET_BUTTON);
+  RET_IF_ERR(prst_zb_factory_reset_check());
 
   prst_zb_attrs_init(&dev_ctx);
 
@@ -224,6 +207,7 @@ int main(void) {
   power_down_unused_ram();
 
   RET_IF_ERR(prst_led_flash(2));
+  k_msleep(100);
 
   zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
