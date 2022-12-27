@@ -20,3 +20,15 @@ config PRST_ZB_MODEL_ID
 config PRST_ZB_HARDWARE_VERSION
   int "Zigbee basic cluster hardware version attribute. 1 byte."
   default 2
+
+choice PRST_ZB_FACTORY_RESET_METHOD
+  bool "Factory reset method"
+  default PRST_ZB_FACTORY_RESET_VIA_DOUBLE_RESET
+
+config PRST_ZB_FACTORY_RESET_VIA_DOUBLE_RESET
+  bool "Double resetting factory resets the device."
+
+config PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
+  bool "Resetting via the reset pin will factory reset the device. Power cycling through battery replacement will not."
+
+endchoice  # PRST_ZB_FACTORY_RESET_METHOD
