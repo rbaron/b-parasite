@@ -6,8 +6,8 @@
 
   (title_block
     (title "b-parasite")
-    (date "2021-09-12")
-    (rev "1.2.0")
+    (date "2022-12-31")
+    (rev "2.0.0")
     (comment 1 "rbaron.net")
   )
 
