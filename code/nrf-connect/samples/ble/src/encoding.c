@@ -24,7 +24,10 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
 #endif
   // 4 bits for a small wrap-around counter for deduplicating messages on the
   // receiver.
-  // out[3] = sensors->run_counter & 0x0f;
+
+  static uint8_t run_counter;
+
+  out[3] = run_counter++ & 0x0f;
   out[4] = sensors->batt.adc_read.millivolts >> 8;
   out[5] = sensors->batt.adc_read.millivolts & 0xff;
   int16_t temp_centicelsius = 100 * sensors->shtc3.temp_c;
