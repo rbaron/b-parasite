@@ -2,14 +2,14 @@
 <export version="E">
   <design>
     <source>/Users/rbaron/dev/parasite/b-parasite/kicad/parasite.kicad_sch</source>
-    <date>2022 December 31, Saturday 14:58:55</date>
+    <date>2023 January 24, Tuesday 18:26:02</date>
     <tool>Eeschema (6.0.0-0)</tool>
     <sheet number="1" name="/" tstamps="/">
       <title_block>
         <title>b-parasite</title>
         <company/>
-        <rev>1.2.0</rev>
-        <date>2021-09-12</date>
+        <rev>2.0.0</rev>
+        <date>2022-12-31</date>
         <source>parasite.kicad_sch</source>
         <comment number="1" value="rbaron.net"/>
         <comment number="2" value=""/>
