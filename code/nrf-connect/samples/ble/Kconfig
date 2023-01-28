@@ -10,6 +10,14 @@ config PRST_BLE_ADV_DURATION_SEC
 	int "Advertising duration in seconds"
 	default 1
 
+config PRST_BLE_MIN_ADV_INTERVAL
+	int "Minimum advertising interval in milliseconds"
+	default 100
+
+config PRST_BLE_MAX_ADV_INTERVAL
+	int "Maximum advertising interval in milliseconds"
+	default 150
+
 choice PRST_BLE_ENCODING
 	prompt "b-parasite BLE encoding"
 	default PRST_BLE_ENCODING_BPARASITE_V2

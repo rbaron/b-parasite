@@ -55,12 +55,20 @@ int prst_ble_init() {
   return 0;
 }
 
+#define PRST_MS_TO_INTERVAL(value_ms) ((uint16_t)(value_ms) / 0.625f)
+
 int prst_ble_adv_start() {
   // If BT_LE_ADV_NCONN_IDENTITY, this function will advertise with a static MAC
   // address programmed in the chip. If BT_LE_ADV_NCONN, this function returns
   // advertises with a random MAC each time.
-  return bt_le_adv_start(BT_LE_ADV_NCONN_IDENTITY, ad, ARRAY_SIZE(ad), sd,
-                         ARRAY_SIZE(sd));
+  return bt_le_adv_start(
+      BT_LE_ADV_PARAM(
+          BT_LE_ADV_OPT_USE_IDENTITY,
+          PRST_MS_TO_INTERVAL(CONFIG_PRST_BLE_MIN_ADV_INTERVAL),
+          PRST_MS_TO_INTERVAL(CONFIG_PRST_BLE_MAX_ADV_INTERVAL),
+          NULL),
+      ad, ARRAY_SIZE(ad), sd,
+      ARRAY_SIZE(sd));
 }
 
 int prst_ble_adv_stop() {
