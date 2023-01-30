@@ -19,6 +19,10 @@ typedef struct {
   zb_uint8_t voltage;
   // Units of 0.5%. 0x00 (0%) - 0xc8 (100%) (optional, reportable).
   zb_uint8_t percentage;
+  // Whole number of battery cells used to power device
+  zb_uint8_t quantity;
+  // Enumeration of battery size
+  enum zb_zcl_power_config_battery_size_e size;
 } prst_batt_attrs_t;
 
 // Soil moisture cluster.

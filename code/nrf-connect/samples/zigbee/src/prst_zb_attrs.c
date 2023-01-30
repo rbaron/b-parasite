@@ -24,6 +24,9 @@ void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx) {
 
   dev_ctx->basic_attr.hw_version = CONFIG_PRST_ZB_HARDWARE_VERSION;
 
+  dev_ctx->batt_attrs.quantity = 1;
+  dev_ctx->batt_attrs.size = ZB_ZCL_POWER_CONFIG_BATTERY_SIZE_OTHER;
+
   dev_ctx->identify_attr.identify_time =
       ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE;
 }
