@@ -2,3 +2,4 @@ eda:
   type: kicad
   pcb: kicad/parasite.kicad_pcb
 bom: kicad/parasite.csv
+gerbers: kicad/gerber
