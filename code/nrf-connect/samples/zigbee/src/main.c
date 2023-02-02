@@ -67,8 +67,8 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(
 ZB_ZCL_DECLARE_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(
     batt_attr_list,
     &dev_ctx.batt_attrs.voltage,
-    /*battery_size=*/ZB_ZCL_POWER_CONFIG_BATTERY_SIZE_OTHER,
-    /*battery_quantity=*/1,
+    /*battery_size=*/&dev_ctx.batt_attrs.size,
+    /*battery_quantity=*/&dev_ctx.batt_attrs.quantity,
     /*battery_rated_voltage=*/NULL,
     /*battery_alarm_mask=*/NULL,
     /*battery_voltage_min_threshold=*/NULL,
