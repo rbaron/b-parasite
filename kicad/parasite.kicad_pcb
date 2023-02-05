@@ -5305,7 +5305,7 @@
   (gr_arc (start 57 30) (mid 57.87868 27.87868) (end 60 27) (layer "Edge.Cuts") (width 0.05) (tstamp 1171ce37-6ad7-4662-bb68-5592c945ebf3))
   (gr_circle (center 61 68) (end 62 67) (layer "Edge.Cuts") (width 0.05) (fill none) (tstamp b0271cdd-de22-4bf4-8f55-fc137cfbd4ec))
   (gr_arc (start 76 27) (mid 78.12132 27.87868) (end 79 30) (layer "Edge.Cuts") (width 0.05) (tstamp d4c9471f-7503-4339-928c-d1abae1eede6))
-  (gr_text "b-parasite\n1.2.0\nrbaron.net" (at 68 85) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-0000604cba76)
+  (gr_text "b-parasite\n2.0.0\nrbaron.net" (at 68 85) (layer "F.SilkS") (tstamp 00000000-0000-0000-0000-0000604cba76)
     (effects (font (size 0.8 0.8) (thickness 0.1)))
   )
   (gr_text "JLCJLCJLCJLC" (at 67 36.5 90) (layer "F.SilkS") (tstamp fa918b6d-f6cf-4471-be3b-4ff713f55a2e)
