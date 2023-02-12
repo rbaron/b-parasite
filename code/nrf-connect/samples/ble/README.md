@@ -43,8 +43,14 @@ While in deep sleep, the board consumes around `3.0 uA`:
 
 ![Sleep current consumption](./media/power-profile/sleep.png)
 
-In the active broadcasting state, with default settings, the average current consumption is around `344 uA`:
+In the active broadcasting state, the average power consumption is highly dependant on the advertising interval.
 
-![Broadcasting current consumption](./media/power-profile/broadcasting.png)
+With the default settings (in the `[30, 40] ms` range), we see an average of around `810 uA`:
+
+![Broadcasting with 30 ms current consumption](./media/power-profile/broadcasting-30.png)
+
+If for example we lower the connection interval to the SDK defaults (`[100, 150] ms`, roughly trading off range for power), the average current consumption is around `345 uA`:
+
+![Broadcasting with 100ms current consumption](./media/power-profile/broadcasting-100.png)
 
 With a `200 mAh` CR2032 battery, we can use [this spreadsheet](https://docs.google.com/spreadsheets/d/157JQiX20bGkTrlbvWbWRrs_WViL3MgVZffSCWRR7uAI/edit#gid=0) to estimate the battery life to over two years. Note that this is a simplified model and results in practice may vary.
