@@ -7,7 +7,7 @@
   (paper "A4")
   (title_block
     (title "b-parasite")
-    (date "2022-12-31")
+    (date "2023-03-19")
     (rev "2.0.0")
     (company "rbaron.net")
   )
@@ -84,7 +84,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "./")
+      (outputdirectory "./gerber")
     )
   )
 
