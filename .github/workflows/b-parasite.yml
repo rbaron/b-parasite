@@ -23,7 +23,7 @@ jobs:
 
   build-blinky:
     runs-on: ubuntu-latest
-    name: Build blinky sample
+    name: Build blinky
     needs:
       - lint
     steps:
@@ -39,7 +39,7 @@ jobs:
 
   build-soil-read-loop:
     runs-on: ubuntu-latest
-    name: Build soil_read_loop sample
+    name: Build soil_read_loop
     needs:
       - lint
     steps:
@@ -59,7 +59,7 @@ jobs:
         soc: [nrf52840, nrf52833]
         revision: [1.1.0, 1.2.0, 2.0.0]
     runs-on: ubuntu-latest
-    name: Build ble sample for ${{ matrix.soc }}@${{ matrix.revision }}
+    name: Build ble ${{ matrix.soc }}@${{ matrix.revision }}
     needs:
       - lint
     steps:
@@ -80,7 +80,7 @@ jobs:
         soc: [nrf52840, nrf52833]
         revision: [1.2.0, 2.0.0]
     runs-on: ubuntu-latest
-    name: Build zigbee sample for ${{ matrix.soc }}@${{ matrix.revision }}
+    name: Build zigbee ${{ matrix.soc }}@${{ matrix.revision }}
     needs:
       - lint
     steps:
