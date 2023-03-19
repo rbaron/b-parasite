@@ -7,10 +7,10 @@ description: >
     wet: For estimation of the fully dry state, given the battery voltage
 
   Note that each poly coefficient is specified as 1000 times its real values. This is because we can't
-  directly represent floating points in devicetree. The final evaludated value should be divided by
+  directly represent floating points in devicetree. The final evaluated value should be divided by
   1000.0f in code.
 
-compatible: soil-calibration-coeffe
+compatible: soil-calibration-coeffs
 
 include: base.yaml
 

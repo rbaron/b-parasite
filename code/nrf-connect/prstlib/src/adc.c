@@ -101,7 +101,7 @@ static inline float get_soil_moisture_percent(float battery_voltage,
 
   const float dry2 = eval_poly(dry_coeffs, x);
   const float wet2 = eval_poly(wet_coeffs, x);
-  const float percent2 = (raw_adc_output - dry) / (wet - dry);
+  const float percent2 = (raw_adc_output - dry2) / (wet2 - dry2);
   LOG_INF("Read soil moisture 2: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
           100.0f * percent2, raw_adc_output, x, dry2, wet2);
 
