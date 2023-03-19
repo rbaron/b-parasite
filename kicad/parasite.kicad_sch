@@ -6,7 +6,7 @@
 
   (title_block
     (title "b-parasite")
-    (date "2022-12-31")
+    (date "2023-03-19")
     (rev "2.0.0")
     (comment 1 "rbaron.net")
   )
@@ -2875,6 +2875,9 @@
     )
     (property "Datasheet" "https://www.onsemi.com/pub/Collateral/2N3906-D.PDF" (at 41.91 165.1 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+    (property "LCSC" "C2910191" (at 41.91 165.1 0)
+      (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 570d54ab-6e0f-4ad5-8364-49ac6fd577be))
     (pin "2" (uuid bdf4d734-29ac-4a57-922c-812a74b6173c))
