@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - hardware-v2
   pull_request:
     branches:
       - main
@@ -67,6 +68,22 @@ jobs:
           revision: '1.2.0'
           cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
           output-bin: ble_test_nrf52840_bthomev2_1s.hex
+      - name: Build ble_test_nrf52840_bthomev2_1s_v2.0.0.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52840
+          revision: '2.0.0'
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
+          output-bin: ble_test_nrf52840_bthomev2_1s_v2.0.0.hex
+      - name: Build ble_test_nrf52833_bthomev2_1s_v2.0.0.hex
+        uses: ./.github/actions/build_and_upload
+        with:
+          sample-dir: code/nrf-connect/samples/ble
+          board: bparasite_nrf52833
+          revision: '2.0.0'
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
+          output-bin: ble_test_nrf52833_bthomev2_1s_v2.0.0.hex
       - name: Build ble_nrf52833_default.hex
         uses: ./.github/actions/build_and_upload
         with:
