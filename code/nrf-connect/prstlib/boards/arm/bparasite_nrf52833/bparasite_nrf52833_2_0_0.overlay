@@ -6,6 +6,12 @@
 		io-channels = <&adc 1>;
 	};
 
+	soil_calibration_coeffs: soil_calibration_coeffs {
+		compatible = "soil-calibration-coeffs";
+		dry = <334000 110000 (-15300)>;
+		wet = <299000 (-83100) 11200>;
+	};
+
 	ctrl {
 		compatible = "gpio-keys";
 		photo_transistor_enable: photo_transistor_enable {
