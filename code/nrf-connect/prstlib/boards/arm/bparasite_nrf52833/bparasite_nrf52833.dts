@@ -40,6 +40,12 @@
 		pulse = <PWM_USEC(1)>;
 	};
 
+	soil_calibration_coeffs: soil_calibration_coeffs {
+		compatible = "soil-calibration-coeffs";
+		dry = <306000 101000 (-11700)>;
+		wet = <19000 (-4980) 3420>;
+	};
+
 	ctrl {
 		compatible = "gpio-keys";
 		fast_disch: fast_disch {
