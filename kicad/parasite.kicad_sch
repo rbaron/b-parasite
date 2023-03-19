@@ -1050,6 +1050,7 @@
     )
   )
 
+
   (junction (at 83.82 115.57) (diameter 0) (color 0 0 0 0)
     (uuid 1147a678-c6e1-471b-8387-f2d29ea2d0d4)
   )
@@ -1097,7 +1098,6 @@
   (no_connect (at 35.56 68.58) (uuid 407beec8-a459-4640-aedd-82b826dccc81))
   (no_connect (at 35.56 33.02) (uuid 407beec8-a459-4640-aedd-82b826dccc82))
   (no_connect (at 87.63 63.5) (uuid 6ed2f835-d9f3-4b84-8b3c-c8422f294792))
-  (no_connect (at 87.63 88.9) (uuid 834cff9f-5445-40c8-856e-837564e36925))
   (no_connect (at 87.63 91.44) (uuid 834cff9f-5445-40c8-856e-837564e36926))
   (no_connect (at 87.63 50.8) (uuid 834cff9f-5445-40c8-856e-837564e36927))
   (no_connect (at 87.63 45.72) (uuid 834cff9f-5445-40c8-856e-837564e36928))
@@ -1115,6 +1115,7 @@
   (no_connect (at 120.65 55.88) (uuid 834cff9f-5445-40c8-856e-837564e36935))
   (no_connect (at 120.65 68.58) (uuid 834cff9f-5445-40c8-856e-837564e36936))
   (no_connect (at 120.65 71.12) (uuid 834cff9f-5445-40c8-856e-837564e36937))
+  (no_connect (at 120.65 66.04) (uuid df8a7a65-f5ce-4a37-9e93-0974c154b57f))
 
   (wire (pts (xy 44.45 154.94) (xy 44.45 160.02))
     (stroke (width 0) (type default))
@@ -1296,6 +1297,10 @@
     (uuid 5edcefbe-9766-42c8-9529-28d0ec865573)
   )
 
+  (wire (pts (xy 87.63 88.9) (xy 90.17 88.9))
+    (stroke (width 0) (type default))
+    (uuid 5fa63c28-6953-4bad-8352-c2eff41bfa22)
+  )
   (wire (pts (xy 137.16 179.07) (xy 137.16 181.61))
     (stroke (width 0) (type default))
     (uuid 61b0eda6-6fe6-4c0b-bc6b-06d1a1e1d7dc)
@@ -1502,10 +1507,6 @@
   (wire (pts (xy 213.36 128.27) (xy 213.36 130.81))
     (stroke (width 0) (type default))
     (uuid c48058f6-df8a-4b42-bc0a-15065eb95daa)
-  )
-  (wire (pts (xy 120.65 66.04) (xy 123.19 66.04))
-    (stroke (width 0) (type default))
-    (uuid c4da0010-2976-4da3-9514-089283db7681)
   )
   (wire (pts (xy 154.94 123.19) (xy 149.86 123.19))
     (stroke (width 0) (type default))
@@ -1850,10 +1851,10 @@
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
-  (global_label "BTN1" (shape input) (at 123.19 66.04 0) (fields_autoplaced)
+  (global_label "BTN1" (shape input) (at 90.17 88.9 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid b3d2b3db-3a06-4abc-a6f7-d5af4d3ca0fa)
-    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 130.2918 65.9606 0)
+    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 97.2718 88.8206 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
@@ -3298,7 +3299,7 @@
   (symbol (lib_id "B3U-1000P:B3U-1000P") (at 160.02 171.45 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid d6c55039-cad2-4d9a-97dd-4726b7642d6e)
-    (property "Reference" "S2" (at 165.1 171.45 0)
+    (property "Reference" "SW1" (at 165.1 171.45 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "B3U-1000P" (at 167.64 166.37 0)
@@ -3336,7 +3337,7 @@
     (instances
       (project "parasite"
         (path "/922058ca-d09a-45fd-8394-05f3e2c1e03a"
-          (reference "S2") (unit 1)
+          (reference "SW1") (unit 1)
         )
       )
     )
@@ -3345,7 +3346,7 @@
   (symbol (lib_id "B3U-1000P:B3U-1000P") (at 137.16 171.45 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ddd3022e-3c6f-4142-be93-55bb451322b5)
-    (property "Reference" "S1" (at 142.24 171.45 0)
+    (property "Reference" "RST1" (at 142.24 171.45 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "B3U-1000P" (at 144.78 166.37 0)
@@ -3383,7 +3384,7 @@
     (instances
       (project "parasite"
         (path "/922058ca-d09a-45fd-8394-05f3e2c1e03a"
-          (reference "S1") (unit 1)
+          (reference "RST1") (unit 1)
         )
       )
     )
