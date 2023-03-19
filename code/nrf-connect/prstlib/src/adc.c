@@ -1,6 +1,7 @@
 #include "prstlib/adc.h"
 
 #include <math.h>
+#include <zephyr/devicetree.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/pwm.h>
@@ -15,6 +16,10 @@ LOG_MODULE_REGISTER(adc, CONFIG_PRSTLIB_LOG_LEVEL);
 static const struct pwm_dt_spec soil_pwm_dt =
     PWM_DT_SPEC_GET(DT_NODELABEL(soil_pwm));
 static const uint32_t pulse = DT_PROP(DT_NODELABEL(soil_pwm), pulse);
+
+// Calibration coefficients for the soil sensing circuit.
+static const int dry_coeffs[3] = DT_PROP(DT_NODELABEL(soil_calibration_coeffs), dry);
+static const int wet_coeffs[3] = DT_PROP(DT_NODELABEL(soil_calibration_coeffs), wet);
 
 struct gpio_dt_spec fast_disch_dt =
     GPIO_DT_SPEC_GET(DT_NODELABEL(fast_disch), gpios);
@@ -79,14 +84,27 @@ static void set_battery_percent(const prst_adc_read_t* read, prst_batt_t* out) {
   return;
 }
 
+static inline float eval_poly(const int coeffs[3], float x) {
+  // The coefficients are specified times 1000, as a workaround the lack of support for floating
+  // points in devicetree bindings.
+  return (coeffs[0] + coeffs[1] * x + coeffs[2] * x * x) / 1000.0f;
+}
+
 static inline float get_soil_moisture_percent(float battery_voltage,
                                               int16_t raw_adc_output) {
-  const double x = battery_voltage;
-  const double dry = -11.7f * x * x + 101.0f * x + 306.0f;
-  const double wet = 3.42f * x * x - 4.98f * x + 19.0f;
+  const float x = battery_voltage;
+  const float dry = -11.7f * x * x + 101.0f * x + 306.0f;
+  const float wet = 3.42f * x * x - 4.98f * x + 19.0f;
   const float percent = (raw_adc_output - dry) / (wet - dry);
-  LOG_DBG("Read soil moisture: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
+  LOG_INF("Read soil moisture: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
           100.0f * percent, raw_adc_output, x, dry, wet);
+
+  const float dry2 = eval_poly(dry_coeffs, x);
+  const float wet2 = eval_poly(wet_coeffs, x);
+  const float percent2 = (raw_adc_output - dry) / (wet - dry);
+  LOG_INF("Read soil moisture 2: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
+          100.0f * percent2, raw_adc_output, x, dry2, wet2);
+
   return percent;
 }
 
@@ -121,6 +139,12 @@ int prst_adc_init() {
   RET_IF_ERR(gpio_pin_configure_dt(&ldr_enable_dt, GPIO_OUTPUT));
 #endif
 
+  for (size_t idx = 0; idx < ARRAY_SIZE(dry_coeffs); idx++) {
+    LOG_INF("Dry coeff %d: %d\n", idx, dry_coeffs[idx]);
+  }
+  for (size_t idx = 0; idx < ARRAY_SIZE(wet_coeffs); idx++) {
+    LOG_INF("Wet coeff %d: %d\n", idx, wet_coeffs[idx]);
+  }
   return 0;
 }
 
