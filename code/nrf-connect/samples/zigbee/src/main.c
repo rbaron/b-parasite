@@ -111,6 +111,11 @@ ZBOSS_DECLARE_DEVICE_CTX_1_EP(
     app_template_ctx,
     app_template_ep);
 
+void identify_cb(zb_bufid_t bufid) {
+  LOG_DBG("Remote identify command called");
+  prst_led_flash(15);
+}
+
 void zboss_signal_handler(zb_bufid_t bufid) {
   // See zigbee_default_signal_handler() for all available signals.
   zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/NULL);
@@ -208,6 +213,8 @@ int main(void) {
 
   RET_IF_ERR(prst_led_flash(2));
   k_msleep(100);
+
+  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);
 
   zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
