@@ -37,6 +37,22 @@ jobs:
           revision: 2.0.0
           output-bin: blinky_nrf52840.hex
 
+  build-input:
+    runs-on: ubuntu-latest
+    name: Build input
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build input
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/input
+          board: bparasite_nrf52840
+          revision: 2.0.0
+          output-bin: input_nrf52840.hex
+
   build-soil-read-loop:
     runs-on: ubuntu-latest
     name: Build soil_read_loop
