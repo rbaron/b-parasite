@@ -1,10 +1,3 @@
-// #include <prstlib/button.h>
-// #include <prstlib/led.h>
-// #include <prstlib/sensors.h>
-// #include <zephyr/logging/log.h>
-// #include <zephyr/pm/device.h>
-// #include <zephyr/pm/pm.h>
-// #include <zephyr/pm/policy.h>
 #include <prstlib/adc.h>
 #include <prstlib/button.h>
 #include <prstlib/led.h>
@@ -13,9 +6,6 @@
 #include <prstlib/shtc3.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/pm/device.h>
-#include <zephyr/pm/pm.h>
-#include <zephyr/pm/policy.h>
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 

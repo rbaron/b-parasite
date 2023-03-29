@@ -11,8 +11,6 @@
 		"C_Cpp.autoAddFileAssociations": false,
 		"nrf-connect.applications": [
 			"${workspaceFolder}"
-		],
-		"nrf-connect.toolchain.path": "${nrf-connect.toolchain:2.2.0}",
-		"nrf-connect.topdir": "${nrf-connect.sdk:2.2.0}"
+		]
 	}
 }
