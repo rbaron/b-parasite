@@ -28,9 +28,9 @@
 	buttons {
 		compatible = "gpio-keys";
 		button0: button_0 {
-			// P0.12.
-			gpios = <&gpio0 12 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 0";
+			// P0.30.
+			gpios = <&gpio0 30 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button SW1";
 		};
 	};
 
@@ -62,6 +62,9 @@
 
 &gpio0 {
 	status = "okay";
+	// For low-power EDGE interrupts.
+	// See github.com/zephyrproject-rtos/zephyr/issues/28499.
+	sense-edge-mask = <0xffffffff>;
 };
 
 &gpio1 {
