@@ -96,7 +96,7 @@ static inline float get_soil_moisture_percent(float battery_voltage,
   const float dry = eval_poly(dry_coeffs, x);
   const float wet = eval_poly(wet_coeffs, x);
   const float percent = (raw_adc_output - dry) / (wet - dry);
-  LOG_INF("Read soil moisture 2: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
+  LOG_DBG("Read soil moisture 2: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
           100.0f * percent, raw_adc_output, x, dry, wet);
   return percent;
 }
@@ -133,10 +133,10 @@ int prst_adc_init() {
 #endif
 
   for (size_t idx = 0; idx < ARRAY_SIZE(dry_coeffs); idx++) {
-    LOG_INF("Dry coeff %d: %d\n", idx, dry_coeffs[idx]);
+    LOG_DBG("Dry coeff %d: %d\n", idx, dry_coeffs[idx]);
   }
   for (size_t idx = 0; idx < ARRAY_SIZE(wet_coeffs); idx++) {
-    LOG_INF("Wet coeff %d: %d\n", idx, wet_coeffs[idx]);
+    LOG_DBG("Wet coeff %d: %d\n", idx, wet_coeffs[idx]);
   }
   return 0;
 }
