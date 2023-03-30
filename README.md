@@ -2,7 +2,7 @@
 
 # b-parasite
 <p align="center">
-  <img src="img/resized/img1.jpg" width="512px" border="0" alt="PCB front and back photo" />
+  <img src="img/resized/b-parasite-2.0.0.jpg" width="512px" border="0" alt="PCB front and back photo" />
 </p>
 
 b-parasite is an open source soil moisture and ambient temperature/humidity/light sensor.
