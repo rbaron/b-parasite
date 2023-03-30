@@ -23,7 +23,8 @@ This repository also hosts a few different firmware samples for b-parasite.
 |[samples/ble](./code/nrf-connect/samples/ble)|This is the most battle-tested and useful firmware. It periodically reads all sensors and broadcast them via Bluetooth Low Energy (BLE). It works with [Home Assistant](https://www.home-assistant.io/) out of the box. |[Docs](./code/nrf-connect/samples/ble/README.md)|
 |[samples/zigbee](./code/nrf-connect/samples/zigbee)| An experimental/educational/exploratory basic Zigbee sample built on [nRF Connect + ZBOSS](https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/ug_zigbee.html). It integrates with [Home Assistant](https://www.home-assistant.io/) via [ZHA](https://www.home-assistant.io/integrations/zha) or [Zigbee2MQTT](https://www.zigbee2mqtt.io/). |[Docs](./code/nrf-connect/samples/zigbee/README.md)|
 |[samples/blinky](./code/nrf-connect/samples/blinky)| The classic "Hello, world" |-|
-|[samples/soil_read_loop](./code/nrf-connect/samples/soil_read_loop)| Read the soil moisture sensor on a loop. Useful for experimenting and calibrating the sensor. |-|
+|[samples/soil_read_loop](./code/nrf-connect/samples/soil_read_loop)| Reads the soil moisture sensor on a loop. Useful for experimenting and calibrating the sensor. |-|
+|[samples/input](./code/nrf-connect/samples/input)| Handles button presses. Useful for power profiling GPIO interrupts and testing debouncing for push switches on [boards that have them](https://github.com/rbaron/b-parasite/wiki/Hardware-Versions). |-|
 
 # Documentation
 Information about how to order, assemble, build the samples, protect the sensor and flash the firmware is on [the Wiki](https://github.com/rbaron/b-parasite/wiki/How-to-Program).
