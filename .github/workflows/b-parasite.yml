@@ -6,10 +6,11 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
-    name: Check format & build samples
+    name: Check code format
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -18,65 +19,93 @@ jobs:
         with:
           check-path: 'code/nrf-connect'
           exclude-regex: '\/build\/'
+
+  build-blinky:
+    runs-on: ubuntu-latest
+    name: Build blinky
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Build blinky
         uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/blinky
           board: bparasite_nrf52840
+          revision: 2.0.0
           output-bin: blinky_nrf52840.hex
+
+  build-input:
+    runs-on: ubuntu-latest
+    name: Build input
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build input
+        uses: ./.github/actions/build
+        with:
+          sample-dir: code/nrf-connect/samples/input
+          board: bparasite_nrf52840
+          revision: 2.0.0
+          output-bin: input_nrf52840.hex
+
+  build-soil-read-loop:
+    runs-on: ubuntu-latest
+    name: Build soil_read_loop
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Build soil_read_loop
         uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/soil_read_loop
           board: bparasite_nrf52840
+          revision: 2.0.0
           output-bin: soil_read_loop_nrf52840.hex
-      - name: Build ble_nrf52840_1_2_0_default.hex
+
+  build-ble:
+    strategy:
+      matrix:
+        soc: [nrf52840, nrf52833]
+        revision: [1.1.0, 1.2.0, 2.0.0]
+    runs-on: ubuntu-latest
+    name: Build ble ${{ matrix.soc }}@${{ matrix.revision }}
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
         uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52840
-          revision: '1.2.0'
-          output-bin: ble_nrf52840_1_2_0_default.hex
-      - name: Build ble_nrf52840_1_1_0_default.hex
-        uses: ./.github/actions/build_and_upload
-        with:
-          sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52840
-          revision: '1.1.0'
-          output-bin: ble_nrf52840_1_1_0_default.hex
-      - name: Build ble_nrf52840_1_0_0_default.hex
-        uses: ./.github/actions/build_and_upload
-        with:
-          sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52840
-          revision: '1.0.0'
-          output-bin: ble_nrf52840_1_0_0_default.hex
-      - name: Build ble_test_nrf52840_bthomev1_1s.hex
-        uses: ./.github/actions/build_and_upload
-        with:
-          sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52840
-          revision: '1.2.0'
-          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V1=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
-          output-bin: ble_test_nrf52840_bthomev1_1s.hex
-      - name: Build ble_test_nrf52840_bthomev2_1s.hex
-        uses: ./.github/actions/build_and_upload
-        with:
-          sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52840
-          revision: '1.2.0'
-          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1
-          output-bin: ble_test_nrf52840_bthomev2_1s.hex
-      - name: Build ble_nrf52833_default.hex
-        uses: ./.github/actions/build_and_upload
-        with:
-          sample-dir: code/nrf-connect/samples/ble
-          board: bparasite_nrf52833
-          output-bin: ble_nrf52833_default.hex
-      - name: Build zigbee_nrf52840_default.hex
+          board: bparasite_${{ matrix.soc }}
+          revision: ${{ matrix.revision }}
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1 -DCONFIG_PRSTLIB_LOG_LEVEL_DBG=y
+          output-bin: ble_${{ matrix.soc }}_${{ matrix.revision }}_debug.hex
+
+  build-zigbee:
+    strategy:
+      matrix:
+        soc: [nrf52840, nrf52833]
+        revision: [1.2.0, 2.0.0]
+    runs-on: ubuntu-latest
+    name: Build zigbee ${{ matrix.soc }}@${{ matrix.revision }}
+    needs:
+      - lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
         uses: ./.github/actions/build_and_upload
         with:
           sample-dir: code/nrf-connect/samples/zigbee
-          board: bparasite_nrf52840
-          output-bin: zigbee_nrf52840_default.hex
-          cmake-extra: -DPRST_ZB_BUILD_DATE=__TODAY__
+          board: bparasite_${{ matrix.soc }}
+          revision: ${{ matrix.revision }}
+          cmake-extra: -DCONFIG_PRSTLIB_LOG_LEVEL_DBG=y
+          output-bin: zigbee_${{ matrix.soc }}_${{ matrix.revision }}_debug.hex

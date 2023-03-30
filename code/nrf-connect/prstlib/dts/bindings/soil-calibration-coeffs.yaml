@@ -1,0 +1,25 @@
+
+description: >
+  Calibration coefficients for the soil sensing circuit. We have two polynomials whose input variable
+  is the battery voltage in Volts. The evaluated polynomial corresponds to the estimated ADC value,
+  assumed to be 10 bits, so in [0, 1024). The two polynomials are:
+    dry: For estimation of the fully dry state, given the battery voltage
+    wet: For estimation of the fully dry state, given the battery voltage
+
+  Note that each poly coefficient is specified as 1000 times its real values. This is because we can't
+  directly represent floating points in devicetree. The final evaluated value should be divided by
+  1000.0f in code.
+
+compatible: soil-calibration-coeffs
+
+include: base.yaml
+
+properties:
+  dry:
+    type: array
+    required: true
+    description: The coefficients * 1000, as integers. 0th degree first, then 1st and 2nd last.
+  wet:
+    type: array
+    required: true
+    description: The coefficients * 1000, as integers. 0th degree first, then 1st and 2nd last.

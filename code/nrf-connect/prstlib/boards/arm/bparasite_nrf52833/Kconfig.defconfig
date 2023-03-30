@@ -4,6 +4,10 @@ if BOARD_BPARASITE_NRF52833
 config BOARD
 	default "bparasite_nrf52833"
 
+config BOARD_REVISION
+	string "Board revision."
+	default "1.0.0"
+
 config BT_CTLR
 	default BT
 

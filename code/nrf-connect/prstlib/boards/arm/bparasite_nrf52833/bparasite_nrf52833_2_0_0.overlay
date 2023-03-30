@@ -1,0 +1,35 @@
+
+/ {
+	photo_transistor: photo_transistor {
+		compatible = "voltage-divider";
+		output-ohms = <470>;
+		io-channels = <&adc 1>;
+	};
+
+	soil_calibration_coeffs: soil_calibration_coeffs {
+		compatible = "soil-calibration-coeffs";
+		dry = <334000 110000 (-15300)>;
+		wet = <299000 (-83100) 11200>;
+	};
+
+	ctrl {
+		compatible = "gpio-keys";
+		photo_transistor_enable: photo_transistor_enable {
+			// P0.29.
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+			label = "Phototransistor supply";
+		};
+	};
+};
+
+&adc {
+	channel@1 {
+		reg = <1>;
+		zephyr,gain = "ADC_GAIN_1_6";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		// P0.02.
+		zephyr,input-positive = <NRF_SAADC_AIN0>;
+		zephyr,resolution = <10>;
+	};
+};

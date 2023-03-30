@@ -28,9 +28,9 @@
 	buttons {
 		compatible = "gpio-keys";
 		button0: button_0 {
-			// P0.12.
-			gpios = <&gpio0 12 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-			label = "Push button switch 0";
+			// P0.30.
+			gpios = <&gpio0 30 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "Push button SW1";
 		};
 	};
 
@@ -38,6 +38,12 @@
 		compatible = "pwm-fixed";
 		pwms = <&pwm0 0 PWM_USEC(2) PWM_POLARITY_NORMAL>;
 		pulse = <PWM_USEC(1)>;
+	};
+
+	soil_calibration_coeffs: soil_calibration_coeffs {
+		compatible = "soil-calibration-coeffs";
+		dry = <306000 101000 (-11700)>;
+		wet = <19000 (-4980) 3420>;
 	};
 
 	ctrl {
@@ -56,6 +62,9 @@
 
 &gpio0 {
 	status = "okay";
+	// For low-power EDGE interrupts.
+	// See github.com/zephyrproject-rtos/zephyr/issues/28499.
+	sense-edge-mask = <0xffffffff>;
 };
 
 &gpio1 {

@@ -11,4 +11,4 @@ add_library(prstlib STATIC
 )
 
 target_include_directories(prstlib PRIVATE include)
-target_link_libraries(prstlib PUBLIC zephyr_interface)
+target_link_libraries(prstlib PUBLIC zephyr_interface kernel)
