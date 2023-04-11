@@ -128,8 +128,9 @@ void zboss_signal_handler(zb_bufid_t bufid) {
     case ZB_BDB_SIGNAL_STEERING:         // New network.
     case ZB_BDB_SIGNAL_DEVICE_REBOOT: {  // Previously joined network.
       LOG_DBG("Steering complete. Status: %d", status);
-      prst_led_flash(/*times=*/3);
       if (status == RET_OK) {
+        LOG_DBG("Steering successful. Status: %d", status);
+        prst_led_flash(/*times=*/3);
         k_timer_stop(&led_flashing_timer);
         prst_led_off();
       }
