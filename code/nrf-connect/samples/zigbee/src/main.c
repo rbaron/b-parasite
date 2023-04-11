@@ -19,6 +19,7 @@
 #include "prst_zb_attrs.h"
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
+#include "restart_handler.h"
 
 LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -34,6 +35,8 @@ static void led_flashing_cb(struct k_timer *timer) {
 }
 
 K_TIMER_DEFINE(led_flashing_timer, led_flashing_cb, /*stop_fn=*/NULL);
+
+extern struct k_timer restart_timer;
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(
     identify_attr_list,
@@ -132,7 +135,14 @@ void zboss_signal_handler(zb_bufid_t bufid) {
         LOG_DBG("Steering successful. Status: %d", status);
         prst_led_flash(/*times=*/3);
         k_timer_stop(&led_flashing_timer);
+        k_timer_stop(&restart_timer);
         prst_led_off();
+      } else {
+        LOG_DBG("Steering failed. Status: %d", status);
+        prst_led_flash(7);
+        k_timer_start(&restart_timer, K_SECONDS(PRST_ZB_RESET_TIMEOUT), K_MSEC(0));
+        k_timer_stop(&led_flashing_timer); // Power saving
+        prst_led_off(); 
       }
     }
     case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
