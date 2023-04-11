@@ -140,6 +140,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       break;
     case ZB_ZDO_SIGNAL_LEAVE:
       if (status == RET_OK) {
+        k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
         zb_zdo_signal_leave_params_t *leave_params = ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_leave_params_t);
         LOG_INF("Network left (leave type: %d)", leave_params->leave_type);
 
@@ -150,7 +151,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       }
     case ZB_ZDO_SIGNAL_SKIP_STARTUP: {
       stack_initialised = true;
-      LOG_DBG("Will restart flashing");
+      LOG_DBG("Started zigbee stack and waiting for connection to network.");
       k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
       break;
     }
