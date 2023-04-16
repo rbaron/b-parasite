@@ -17,8 +17,6 @@ static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME),
 };
 
-static const struct bt_data sd[] = {};
-
 static bt_addr_le_t mac_addr;
 
 static int set_user_defined_bt_addr(const char *addr_str) {
@@ -58,17 +56,18 @@ int prst_ble_init() {
 #define PRST_MS_TO_INTERVAL(value_ms) ((uint16_t)(value_ms) / 0.625f)
 
 int prst_ble_adv_start() {
-  // If BT_LE_ADV_NCONN_IDENTITY, this function will advertise with a static MAC
-  // address programmed in the chip. If BT_LE_ADV_NCONN, this function returns
-  // advertises with a random MAC each time.
   return bt_le_adv_start(
       BT_LE_ADV_PARAM(
           BT_LE_ADV_OPT_USE_IDENTITY,
           PRST_MS_TO_INTERVAL(CONFIG_PRST_BLE_MIN_ADV_INTERVAL),
           PRST_MS_TO_INTERVAL(CONFIG_PRST_BLE_MAX_ADV_INTERVAL),
-          NULL),
-      ad, ARRAY_SIZE(ad), sd,
-      ARRAY_SIZE(sd));
+          /*_peer=*/NULL),
+      ad,
+      ARRAY_SIZE(ad),
+      // sd == NULL is required to set advertising to non-connectable. See
+      // https://github.com/zephyrproject-rtos/zephyr/blob/c0fcd35531611bbe35376c62a9e50744d6904940/subsys/bluetooth/host/adv.c#L860
+      /*sd=*/NULL,
+      /*sd_len=*/0);
 }
 
 int prst_ble_adv_stop() {
