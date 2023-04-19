@@ -41,10 +41,14 @@ Information about how to order, assemble, build the samples, protect the sensor 
 </p>
 
 # Case
-A 3D printable case model can be found in [case/](case/).
-![Render of the 3D printable case](./img/case/screenshot.png)
+<p align="center">
+  <img src="img/case/screenshot.png" alt="Render of the original 3D printable case" />
+</p>
 
-There's also another case formed like a Mushroom on printables.com: [mushroomCap for b-parasite soil moisture sensor](https://www.printables.com/model/456571-mushroomcap-for-b-parasite-soil-moisture-sensor)
+We have three different 3D-printable cases:
+1. Original snap-on case - [case/Top.stl](./case/Top.stl), [case/Bottom.stl](./case/Bottom.stl)
+2. High airflow - [case/b_parasite_case_high_airflow.stl](./case/b_parasite_case_high_airflow.stl)
+3. Mushroom-style - available on [Printables](https://www.printables.com/model/456571-mushroomcap-for-b-parasite-soil-moisture-sensor)
 
 # License
 The hardware and associated design files are released under the [Creative Commons CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
