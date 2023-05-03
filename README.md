@@ -27,7 +27,7 @@ This repository also hosts a few different firmware samples for b-parasite.
 |[samples/input](./code/nrf-connect/samples/input)| Handles button presses. Useful for power profiling GPIO interrupts and testing debouncing for push switches on [boards that have them](https://github.com/rbaron/b-parasite/wiki/Hardware-Versions). |-|
 
 # Documentation
-Information about how to order, assemble, build the samples, protect the sensor and flash the firmware is on [the Wiki](https://github.com/rbaron/b-parasite/wiki/How-to-Program).
+Information about how to order, assemble, build the samples, protect the sensor and flash the firmware is on [the Wiki](https://github.com/rbaron/b-parasite/wiki).
 
 # Repository Organization
 * [code/nrf-connect/](./code/nrf-connect/) - Common library and samples, built with Nordic's [nRF Connect SDK](https://www.nordicsemi.com/Products/Development-software/nrf-connect-sdk).
