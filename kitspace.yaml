@@ -1,5 +1,7 @@
+summary: An open source soil moisture sensor.
+site: https://github.com/rbaron/b-parasite
+bom: kicad/parasite.csv
+gerbers: kicad/gerber
 eda:
   type: kicad
   pcb: kicad/parasite.kicad_pcb
-bom: kicad/parasite.csv
-gerbers: kicad/gerber
