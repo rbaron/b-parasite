@@ -26,6 +26,9 @@ static struct zb_device_ctx dev_ctx;
 
 static prst_sensors_t sensors;
 
+static bool joining_signal_received = false;
+static bool stack_initialised = false;
+
 static void led_flashing_cb(struct k_timer *timer) {
   prst_led_toggle();
 }
@@ -118,7 +121,8 @@ void identify_cb(zb_bufid_t bufid) {
 
 void zboss_signal_handler(zb_bufid_t bufid) {
   // See zigbee_default_signal_handler() for all available signals.
-  zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/NULL);
+  zb_zdo_app_signal_hdr_t *sig_hndler = NULL;
+  zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/&sig_hndler);
   zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
   switch (sig) {
     case ZB_BDB_SIGNAL_STEERING:         // New network.
@@ -129,12 +133,39 @@ void zboss_signal_handler(zb_bufid_t bufid) {
         k_timer_stop(&led_flashing_timer);
         prst_led_off();
       }
-      break;
     }
-    case ZB_ZDO_SIGNAL_SKIP_STARTUP:
-    case ZB_ZDO_SIGNAL_LEAVE: {
+    case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
+      joining_signal_received = true;
+      break;
+    case ZB_ZDO_SIGNAL_LEAVE:
+      if (status == RET_OK) {
+        zb_zdo_signal_leave_params_t *leave_params = ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_leave_params_t);
+        LOG_INF("Network left (leave type: %d)", leave_params->leave_type);
+
+        /* Set joining_signal_received to false so broken rejoin procedure can be detected correctly. */
+        if (leave_params->leave_type == ZB_NWK_LEAVE_TYPE_REJOIN) {
+          joining_signal_received = false;
+        }
+      }
+    case ZB_ZDO_SIGNAL_SKIP_STARTUP: {
+      stack_initialised = true;
       LOG_DBG("Will restart flashing");
       k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
+      break;
+    }
+    case ZB_NLME_STATUS_INDICATION: {
+      zb_zdo_signal_nlme_status_indication_params_t *nlme_status_ind =
+          ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_nlme_status_indication_params_t);
+      if (nlme_status_ind->nlme_status.status == ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE) {
+        /* Check for broken rejoin procedure and restart the device to recover.
+           This implements Nordic's suggested workaround for errata KRKNWK-12017, which effects
+           the recent nRF Connect SDK (v1.8.0 - v2.3.0 at time of writing).
+           For details see: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/known_issues.html?v=v2-3-0
+         */
+        if (stack_initialised && !joining_signal_received) {
+          zb_reset(0);
+        }
+      }
       break;
     }
   }
