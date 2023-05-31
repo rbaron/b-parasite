@@ -3,4 +3,4 @@
 
 static const int PRST_ZB_RESET_TIMEOUT = 5 * 60;
 
-#endif // _PRST_ZB_RESTART_HANDLER_H_
+#endif  // _PRST_ZB_RESTART_HANDLER_H_

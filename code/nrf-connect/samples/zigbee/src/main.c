@@ -141,8 +141,8 @@ void zboss_signal_handler(zb_bufid_t bufid) {
         LOG_DBG("Steering failed. Status: %d", status);
         prst_led_flash(7);
         k_timer_start(&restart_timer, K_SECONDS(PRST_ZB_RESET_TIMEOUT), K_MSEC(0));
-        k_timer_stop(&led_flashing_timer); // Power saving
-        prst_led_off(); 
+        k_timer_stop(&led_flashing_timer);  // Power saving
+        prst_led_off();
       }
     }
     case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
