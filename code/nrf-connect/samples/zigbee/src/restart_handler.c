@@ -13,3 +13,11 @@ static void restart_network_steering_cb(struct k_timer *timer) {
 }
 
 K_TIMER_DEFINE(restart_timer, restart_network_steering_cb, NULL);
+
+static void prst_restart_watchdog_start() {
+  k_timer_start(&restart_timer, K_SECONDS(PRST_ZB_RESET_TIMEOUT), K_MSEC(0));
+}
+
+static void prst_restart_watchdog_stop() {
+  k_timer_stop(&restart_timer);
+}
