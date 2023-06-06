@@ -108,24 +108,3 @@ int prst_debug_counters_get_all(prst_debug_counters_callback_t callback) {
   }
   return fs_closedir(&dirp);
 }
-
-typedef struct {
-  struct k_work work;
-  const char* counter_name;
-} counter_increment_work_t;
-
-static void increment_counter_callback(struct k_work* work) {
-  counter_increment_work_t* counter_work = CONTAINER_OF(work, counter_increment_work_t, work);
-  LOG_DBG("Incrementing counter callback for %s", counter_work->counter_name);
-  prst_debug_counters_increment(counter_work->counter_name);
-  free(counter_work);
-  LOG_DBG("Freed memory for %s", counter_work->counter_name);
-}
-
-int prst_debug_counters_increment_async(const char* counter_name) {
-  counter_increment_work_t* work = malloc(sizeof(counter_increment_work_t));
-  work->counter_name = counter_name;
-  k_work_init(&work->work, increment_counter_callback);
-  LOG_DBG("Scheduling increment of %s", counter_name);
-  return k_work_submit(&work->work);
-}
