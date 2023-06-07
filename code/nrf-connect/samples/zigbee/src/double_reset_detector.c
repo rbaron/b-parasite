@@ -7,6 +7,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include "debug_counters.h"
+
 LOG_MODULE_REGISTER(double_reset_detector, CONFIG_LOG_DEFAULT_LEVEL);
 
 static const char *flag_filename = "/lfs/reset_flag";
@@ -40,6 +42,7 @@ int prst_detect_double_reset(prst_double_reset_callback_t on_double_reset) {
   if (strcmp(buff, flag_prefix) == 0) {
     RET_IF_ERR(fs_close(&flag_file));
     RET_IF_ERR(erase_flag());
+    prst_debug_counters_increment("double_reset");
     return on_double_reset();
   }
 

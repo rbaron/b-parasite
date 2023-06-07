@@ -14,10 +14,19 @@ static const char kDebugCountersDir[] = "/lfs/debug_counters";
 #define PRST_MAX_FILE_NAME_LENGTH (sizeof(kDebugCountersDir) + 1 + PRST_MAX_COUNTER_NAME_LENGTH)
 
 static int mk_filename(const char* counter_name, char* buff, size_t buff_size) {
-  RET_CHECK(strlen(counter_name) <= PRST_MAX_FILE_NAME_LENGTH, "Counter name too long");
+  RET_CHECK(strlen(counter_name) <= PRST_MAX_COUNTER_NAME_LENGTH, "Counter name too long");
   strcpy(buff, kDebugCountersDir);
   strcat(buff, "/");
   strcat(buff, counter_name);
+  return 0;
+}
+
+static int read_counter_file(struct fs_file_t* file, prst_debug_counter_t* value) {
+  int n_read = fs_read(file, value, sizeof(prst_debug_counter_t));
+  if (n_read != sizeof(prst_debug_counter_t)) {
+    LOG_WRN("fs_read returned %d, expected %d, assuming first access", n_read, sizeof(prst_debug_counter_t));
+    *value = 0;
+  }
   return 0;
 }
 
@@ -45,18 +54,11 @@ int prst_debug_counters_increment(const char* counter_name) {
   struct fs_file_t file;
   fs_file_t_init(&file);
   RET_IF_ERR(fs_open(&file, filename, FS_O_CREATE | FS_O_RDWR));
-
   // Read the current value.
   prst_debug_counter_t value;
-  int n_read = fs_read(&file, &value, sizeof(value));
-  if (n_read != sizeof(value)) {
-    LOG_WRN("fs_read returned %d, expected %d, assuming first access", n_read, sizeof(value));
-    value = 0;
-  }
-
+  RET_IF_ERR(read_counter_file(&file, &value));
   // Increment the value.
   value++;
-
   // Write back to file.
   RET_CHECK(fs_seek(&file, 0, SEEK_SET) == 0, "Unable to seek");
   ssize_t written = fs_write(&file, &value, sizeof(value));
@@ -76,22 +78,16 @@ int prst_debug_counters_get(const char* counter_name, prst_debug_counter_t* valu
   struct fs_file_t file;
   fs_file_t_init(&file);
   RET_IF_ERR(fs_open(&file, filename, FS_O_CREATE | FS_O_READ));
-
   // Read the current value.
-  int n_read = fs_read(&file, value, sizeof(value));
-  if (n_read != sizeof(prst_debug_counter_t)) {
-    LOG_WRN("fs_read returned %d, expected %d, assuming first access", n_read, sizeof(prst_debug_counter_t));
-    *value = 0;
-  }
-
+  RET_IF_ERR(read_counter_file(&file, value));
   return fs_close(&file);
 }
 
 int prst_debug_counters_get_all(prst_debug_counters_callback_t callback) {
   LOG_DBG("Getting all counters from %s", kDebugCountersDir);
+
   struct fs_dir_t dirp;
   fs_dir_t_init(&dirp);
-
   static struct fs_dirent entry;
   RET_IF_ERR(fs_opendir(&dirp, kDebugCountersDir));
   prst_debug_counter_t value;
