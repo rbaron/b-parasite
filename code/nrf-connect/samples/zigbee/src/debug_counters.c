@@ -81,7 +81,6 @@ int prst_debug_counters_get(const char* counter_name, prst_debug_counter_t* valu
   int n_read = fs_read(&file, value, sizeof(value));
   if (n_read != sizeof(prst_debug_counter_t)) {
     LOG_WRN("fs_read returned %d, expected %d, assuming first access", n_read, sizeof(prst_debug_counter_t));
-    // return -1;
     *value = 0;
   }
 
