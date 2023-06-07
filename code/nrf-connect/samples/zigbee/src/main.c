@@ -19,6 +19,7 @@
 #include "prst_zb_attrs.h"
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
+#include "restart_handler.h"
 
 LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -128,9 +129,17 @@ void zboss_signal_handler(zb_bufid_t bufid) {
     case ZB_BDB_SIGNAL_STEERING:         // New network.
     case ZB_BDB_SIGNAL_DEVICE_REBOOT: {  // Previously joined network.
       LOG_DBG("Steering complete. Status: %d", status);
-      prst_led_flash(/*times=*/3);
       if (status == RET_OK) {
+        LOG_DBG("Steering successful. Status: %d", status);
+        prst_led_flash(/*times=*/3);
         k_timer_stop(&led_flashing_timer);
+        prst_restart_watchdog_stop();
+        prst_led_off();
+      } else {
+        LOG_DBG("Steering failed. Status: %d", status);
+        prst_led_flash(7);
+        prst_restart_watchdog_start();
+        k_timer_stop(&led_flashing_timer);  // Power saving
         prst_led_off();
       }
     }
@@ -139,6 +148,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       break;
     case ZB_ZDO_SIGNAL_LEAVE:
       if (status == RET_OK) {
+        k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
         zb_zdo_signal_leave_params_t *leave_params = ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_leave_params_t);
         LOG_INF("Network left (leave type: %d)", leave_params->leave_type);
 
@@ -149,7 +159,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       }
     case ZB_ZDO_SIGNAL_SKIP_STARTUP: {
       stack_initialised = true;
-      LOG_DBG("Will restart flashing");
+      LOG_DBG("Started zigbee stack and waiting for connection to network.");
       k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
       break;
     }

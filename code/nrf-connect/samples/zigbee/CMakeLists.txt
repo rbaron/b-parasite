@@ -16,6 +16,7 @@ target_sources(app PRIVATE
   src/factory_reset.c
   src/prst_zb_attrs.c
   src/prst_zb_soil_moisture_defs.c
+  src/restart_handler.c
 )
 
 add_subdirectory(../../prstlib prstlib)

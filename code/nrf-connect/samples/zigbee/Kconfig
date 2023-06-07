@@ -32,3 +32,7 @@ config PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
   bool "Resetting via the reset pin will factory reset the device. Power cycling through battery replacement will not."
 
 endchoice  # PRST_ZB_FACTORY_RESET_METHOD
+
+config PRST_ZB_RESTART_WATCHDOG_TIMEOUT_SEC
+    int "Duration after the device will restart the rejoin procedure if a network has not been successfully joined."
+    default 3600
