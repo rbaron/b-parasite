@@ -12,10 +12,14 @@ void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx) {
       PRST_BASIC_MANUF_NAME,
       ZB_ZCL_STRING_CONST_SIZE(PRST_BASIC_MANUF_NAME));
 
+  char versioned_model_id[sizeof(dev_ctx->basic_attr.model_id)];
+  strcpy(versioned_model_id, CONFIG_PRST_ZB_MODEL_ID);
+  strcat(versioned_model_id, " ");
+  strcat(versioned_model_id, CONFIG_BOARD_REVISION);
   ZB_ZCL_SET_STRING_VAL(
       dev_ctx->basic_attr.model_id,
-      CONFIG_PRST_ZB_MODEL_ID,
-      ZB_ZCL_STRING_CONST_SIZE(CONFIG_PRST_ZB_MODEL_ID));
+      versioned_model_id,
+      ZB_ZCL_STRING_CONST_SIZE(versioned_model_id));
 
   ZB_ZCL_SET_STRING_VAL(
       dev_ctx->basic_attr.date_code,
