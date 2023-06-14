@@ -242,7 +242,7 @@ int main(void) {
 
   RET_IF_ERR(prst_zb_factory_reset_check());
 
-  prst_zb_attrs_init(&dev_ctx);
+  RET_IF_ERR(prst_zb_attrs_init(&dev_ctx));
 
   ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
 

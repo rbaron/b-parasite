@@ -47,7 +47,7 @@ struct zb_device_ctx {
   prst_illuminancce_attrs_t illuminance_attrs;
 };
 
-void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx);
+int prst_zb_attrs_init(struct zb_device_ctx *dev_ctx);
 
 zb_zcl_status_t prst_zb_set_attr_value(zb_uint16_t cluster_id, zb_uint16_t attr_id, void *data);
 
