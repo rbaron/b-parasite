@@ -19,7 +19,7 @@ config PRST_ZB_MODEL_ID
 
 config PRST_ZB_HARDWARE_VERSION
   int "Zigbee basic cluster hardware version attribute. 1 byte."
-  default 2
+  default BOARD_REVISION_CODE
 
 choice PRST_ZB_FACTORY_RESET_METHOD
   bool "Factory reset method"
