@@ -8,6 +8,10 @@ config BOARD_REVISION
 	string "Board revision."
 	default "1.0.0"
 
+config BOARD_REVISION_CODE
+	int "Board revision code. An integer representation of the board revision."
+	default 1
+
 config BT_CTLR
 	default BT
 
