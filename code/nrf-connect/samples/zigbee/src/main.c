@@ -198,11 +198,13 @@ void update_sensors_cb(zb_uint8_t arg) {
                         /*param=*/0,
                         ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
 
+  prst_debug_counters_increment("sensors_read_before");
   if (prst_sensors_read_all(&sensors)) {
     prst_debug_counters_increment("sensors_read_error");
     LOG_ERR("Unable to read sensors");
     return;
   }
+  prst_debug_counters_increment("sensors_read_after");
 
   // Battery voltage in units of 100 mV.
   uint8_t batt_voltage = sensors.batt.adc_read.millivolts / 100;

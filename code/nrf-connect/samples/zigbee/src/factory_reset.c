@@ -66,6 +66,7 @@ int prst_zb_factory_reset_check() {
     LOG_DBG("SW1 pressed. Scheduling timer");
     k_timer_start(&sw1_factory_reset_check_timer, K_SECONDS(5), K_NO_WAIT);
   }
-#endif
+#elif CONFIG_PRST_ZB_FACTORY_RESET_DISABLED
   return 0;
+#endif  // CONFIG_PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
 }
