@@ -11,6 +11,7 @@ LOG_MODULE_REGISTER(restart_handler, CONFIG_LOG_DEFAULT_LEVEL);
 void callback_work_handler(struct k_work *work) {
   LOG_INF("Running restart callback_work_handler.");
   prst_debug_counters_increment("steering_watchdog_restart");
+  // If the device is not commissioned, the rejoin procedure is started.
   user_input_indicate();
 }
 
