@@ -15,7 +15,9 @@
 #include <zigbee/zigbee_app_utils.h>
 #include <zigbee/zigbee_error_handler.h>
 
+#include "debug_counters.h"
 #include "factory_reset.h"
+#include "flash_fs.h"
 #include "prst_zb_attrs.h"
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
@@ -131,13 +133,15 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       LOG_DBG("Steering complete. Status: %d", status);
       if (status == RET_OK) {
         LOG_DBG("Steering successful. Status: %d", status);
+        prst_debug_counters_increment("steering_success");
         prst_led_flash(/*times=*/3);
         k_timer_stop(&led_flashing_timer);
         prst_restart_watchdog_stop();
         prst_led_off();
       } else {
         LOG_DBG("Steering failed. Status: %d", status);
-        prst_led_flash(7);
+        prst_debug_counters_increment("steering_failure");
+        prst_led_flash(/*times=*/7);
         prst_restart_watchdog_start();
         k_timer_stop(&led_flashing_timer);  // Power saving
         prst_led_off();
@@ -173,6 +177,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
            For details see: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/known_issues.html?v=v2-3-0
          */
         if (stack_initialised && !joining_signal_received) {
+          prst_debug_counters_increment("krknwk_12017_reset");
           zb_reset(0);
         }
       }
@@ -194,6 +199,7 @@ void update_sensors_cb(zb_uint8_t arg) {
                         ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
 
   if (prst_sensors_read_all(&sensors)) {
+    prst_debug_counters_increment("sensors_read_error");
     LOG_ERR("Unable to read sensors");
     return;
   }
@@ -235,10 +241,21 @@ void update_sensors_cb(zb_uint8_t arg) {
                          &log_lux);
 }
 
+void log_counter(const char *counter_name, prst_debug_counter_t value) {
+  LOG_INF("- %s: %d", counter_name, value);
+}
+
 int main(void) {
   RET_IF_ERR(prst_adc_init());
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
+  RET_IF_ERR(prst_flash_fs_init());
+  RET_IF_ERR(prst_debug_counters_init());
+
+  prst_debug_counters_increment("boot");
+
+  LOG_INF("Dumping debug counters:");
+  prst_debug_counters_get_all(log_counter);
 
   RET_IF_ERR(prst_zb_factory_reset_check());
 
@@ -259,6 +276,8 @@ int main(void) {
 
   zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
+
+  prst_debug_counters_increment("main_finish");
 
   return 0;
 }

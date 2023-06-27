@@ -7,16 +7,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
+#include "debug_counters.h"
+
 LOG_MODULE_REGISTER(double_reset_detector, CONFIG_LOG_DEFAULT_LEVEL);
-
-FS_LITTLEFS_DECLARE_DEFAULT_CONFIG(storage);
-
-static struct fs_mount_t lfs_storage_mnt = {
-    .type = FS_LITTLEFS,
-    .fs_data = &storage,
-    .storage_dev = (void *)FLASH_AREA_ID(storage),
-    .mnt_point = "/lfs",
-};
 
 static const char *flag_filename = "/lfs/reset_flag";
 
@@ -38,12 +31,6 @@ void erase_flag_callback(struct k_work *work) {
 K_WORK_DELAYABLE_DEFINE(erase_flag_work, erase_flag_callback);
 
 int prst_detect_double_reset(prst_double_reset_callback_t on_double_reset) {
-  // TODO: if booting for the first time after a full flash erase, fs_mount will
-  // complain (via a LOG_ERR) and then automatically format the flash. It all works,
-  // but avoiding a scary red message would be ideal. Maybe somehow check if it's
-  // formatted before mounting?
-  RET_IF_ERR(fs_mount(&lfs_storage_mnt));
-
   fs_file_t_init(&flag_file);
 
   RET_IF_ERR(fs_open(&flag_file, flag_filename, FS_O_CREATE | FS_O_RDWR));
@@ -55,6 +42,7 @@ int prst_detect_double_reset(prst_double_reset_callback_t on_double_reset) {
   if (strcmp(buff, flag_prefix) == 0) {
     RET_IF_ERR(fs_close(&flag_file));
     RET_IF_ERR(erase_flag());
+    prst_debug_counters_increment("double_reset");
     return on_double_reset();
   }
 
@@ -64,7 +52,7 @@ int prst_detect_double_reset(prst_double_reset_callback_t on_double_reset) {
   // Write the flag and erase it after some time.
   ssize_t written = fs_write(&flag_file, flag_prefix, sizeof(flag_prefix));
   if (written != sizeof(flag_prefix)) {
-    LOG_ERR("s_write returned %d, expected %d", written, sizeof(flag_prefix));
+    LOG_ERR("fs_write returned %d, expected %d", written, sizeof(flag_prefix));
     return -1;
   }
 
