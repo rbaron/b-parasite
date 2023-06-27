@@ -39,7 +39,6 @@ static int factory_reset_if_reset_via_reset_pin() {
 #endif  // CONFIG_PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
 
 #if CONFIG_PRST_ZB_FACTORY_RESET_VIA_SW1
-
 static void timer_do_reset(zb_uint8_t unused_param) {
   LOG_WRN("SW1 button was pressed for 5 seconds, factory resetting device");
   prst_led_flash(/*times=*/5);
