@@ -7,7 +7,7 @@ config PRST_ZB_SLEEP_DURATION_SEC
 
 config PRST_ZB_PARENT_POLL_INTERVAL_SEC
 	int "Interval for when b-parasite polls its parent for data in seconds."
-	default 60
+	default 10
 
 config PRST_ZB_BUILD_DATE
   string "Zigbee basic cluster build date attribute. Max 16 bytes."

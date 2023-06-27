@@ -138,6 +138,8 @@ void zboss_signal_handler(zb_bufid_t bufid) {
         k_timer_stop(&led_flashing_timer);
         prst_restart_watchdog_stop();
         prst_led_off();
+        // Update the long polling parent interval - needs to be done after joining.
+        zb_zdo_pim_set_long_poll_interval(1000 * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
       } else {
         LOG_DBG("Steering failed. Status: %d", status);
         prst_debug_counters_increment("steering_failure");
@@ -244,7 +246,7 @@ void update_sensors_cb(zb_uint8_t arg) {
 }
 
 void log_counter(const char *counter_name, prst_debug_counter_t value) {
-  LOG_INF("- %s: %d", counter_name, value);
+  LOG_DBG("- %s: %d", counter_name, value);
 }
 
 int main(void) {
@@ -254,9 +256,12 @@ int main(void) {
   RET_IF_ERR(prst_flash_fs_init());
   RET_IF_ERR(prst_debug_counters_init());
 
+  // Initialize sensors - quickly put them into low power mode.
+  RET_IF_ERR(prst_sensors_read_all(&sensors));
+
   prst_debug_counters_increment("boot");
 
-  LOG_INF("Dumping debug counters:");
+  LOG_DBG("Dumping debug counters:");
   prst_debug_counters_get_all(log_counter);
 
   RET_IF_ERR(prst_zb_factory_reset_check());
@@ -265,19 +270,17 @@ int main(void) {
 
   ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
 
+  // Kick-off the recurring task to read sensors and update ZigBee clusters.
   update_sensors_cb(/*arg=*/0);
-
-  zb_zdo_pim_set_long_poll_interval(
-      ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
-  power_down_unused_ram();
 
   RET_IF_ERR(prst_led_flash(2));
   k_msleep(100);
 
   ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);
 
-  zigbee_enable();
   zigbee_configure_sleepy_behavior(/*enable=*/true);
+  power_down_unused_ram();
+  zigbee_enable();
 
   prst_debug_counters_increment("main_finish");
 
