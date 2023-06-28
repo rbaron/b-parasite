@@ -126,9 +126,14 @@ void update_sensors_cb(zb_uint8_t arg) {
   LOG_INF("Updating sensors");
 
   // Reschedule the same callback.
-  ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
-                        /*param=*/0,
-                        ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000 * CONFIG_PRST_ZB_SLEEP_DURATION_SEC));
+  zb_ret_t ret = ZB_SCHEDULE_APP_ALARM(
+      update_sensors_cb,
+      /*param=*/0,
+      ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000 * CONFIG_PRST_ZB_SLEEP_DURATION_SEC));
+  if (ret != RET_OK) {
+    prst_debug_counters_increment("sens_cb_schedule_err");
+    zb_reset(0);
+  }
 
   prst_debug_counters_increment("sensors_read_before");
   if (prst_sensors_read_all(&sensors)) {
