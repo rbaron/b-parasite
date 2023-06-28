@@ -122,83 +122,13 @@ void identify_cb(zb_bufid_t bufid) {
   prst_led_flash(15);
 }
 
-void zboss_signal_handler(zb_bufid_t bufid) {
-  // See zigbee_default_signal_handler() for all available signals.
-  zb_zdo_app_signal_hdr_t *sig_hndler = NULL;
-  zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/&sig_hndler);
-  zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
-  switch (sig) {
-    case ZB_BDB_SIGNAL_STEERING:         // New network.
-    case ZB_BDB_SIGNAL_DEVICE_REBOOT: {  // Previously joined network.
-      LOG_DBG("Steering complete. Status: %d", status);
-      if (status == RET_OK) {
-        LOG_DBG("Steering successful. Status: %d", status);
-        prst_debug_counters_increment("steering_success");
-        prst_led_flash(/*times=*/3);
-        k_timer_stop(&led_flashing_timer);
-        prst_restart_watchdog_stop();
-        prst_led_off();
-        // Update the long polling parent interval - needs to be done after joining.
-        zb_zdo_pim_set_long_poll_interval(1000 * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
-      } else {
-        LOG_DBG("Steering failed. Status: %d", status);
-        prst_debug_counters_increment("steering_failure");
-        prst_led_flash(/*times=*/7);
-        prst_restart_watchdog_start();
-        k_timer_stop(&led_flashing_timer);  // Power saving
-        prst_led_off();
-      }
-    }
-    case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
-      joining_signal_received = true;
-      break;
-    case ZB_ZDO_SIGNAL_LEAVE:
-      if (status == RET_OK) {
-        k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
-        zb_zdo_signal_leave_params_t *leave_params = ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_leave_params_t);
-        LOG_INF("Network left (leave type: %d)", leave_params->leave_type);
-
-        /* Set joining_signal_received to false so broken rejoin procedure can be detected correctly. */
-        if (leave_params->leave_type == ZB_NWK_LEAVE_TYPE_REJOIN) {
-          joining_signal_received = false;
-        }
-      }
-    case ZB_ZDO_SIGNAL_SKIP_STARTUP: {
-      stack_initialised = true;
-      LOG_DBG("Started zigbee stack and waiting for connection to network.");
-      k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
-      break;
-    }
-    case ZB_NLME_STATUS_INDICATION: {
-      zb_zdo_signal_nlme_status_indication_params_t *nlme_status_ind =
-          ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_nlme_status_indication_params_t);
-      if (nlme_status_ind->nlme_status.status == ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE) {
-        /* Check for broken rejoin procedure and restart the device to recover.
-           This implements Nordic's suggested workaround for errata KRKNWK-12017, which effects
-           the recent nRF Connect SDK (v1.8.0 - v2.3.0 at time of writing).
-           For details see: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/known_issues.html?v=v2-3-0
-         */
-        if (stack_initialised && !joining_signal_received) {
-          prst_debug_counters_increment("krknwk_12017_reset");
-          zb_reset(0);
-        }
-      }
-      break;
-    }
-  }
-
-  ZB_ERROR_CHECK(zigbee_default_signal_handler(bufid));
-  if (bufid) {
-    zb_buf_free(bufid);
-  }
-}
-
 void update_sensors_cb(zb_uint8_t arg) {
   LOG_INF("Updating sensors");
 
+  // Reschedule the same callback.
   ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
                         /*param=*/0,
-                        ZB_TIME_ONE_SECOND * CONFIG_PRST_ZB_SLEEP_DURATION_SEC);
+                        ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000 * CONFIG_PRST_ZB_SLEEP_DURATION_SEC));
 
   prst_debug_counters_increment("sensors_read_before");
   if (prst_sensors_read_all(&sensors)) {
@@ -245,6 +175,80 @@ void update_sensors_cb(zb_uint8_t arg) {
                          &log_lux);
 }
 
+void zboss_signal_handler(zb_bufid_t bufid) {
+  // See zigbee_default_signal_handler() for all available signals.
+  zb_zdo_app_signal_hdr_t *sig_hndler = NULL;
+  zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/&sig_hndler);
+  zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
+  switch (sig) {
+    case ZB_BDB_SIGNAL_STEERING:         // New network.
+    case ZB_BDB_SIGNAL_DEVICE_REBOOT: {  // Previously joined network.
+      LOG_DBG("Steering complete. Status: %d", status);
+      if (status == RET_OK) {
+        LOG_DBG("Steering successful. Status: %d", status);
+        k_timer_stop(&led_flashing_timer);
+        prst_led_off();
+        prst_restart_watchdog_stop();
+        // Update the long polling parent interval - needs to be done after joining.
+        zb_zdo_pim_set_long_poll_interval(1000 * CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC);
+      } else {
+        LOG_DBG("Steering failed. Status: %d", status);
+        prst_restart_watchdog_start();
+        // Power saving.
+        k_timer_stop(&led_flashing_timer);
+      }
+      joining_signal_received = true;
+      break;
+    }
+    case ZB_BDB_SIGNAL_DEVICE_FIRST_START:
+      joining_signal_received = true;
+      break;
+    case ZB_ZDO_SIGNAL_LEAVE:
+      if (status == RET_OK) {
+        k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
+        zb_zdo_signal_leave_params_t *leave_params = ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_leave_params_t);
+        LOG_DBG("Network left (leave type: %d)", leave_params->leave_type);
+
+        /* Set joining_signal_received to false so broken rejoin procedure can be detected correctly. */
+        if (leave_params->leave_type == ZB_NWK_LEAVE_TYPE_REJOIN) {
+          joining_signal_received = false;
+        }
+      }
+      break;
+    case ZB_ZDO_SIGNAL_SKIP_STARTUP: {
+      stack_initialised = true;
+      LOG_DBG("Started zigbee stack and waiting for connection to network.");
+      k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
+
+      // Kick off main sensor update task.
+      ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
+                            /*param=*/0,
+                            ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000));
+      break;
+    }
+    case ZB_NLME_STATUS_INDICATION: {
+      zb_zdo_signal_nlme_status_indication_params_t *nlme_status_ind =
+          ZB_ZDO_SIGNAL_GET_PARAMS(sig_hndler, zb_zdo_signal_nlme_status_indication_params_t);
+      if (nlme_status_ind->nlme_status.status == ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE) {
+        /* Check for broken rejoin procedure and restart the device to recover.
+           This implements Nordic's suggested workaround for errata KRKNWK-12017, which effects
+           the recent nRF Connect SDK (v1.8.0 - v2.3.0 at time of writing).
+           For details see: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrf/known_issues.html?v=v2-3-0
+         */
+        if (stack_initialised && !joining_signal_received) {
+          zb_reset(0);
+        }
+      }
+      break;
+    }
+  }
+
+  ZB_ERROR_CHECK(zigbee_default_signal_handler(bufid));
+  if (bufid) {
+    zb_buf_free(bufid);
+  }
+}
+
 void log_counter(const char *counter_name, prst_debug_counter_t value) {
   LOG_DBG("- %s: %d", counter_name, value);
 }
@@ -269,9 +273,6 @@ int main(void) {
   prst_zb_attrs_init(&dev_ctx);
 
   ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
-
-  // Kick-off the recurring task to read sensors and update ZigBee clusters.
-  update_sensors_cb(/*arg=*/0);
 
   RET_IF_ERR(prst_led_flash(2));
   k_msleep(100);
