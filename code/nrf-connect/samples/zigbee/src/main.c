@@ -123,7 +123,7 @@ void identify_cb(zb_bufid_t bufid) {
 }
 
 void update_sensors_cb(zb_uint8_t arg) {
-  LOG_INF("Updating sensors");
+  LOG_DBG("Updating sensors");
 
   // Reschedule the same callback.
   zb_ret_t ret = ZB_SCHEDULE_APP_ALARM(
@@ -256,7 +256,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
 }
 
 void log_counter(const char *counter_name, prst_debug_counter_t value) {
-  LOG_DBG("- %s: %d", counter_name, value);
+  LOG_INF("- %s: %d", counter_name, value);
 }
 
 int main(void) {
@@ -271,7 +271,7 @@ int main(void) {
 
   prst_debug_counters_increment("boot");
 
-  LOG_DBG("Dumping debug counters:");
+  LOG_INF("Dumping debug counters:");
   prst_debug_counters_get_all(log_counter);
 
   RET_IF_ERR(prst_zb_factory_reset_check());
