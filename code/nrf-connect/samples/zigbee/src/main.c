@@ -196,6 +196,7 @@ void zboss_signal_handler(zb_bufid_t bufid) {
         prst_restart_watchdog_start();
         // Power saving.
         k_timer_stop(&led_flashing_timer);
+        prst_led_off();
       }
       joining_signal_received = true;
       break;
