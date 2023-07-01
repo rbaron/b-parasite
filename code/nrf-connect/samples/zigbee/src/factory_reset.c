@@ -66,7 +66,10 @@ int prst_zb_factory_reset_check() {
     LOG_DBG("SW1 pressed. Scheduling timer");
     k_timer_start(&sw1_factory_reset_check_timer, K_SECONDS(5), K_NO_WAIT);
   }
+  return 0;
 #elif CONFIG_PRST_ZB_FACTORY_RESET_DISABLED
   return 0;
+#else
+#error "No factory reset method selected -- explicitly select CONFIG_PRST_ZB_FACTORY_RESET_DISABLED=y to disable it"
 #endif  // CONFIG_PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
 }
