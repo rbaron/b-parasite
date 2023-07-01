@@ -23,13 +23,16 @@ config PRST_ZB_HARDWARE_VERSION
 
 choice PRST_ZB_FACTORY_RESET_METHOD
   bool "Factory reset method"
-  default PRST_ZB_FACTORY_RESET_VIA_DOUBLE_RESET
+  default PRST_ZB_FACTORY_RESET_VIA_SW1
 
 config PRST_ZB_FACTORY_RESET_VIA_DOUBLE_RESET
   bool "Double resetting factory resets the device."
 
 config PRST_ZB_FACTORY_RESET_VIA_RESET_PIN
   bool "Resetting via the reset pin will factory reset the device. Power cycling through battery replacement will not."
+
+config PRST_ZB_FACTORY_RESET_VIA_SW1
+  bool "Resetting while pressing and holding SW1 for 5 seconds will factory reset the device. Only available on v2.0.0+ hardware revisions."
 
 endchoice  # PRST_ZB_FACTORY_RESET_METHOD
 
