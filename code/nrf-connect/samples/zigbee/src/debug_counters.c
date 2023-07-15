@@ -65,6 +65,7 @@ int prst_debug_counters_increment(const char* counter_name) {
   if (written != sizeof(value)) {
     LOG_ERR("fs_write returned %d, expected %d", written, sizeof(value));
   }
+  RET_IF_ERR(fs_sync(&file));
   return fs_close(&file);
 }
 
