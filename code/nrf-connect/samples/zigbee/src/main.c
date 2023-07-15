@@ -134,7 +134,7 @@ void update_sensors_cb(zb_uint8_t arg) {
       ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000 * CONFIG_PRST_ZB_SLEEP_DURATION_SEC));
   if (ret != RET_OK) {
     prst_debug_counters_increment("sens_cb_schedule_err");
-    zb_reset(0);
+    __ASSERT(false, "Unable to schedule sensor update callback");
   }
 
   __ASSERT(!prst_watchdog_feed(), "Failed to feed watchdog");
@@ -142,8 +142,7 @@ void update_sensors_cb(zb_uint8_t arg) {
   prst_debug_counters_increment("sensors_read_before");
   if (prst_sensors_read_all(&sensors)) {
     prst_debug_counters_increment("sensors_read_error");
-    LOG_ERR("Unable to read sensors");
-    return;
+    __ASSERT(false, "Unable to read sensors");
   }
   prst_debug_counters_increment("sensors_read_after");
 
