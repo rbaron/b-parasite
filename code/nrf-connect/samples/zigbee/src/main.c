@@ -143,6 +143,14 @@ void update_sensors_cb(zb_uint8_t arg) {
   }
   prst_debug_counters_increment("sensors_read_after");
 
+  // Bug reproduction - simulates an error in the i2c reading in shtc3.c that would create an infinite loop.
+  // - Since we have a k_msleep() there, the loop would still be energy efficient, so it wouldn't drain the battery.
+  // - Other ZB functionality still works
+  // - Even though we called ZB_SCHEDULE_APP_ALARM earlier, the scheduled callback is never called. Maybe because the same callback is still running?
+  while (true) {
+    k_msleep(10);
+  }
+
   // Battery voltage in units of 100 mV.
   uint8_t batt_voltage = sensors.batt.adc_read.millivolts / 100;
   prst_zb_set_attr_value(ZB_ZCL_CLUSTER_ID_POWER_CONFIG,
