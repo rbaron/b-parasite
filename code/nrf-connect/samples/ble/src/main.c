@@ -14,25 +14,29 @@
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 
-int main(void) {
+static int prst_init() {
   RET_IF_ERR(prst_adc_init());
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
   RET_IF_ERR(prst_ble_init());
+  return 0;
+}
 
-  RET_IF_ERR(prst_led_flash(2));
+static int prst_loop(prst_sensors_t *sensors) {
+  RET_IF_ERR(prst_sensors_read_all(sensors));
+  RET_IF_ERR(prst_ble_adv_set_data(sensors));
+  RET_IF_ERR(prst_ble_adv_start());
+  k_sleep(K_SECONDS(CONFIG_PRST_BLE_ADV_DURATION_SEC));
+  RET_IF_ERR(prst_ble_adv_stop());
+  return 0;
+}
 
+int main(void) {
+  __ASSERT(!prst_init(), "Error in prst_init()");
+  prst_led_flash(2);
   prst_sensors_t sensors;
   while (true) {
-    RET_IF_ERR(prst_sensors_read_all(&sensors));
-
-    RET_IF_ERR(prst_ble_adv_set_data(&sensors));
-    RET_IF_ERR(prst_ble_adv_start());
-
-    k_sleep(K_SECONDS(CONFIG_PRST_BLE_ADV_DURATION_SEC));
-
-    RET_IF_ERR(prst_ble_adv_stop());
-
+    __ASSERT(!prst_loop(&sensors), "Error in prst_loop()");
     k_sleep(K_SECONDS(CONFIG_PRST_SLEEP_DURATION_SEC));
   }
 }
