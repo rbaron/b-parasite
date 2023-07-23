@@ -22,11 +22,10 @@ This is what a typical deployment with BTHome looks like:
 ![Topology with BTHome + Home Assistant](./media/drawings/ble-bthome-encoding.png)
 
 There are two versions of BTHome encodings supported by this sample:
+* `PRST_BLE_ENCODING_BTHOME_V2=y` (**default**) uses the [BTHome V2](https://bthome.io/format/), supported by Home Assistant since version `2022.12`
 * `PRST_BLE_ENCODING_BTHOME_V1=y` uses the [legacy BTHome V1](https://bthome.io/v1/), which was briefly in use
-* `PRST_BLE_ENCODING_BTHOME_V2=y` uses the [BTHome V2](https://bthome.io/format/), which is not yet (as of early Dec/2022) in the stable Home Assistant release. This will soon become the default.
-
 #### b-parasite Encoding
-`PRST_BLE_ENCODING_BPARASITE_V2=y` selects the "legacy" encoding, used historically inn this project. This is the encoding that the [`b_parasite`](https://esphome.io/components/sensor/b_parasite.html) ESPHome component understands.
+`PRST_BLE_ENCODING_BPARASITE_V2=y` selects the legacy encoding, used historically in this project. This is the encoding that the [`b_parasite`](https://esphome.io/components/sensor/b_parasite.html) ESPHome component understands.
 
 With this encoding and a ESPHome + `b_parasite` component, this is an usual deployment topology:
 
