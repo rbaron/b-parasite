@@ -14,7 +14,7 @@
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 
-int prst_init() {
+static int prst_init() {
   RET_IF_ERR(prst_adc_init());
   RET_IF_ERR(prst_led_init());
   RET_IF_ERR(prst_button_init());
@@ -22,7 +22,7 @@ int prst_init() {
   return 0;
 }
 
-int prst_loop(prst_sensors_t *sensors) {
+static int prst_loop(prst_sensors_t *sensors) {
   RET_IF_ERR(prst_sensors_read_all(sensors));
   RET_IF_ERR(prst_ble_adv_set_data(sensors));
   RET_IF_ERR(prst_ble_adv_start());
