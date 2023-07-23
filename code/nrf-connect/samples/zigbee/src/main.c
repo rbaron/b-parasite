@@ -10,6 +10,7 @@
 #include <zboss_api.h>
 #include <zboss_api_addons.h>
 #include <zcl/zb_zcl_power_config.h>
+#include <zephyr/drivers/hwinfo.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zigbee/zigbee_app_utils.h>
@@ -22,6 +23,7 @@
 #include "prst_zb_endpoint_defs.h"
 #include "prst_zb_soil_moisture_defs.h"
 #include "restart_handler.h"
+#include "watchdog.h"
 
 LOG_MODULE_REGISTER(app, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -132,14 +134,15 @@ void update_sensors_cb(zb_uint8_t arg) {
       ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000 * CONFIG_PRST_ZB_SLEEP_DURATION_SEC));
   if (ret != RET_OK) {
     prst_debug_counters_increment("sens_cb_schedule_err");
-    zb_reset(0);
+    __ASSERT(false, "Unable to schedule sensor update callback");
   }
+
+  __ASSERT(!prst_watchdog_feed(), "Failed to feed watchdog");
 
   prst_debug_counters_increment("sensors_read_before");
   if (prst_sensors_read_all(&sensors)) {
     prst_debug_counters_increment("sensors_read_error");
-    LOG_ERR("Unable to read sensors");
-    return;
+    __ASSERT(false, "Unable to read sensors");
   }
   prst_debug_counters_increment("sensors_read_after");
 
@@ -227,9 +230,10 @@ void zboss_signal_handler(zb_bufid_t bufid) {
       k_timer_start(&led_flashing_timer, K_NO_WAIT, K_SECONDS(1));
 
       // Kick off main sensor update task.
-      ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
-                            /*param=*/0,
-                            ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000));
+      ZB_ERROR_CHECK(ZB_SCHEDULE_APP_ALARM(update_sensors_cb,
+                                           /*param=*/0,
+                                           ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000)));
+      __ASSERT_NO_MSG(!prst_watchdog_start());
       break;
     }
     case ZB_NLME_STATUS_INDICATION: {
@@ -255,8 +259,38 @@ void zboss_signal_handler(zb_bufid_t bufid) {
   }
 }
 
-void log_counter(const char *counter_name, prst_debug_counter_t value) {
+void dump_counter(const char *counter_name, prst_debug_counter_t value) {
   LOG_INF("- %s: %d", counter_name, value);
+}
+
+int log_reset_reason_counter() {
+  uint32_t cause;
+  const char *reset_counter_str = "reset_cause_unknown";
+  RET_IF_ERR(hwinfo_get_reset_cause(&cause));
+  RET_IF_ERR(hwinfo_clear_reset_cause());
+  if (cause & RESET_PIN) {
+    reset_counter_str = "reset_cause_pin";
+  } else if (cause & RESET_SOFTWARE) {
+    // Includes fatal errors from __ASSERT, ZB_ERROR_CHECK and friends.
+    reset_counter_str = "reset_cause_software";
+  } else if (cause & RESET_BROWNOUT) {
+    reset_counter_str = "reset_cause_brownout";
+  } else if (cause & RESET_POR) {
+    reset_counter_str = "reset_cause_power_on";
+  } else if (cause & RESET_WATCHDOG) {
+    reset_counter_str = "reset_cause_watchdog";
+  } else if (cause & RESET_DEBUG) {
+    reset_counter_str = "reset_cause_debug";
+  } else if (cause & RESET_LOW_POWER_WAKE) {
+    reset_counter_str = "reset_cause_low_power";
+  } else if (cause & RESET_CPU_LOCKUP) {
+    reset_counter_str = "reset_cause_cpu_lockup";
+  } else if (cause & RESET_HARDWARE) {
+    reset_counter_str = "reset_cause_hardware";
+  } else if (cause & RESET_USER) {
+    reset_counter_str = "reset_cause_user";
+  }
+  return prst_debug_counters_increment(reset_counter_str);
 }
 
 int main(void) {
@@ -267,20 +301,22 @@ int main(void) {
   RET_IF_ERR(prst_debug_counters_init());
 
   // Initialize sensors - quickly put them into low power mode.
-  RET_IF_ERR(prst_sensors_read_all(&sensors));
+  __ASSERT_NO_MSG(!prst_sensors_read_all(&sensors));
 
   prst_debug_counters_increment("boot");
 
-  LOG_INF("Dumping debug counters:");
-  prst_debug_counters_get_all(log_counter);
+  log_reset_reason_counter();
 
-  RET_IF_ERR(prst_zb_factory_reset_check());
+  LOG_INF("Dumping debug counters:");
+  prst_debug_counters_get_all(dump_counter);
+
+  __ASSERT_NO_MSG(!prst_zb_factory_reset_check());
 
   prst_zb_attrs_init(&dev_ctx);
 
   ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
 
-  RET_IF_ERR(prst_led_flash(2));
+  prst_led_flash(2);
   k_msleep(100);
 
   ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);

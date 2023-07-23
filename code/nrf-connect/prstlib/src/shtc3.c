@@ -32,11 +32,10 @@ int prst_shtc3_read(prst_shtc3_read_t *out) {
 
   // Reading in normal (not low power) mode can take up to 12.1 ms, according to
   // the datasheet.
-  k_msleep(15);
+  k_msleep(20);
 
-  while (i2c_read_dt(&shtc3, buff, 6) != 0) {
-    k_msleep(10);
-  }
+  // Read response.
+  RET_IF_ERR(i2c_read_dt(&shtc3, buff, 6));
 
   // Put the sensor in sleep mode.
   RET_IF_ERR(write_cmd(PRST_SHTC3_CMD_SLEEP));
