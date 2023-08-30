@@ -12,7 +12,9 @@ void callback_work_handler(struct k_work *work) {
   LOG_INF("Running restart callback_work_handler.");
   prst_debug_counters_increment("steering_watchdog_restart");
   // If the device is not commissioned, the rejoin procedure is started.
-  user_input_indicate();
+  __ASSERT(false,
+           "Device is not commissioned after %d seconds. Rebooting.",
+           CONFIG_PRST_ZB_RESTART_WATCHDOG_TIMEOUT_SEC);
 }
 
 K_WORK_DEFINE(callback_work, callback_work_handler);
