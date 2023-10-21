@@ -81,7 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
-        uses: ./.github/actions/build_and_upload
+        uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_${{ matrix.soc }}
@@ -102,7 +102,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
-        uses: ./.github/actions/build_and_upload
+        uses: ./.github/actions/build
         with:
           sample-dir: code/nrf-connect/samples/zigbee
           board: bparasite_${{ matrix.soc }}

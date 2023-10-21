@@ -13,9 +13,6 @@ inputs:
   cmake-extra:
     description: "Extra CMake arguments"
     default: ""
-  output-bin:
-    description: "Name of the .hex output"
-    required: true
 runs:
   using: "composite"
   steps:
@@ -27,8 +24,4 @@ runs:
             --pristine \
             --board ${{ inputs.board }}@${{ inputs.revision }} \
             /repo/${{ inputs.sample-dir }} -- ${{ inputs.cmake-extra }}
-      shell: bash
-    - run: |
-        cp "${GITHUB_WORKSPACE}"/${{ inputs.sample-dir }}/build/zephyr/zephyr.hex \
-          "${GITHUB_WORKSPACE}"/${{ inputs.sample-dir }}/build/zephyr/${{ inputs.output-bin }}
       shell: bash
