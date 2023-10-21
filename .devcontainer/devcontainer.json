@@ -1,6 +1,6 @@
 {
-	"name": "nrf-connect:v2.2",
-	"image": "nordicplayground/nrfconnect-sdk:v2.2-branch",
+	"name": "nrf-connect:v2.4",
+	"image": "nordicplayground/nrfconnect-sdk:v2.4-branch",
 	"features": {
 	},
 	"customizations": {
