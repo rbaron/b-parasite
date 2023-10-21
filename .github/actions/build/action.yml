@@ -1,27 +1,34 @@
-name: 'Build'
-description: 'Builds a nrf-connect sample for b-parasite'
+name: "Build"
+description: "Builds a nrf-connect sample for b-parasite"
 inputs:
   sample-dir:
-    description: 'Sample directory to build'
+    description: "Sample directory to build"
     required: true
   board:
-    description: 'Board definition to use'
+    description: "Board definition to use"
     default: bparasite_nrf52840
   revision:
-    description: 'Board revision use'
-    default: '1.2.0'
+    description: "Board revision use"
+    default: "2.0.0"
   cmake-extra:
-    description: 'Extra CMake arguments'
-    default: ''
+    description: "Extra CMake arguments"
+    default: ""
   output-bin:
-    description: 'Name of the .hex output'
+    description: "Name of the .hex output"
     required: true
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.sample-dir }}
-    - ${{ inputs.board }}
-    - ${{ inputs.revision }}
-    - ${{ inputs.cmake-extra }}
-    - ${{ inputs.output-bin }}
+  using: "composite"
+  steps:
+    - run: |
+        docker run --rm -v ${GITHUB_WORKSPACE}:/repo \
+          nordicplayground/nrfconnect-sdk:v2.4-branch \
+          west build \
+            --build-dir /repo/${{ inputs.sample-dir }}/build \
+            --pristine \
+            --board ${{ inputs.board }}@${{ inputs.revision }} \
+            /repo/${{ inputs.sample-dir }} -- ${{ inputs.cmake-extra }}
+      shell: bash
+    - run: |
+        cp "${GITHUB_WORKSPACE}"/${{ inputs.sample-dir }}/build/zephyr/zephyr.hex \
+          "${GITHUB_WORKSPACE}"/${{ inputs.sample-dir }}/build/zephyr/${{ inputs.output-bin }}
+      shell: bash

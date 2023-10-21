@@ -17,7 +17,7 @@ jobs:
       - name: Check clang-format
         uses: jidicula/clang-format-action@v4.9.0
         with:
-          check-path: 'code/nrf-connect'
+          check-path: "code/nrf-connect"
           exclude-regex: '\/build\/'
 
   build-blinky:
@@ -27,7 +27,7 @@ jobs:
       - lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build blinky
         uses: ./.github/actions/build
         with:
@@ -43,7 +43,7 @@ jobs:
       - lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build input
         uses: ./.github/actions/build
         with:
@@ -59,7 +59,7 @@ jobs:
       - lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build soil_read_loop
         uses: ./.github/actions/build
         with:
@@ -79,7 +79,7 @@ jobs:
       - lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
         uses: ./.github/actions/build_and_upload
         with:
@@ -100,7 +100,7 @@ jobs:
       - lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
         uses: ./.github/actions/build_and_upload
         with:
