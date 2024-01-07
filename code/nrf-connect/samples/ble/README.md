@@ -1,5 +1,5 @@
 # Bluetooth Low Energy (BLE)
-In this saple, b-parasite sensors are periodically read and broadcast using Bluetooth Low Energy (BLE) dvertising packets.
+In this sample, b-parasite sensors are periodically read and broadcast using Bluetooth Low Energy (BLE) dvertising packets.
 
 ## Configuration
 Available configurations and their default values are in [`Kconfig`](./Kconfig). They are set in [`prj.conf`](./prj.conf). Here are some notable examples.
