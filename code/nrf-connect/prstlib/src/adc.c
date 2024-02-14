@@ -108,6 +108,7 @@ static int read_adc_spec(const struct adc_dt_spec* spec, prst_adc_read_t* out) {
 
   int32_t val_mv = buf;
   RET_IF_ERR(adc_raw_to_millivolts_dt(spec, &val_mv));
+  val_mv = MAX(0, val_mv);
 
   out->raw = buf;
   out->millivolts = val_mv;
