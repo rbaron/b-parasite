@@ -1027,7 +1027,7 @@
     (at 66.742 55.536 180)
     (descr "Diode Mini-MELF")
     (tags "Diode Mini-MELF")
-    (property "LCSC" "C9808")
+    (property "LCSC" "C3011166")
     (property "Sheetfile" "parasite.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "100V 0.15A standard switching diode, MiniMELF")
