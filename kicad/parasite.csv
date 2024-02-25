@@ -3,7 +3,7 @@ Comment,Designator,Footprint,LCSC
 "1n","C1","Capacitor_SMD:C_0402_1005Metric","C1523"
 "100n","C2","Capacitor_SMD:C_0402_1005Metric","C1525"
 "12p","C3,C4","Capacitor_SMD:C_0402_1005Metric","C1547"
-"LL4148","D1","Diode_SMD:D_MiniMELF","C9808"
+"LL4148","D1","Diode_SMD:D_MiniMELF","C3011166"
 "LED","D2","LED_SMD:LED_0603_1608Metric","C2286"
 "MMBT3906","Q1","Package_TO_SOT_SMD:SOT-23","C2910191"
 "Q_Photo_NPN","Q4","snapeda:TR8","C146233"
