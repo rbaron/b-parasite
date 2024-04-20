@@ -106,7 +106,7 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // Humidity.
   out[6] = 0x2E;
   // Value. Factor 1 over 100%.
-  uint8_t humi_val = 100*sensors->shtc3.rel_humi + 0.5f;
+  uint8_t humi_val = 100 * sensors->shtc3.rel_humi + 0.5f;
   out[7] = humi_val;
   // Illuminance.
   out[8] = 0x05;
@@ -124,12 +124,12 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   // Soil moisture.
   out[15] = 0x2F;
   // Factor of 1 over 100%
-  uint8_t soil_val = 100*sensors->soil.percentage + 0.5f;
+  uint8_t soil_val = 100 * sensors->soil.percentage + 0.5f;
   out[16] = soil_val;
   // Battery percentage.
   out[17] = 0x01;
   // Value. Factor 1 over 100%
-  uint8_t batt_percentage_val = 100*sensors->batt.percentage + 0.5f; 
+  uint8_t batt_percentage_val = 100 * sensors->batt.percentage + 0.5f;
   out[18] = batt_percentage_val;
 
 #endif  // Encoding protocols
