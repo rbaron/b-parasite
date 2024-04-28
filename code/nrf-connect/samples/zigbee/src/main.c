@@ -16,6 +16,12 @@
 #include <zigbee/zigbee_app_utils.h>
 #include <zigbee/zigbee_error_handler.h>
 
+#if CONFIG_ZIGBEE_FOTA
+#include <zigbee/zigbee_fota.h>
+#include <zephyr/sys/reboot.h>
+#include <zephyr/dfu/mcuboot.h>
+#endif
+
 #include "debug_counters.h"
 #include "factory_reset.h"
 #include "flash_fs.h"
@@ -115,9 +121,66 @@ PRST_ZB_DECLARE_ENDPOINT(
     PRST_ZIGBEE_ENDPOINT,
     app_template_clusters);
 
+#ifndef CONFIG_ZIGBEE_FOTA
 ZBOSS_DECLARE_DEVICE_CTX_1_EP(
+  app_template_ctx, 
+  app_template_ep);
+#else
+
+extern zb_af_endpoint_desc_t zigbee_fota_client_ep;
+
+ZBOSS_DECLARE_DEVICE_CTX_2_EP(
     app_template_ctx,
+    zigbee_fota_client_ep,
     app_template_ep);
+
+static void confirm_image(void)
+{
+	if (!boot_is_img_confirmed()) {
+		int ret = boot_write_img_confirmed();
+
+		if (ret) {
+			LOG_ERR("Couldn't confirm image: %d", ret);
+		} else {
+			LOG_INF("Marked image as OK");
+		}
+	}
+}
+
+static void ota_evt_handler(const struct zigbee_fota_evt *evt)
+{
+    switch (evt->id) {
+    case ZIGBEE_FOTA_EVT_PROGRESS:
+		  // dk_set_led(OTA_ACTIVITY_LED, evt->dl.progress % 2);
+      prst_led_flash(1);
+		  break;
+    case ZIGBEE_FOTA_EVT_FINISHED:
+        LOG_INF("Reboot application.");
+        /* Power on unused sections of RAM to allow MCUboot to use it. */
+        if (IS_ENABLED(CONFIG_RAM_POWER_DOWN_LIBRARY)) {
+            power_up_unused_ram();
+        }
+        sys_reboot(SYS_REBOOT_COLD);
+        break;
+
+    case ZIGBEE_FOTA_EVT_ERROR:
+		  LOG_ERR("OTA image transfer failed.");
+		  break;
+    }
+}
+
+static void zcl_device_cb(zb_bufid_t bufid)
+{
+	zb_zcl_device_callback_param_t *device_cb_param =
+		ZB_BUF_GET_PARAM(bufid, zb_zcl_device_callback_param_t);
+
+	if (device_cb_param->device_cb_id == ZB_ZCL_OTA_UPGRADE_VALUE_CB_ID) {
+		zigbee_fota_zcl_cb(bufid);
+	} else {
+		device_cb_param->status = RET_NOT_IMPLEMENTED;
+	}
+}
+#endif /* CONFIG_ZIGBEE_FOTA */
 
 void identify_cb(zb_bufid_t bufid) {
   LOG_DBG("Remote identify command called");
@@ -185,6 +248,12 @@ void update_sensors_cb(zb_uint8_t arg) {
 
 void zboss_signal_handler(zb_bufid_t bufid) {
   // See zigbee_default_signal_handler() for all available signals.
+
+#ifdef CONFIG_ZIGBEE_FOTA
+	/* Pass signal to the OTA client implementation. */
+	zigbee_fota_signal_handler(bufid);
+#endif /* CONFIG_ZIGBEE_FOTA */
+
   zb_zdo_app_signal_hdr_t *sig_hndler = NULL;
   zb_zdo_app_signal_type_t sig = zb_get_app_signal(bufid, /*sg_p=*/&sig_hndler);
   zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
@@ -314,15 +383,31 @@ int main(void) {
 
   prst_zb_attrs_init(&dev_ctx);
 
-  ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
-
   prst_led_flash(2);
   k_msleep(100);
 
-  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);
-
   zigbee_configure_sleepy_behavior(/*enable=*/true);
   power_down_unused_ram();
+
+#ifdef CONFIG_ZIGBEE_FOTA
+	/* Initialize Zigbee FOTA download service. */
+	zigbee_fota_init(ota_evt_handler);
+
+	/* Mark the current firmware as valid. */
+	confirm_image();
+
+	/* Register callback for handling ZCL commands. */
+	ZB_ZCL_REGISTER_DEVICE_CB(zcl_device_cb);
+#endif /* CONFIG_ZIGBEE_FOTA */
+
+  ZB_AF_REGISTER_DEVICE_CTX(&app_template_ctx);
+
+  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(PRST_ZIGBEE_ENDPOINT, identify_cb);
+
+#ifdef CONFIG_ZIGBEE_FOTA
+  ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(CONFIG_ZIGBEE_FOTA_ENDPOINT, identify_cb);
+#endif
+
   zigbee_enable();
 
   prst_debug_counters_increment("main_finish");
