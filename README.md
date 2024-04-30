@@ -50,6 +50,11 @@ We have three different 3D-printable cases:
 2. High airflow - [case/b_parasite_case_high_airflow.stl](./case/b_parasite_case_high_airflow.stl)
 3. Mushroom-style - available on [Printables](https://www.printables.com/model/456571-mushroomcap-for-b-parasite-soil-moisture-sensor)
 
+# Accessories
+
+Designs and hardware to help you, when building your own:
+1. Desk holder for b-parasites [Printables](https://www.printables.com/de/model/566974-b-parasite-holder)
+
 # License
 The hardware and associated design files are released under the [Creative Commons CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
 The code is released under the [MIT license](https://opensource.org/licenses/MIT).
