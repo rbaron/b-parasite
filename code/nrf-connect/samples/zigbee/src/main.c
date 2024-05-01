@@ -149,7 +149,6 @@ static void confirm_image(void) {
 static void ota_evt_handler(const struct zigbee_fota_evt *evt) {
   switch (evt->id) {
     case ZIGBEE_FOTA_EVT_PROGRESS:
-      // dk_set_led(OTA_ACTIVITY_LED, evt->dl.progress % 2);
       prst_led_flash(1);
       break;
     case ZIGBEE_FOTA_EVT_FINISHED:
