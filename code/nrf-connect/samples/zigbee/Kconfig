@@ -42,3 +42,39 @@ endchoice  # PRST_ZB_FACTORY_RESET_METHOD
 config PRST_ZB_RESTART_WATCHDOG_TIMEOUT_SEC
     int "Duration after the device will restart the rejoin procedure if a network has not been successfully joined."
     default 3600
+
+if ZIGBEE_FOTA
+
+config ZIGBEE_FOTA_ENDPOINT
+    int "Endpoint number for ota zigbee endpoint. Must not be used by another application."
+    default 5
+
+config ZIGBEE_FOTA_COMMENT
+    string
+    default "b-parasite"
+
+config IMG_MANAGER
+    bool "Ensure an MCUboot-compatible binary for ota update is generated."
+    default y
+
+config STREAM_FLASH
+    bool
+    default y
+
+config DFU_TARGET_MCUBOOT
+    bool
+    default y
+
+config IMG_ERASE_PROGRESSIVELY
+    bool
+    default y
+
+config ZIGBEE_FOTA_PROGRESS_EVT
+    bool
+    default y
+
+config NRF_802154_RX_BUFFERS
+    int "Increase the number of RX buffers for ota functionality."
+    default 32
+
+endif
