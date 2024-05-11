@@ -22,6 +22,11 @@ void prst_zb_attrs_init(struct zb_device_ctx *dev_ctx) {
       CONFIG_PRST_ZB_BUILD_DATE,
       ZB_ZCL_STRING_CONST_SIZE(CONFIG_PRST_ZB_BUILD_DATE));
 
+  ZB_ZCL_SET_STRING_VAL(
+      dev_ctx->basic_attr.sw_ver,
+      CONFIG_PRST_ZB_SOFTWARE_VERSION,
+      ZB_ZCL_STRING_CONST_SIZE(CONFIG_PRST_ZB_SOFTWARE_VERSION));
+
   dev_ctx->basic_attr.hw_version = CONFIG_PRST_ZB_HARDWARE_VERSION;
 
   dev_ctx->batt_attrs.quantity = 1;
