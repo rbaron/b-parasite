@@ -149,7 +149,7 @@ static void confirm_image(void) {
 static void ota_evt_handler(const struct zigbee_fota_evt *evt) {
   switch (evt->id) {
     case ZIGBEE_FOTA_EVT_PROGRESS:
-      prst_led_flash(1);
+      LOG_INF("OTA progress: %d%%", evt->dl.progress);
       break;
     case ZIGBEE_FOTA_EVT_FINISHED:
       LOG_INF("Reboot application.");
@@ -386,6 +386,8 @@ int main(void) {
   power_down_unused_ram();
 
 #ifdef CONFIG_ZIGBEE_FOTA
+  LOG_INF("Firmware version: %s", CONFIG_MCUBOOT_IMGTOOL_SIGN_VERSION);
+
   /* Initialize Zigbee FOTA download service. */
   zigbee_fota_init(ota_evt_handler);
 
