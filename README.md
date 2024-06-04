@@ -49,6 +49,7 @@ We have three different 3D-printable cases:
 1. Original snap-on case - [case/Top.stl](./case/Top.stl), [case/Bottom.stl](./case/Bottom.stl)
 2. High airflow - [case/b_parasite_case_high_airflow.stl](./case/b_parasite_case_high_airflow.stl)
 3. Mushroom-style - available on [Printables](https://www.printables.com/model/456571-mushroomcap-for-b-parasite-soil-moisture-sensor)
+4. b-parasite Hat - available on [Printables](https://www.printables.com/model/901220-waterproof-case-for-b-parasite-soil-moisture-air-s)
 
 # Accessories
 
