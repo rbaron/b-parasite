@@ -132,6 +132,11 @@ int prst_ble_encode_service_data(const prst_sensors_t* sensors,
   uint8_t batt_percentage_val = 100 * sensors->batt.percentage + 0.5f;
   out[18] = batt_percentage_val;
 
+  // Misc packet-id  
+  static uint8_t run_counter;
+  out[19] = 0x00;
+  out[20] = run_counter++ & 0xFF;
+
 #endif  // Encoding protocols
 
   LOG_HEXDUMP_DBG(out, out_len, "Encoded BLE adv: ");
