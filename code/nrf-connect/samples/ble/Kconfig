@@ -4,11 +4,11 @@ rsource "../../prstlib/Kconfig"
 
 config PRST_SLEEP_DURATION_MSEC
 	int "Sleep duration in milliseconds"
-	default 600
+	default 600000
 
 config PRST_BLE_ADV_DURATION_MSEC
 	int "Advertising duration in milliseconds"
-	default 1
+	default 1000
 
 config PRST_BLE_MIN_ADV_INTERVAL
 	int "Minimum advertising interval in milliseconds"
