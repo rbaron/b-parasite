@@ -2,13 +2,13 @@
 source "Kconfig.zephyr"
 rsource "../../prstlib/Kconfig"
 
-config PRST_SLEEP_DURATION_SEC
-	int "Sleep duration in seconds"
-	default 600
+config PRST_SLEEP_DURATION_MSEC
+	int "Sleep duration in milliseconds"
+	default 600000
 
-config PRST_BLE_ADV_DURATION_SEC
-	int "Advertising duration in seconds"
-	default 1
+config PRST_BLE_ADV_DURATION_MSEC
+	int "Advertising duration in milliseconds"
+	default 1000
 
 config PRST_BLE_MIN_ADV_INTERVAL
 	int "Minimum advertising interval in milliseconds"

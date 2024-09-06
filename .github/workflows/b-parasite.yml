@@ -86,7 +86,7 @@ jobs:
           sample-dir: code/nrf-connect/samples/ble
           board: bparasite_${{ matrix.soc }}
           revision: ${{ matrix.revision }}
-          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_SEC=1 -DCONFIG_PRSTLIB_LOG_LEVEL_DBG=y
+          cmake-extra: -DCONFIG_PRST_BLE_ENCODING_BTHOME_V2=y -DCONFIG_PRST_SLEEP_DURATION_MSEC=1000 -DCONFIG_PRSTLIB_LOG_LEVEL_DBG=y
           output-bin: ble_${{ matrix.soc }}_${{ matrix.revision }}_debug.hex
 
   build-zigbee:

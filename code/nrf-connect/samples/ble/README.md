@@ -8,7 +8,7 @@ Available configurations and their default values are in [`Kconfig`](./Kconfig).
 To save energy, the board spends most of the time in a "deep sleep" state, in which most peripherals and radio are completely turned off. The period of sleep is controlled by the `PRST_SLEEP_DURATION_SEC` config.
 
 ### Advertising Duration
-When it wakes up, the sample reads all sensors and keep broadcasting advertising packets for `PRST_BLE_ADV_DURATION_SEC` before going back to sleep.
+When it wakes up, the sample reads all sensors and keep broadcasting advertising packets for `PRST_BLE_ADV_DURATION_MSEC` before going back to sleep.
 
 ### Advertising Packet Encoding
 There are different ways to encode the sensor data in a BLE advertising packet.

@@ -26,7 +26,7 @@ static int prst_loop(prst_sensors_t *sensors) {
   RET_IF_ERR(prst_sensors_read_all(sensors));
   RET_IF_ERR(prst_ble_adv_set_data(sensors));
   RET_IF_ERR(prst_ble_adv_start());
-  k_sleep(K_SECONDS(CONFIG_PRST_BLE_ADV_DURATION_SEC));
+  k_msleep(CONFIG_PRST_BLE_ADV_DURATION_MSEC);
   RET_IF_ERR(prst_ble_adv_stop());
   return 0;
 }
@@ -37,6 +37,6 @@ int main(void) {
   prst_sensors_t sensors;
   while (true) {
     __ASSERT(!prst_loop(&sensors), "Error in prst_loop()");
-    k_sleep(K_SECONDS(CONFIG_PRST_SLEEP_DURATION_SEC));
+    k_msleep(CONFIG_PRST_SLEEP_DURATION_MSEC);
   }
 }
