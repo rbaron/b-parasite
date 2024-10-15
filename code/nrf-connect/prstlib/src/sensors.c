@@ -15,12 +15,12 @@ int prst_sensors_read_all(prst_sensors_t *sensors) {
   RET_IF_ERR(prst_shtc3_read(&sensors->shtc3))
 
   LOG_DBG("Batt: %d mV (%.2f%%)", sensors->batt.adc_read.millivolts,
-          100 * sensors->batt.percentage);
-  LOG_DBG("Soil: %.0f %%", 100 * sensors->soil.percentage);
+          DOUBLE_PROMO_OK(100 * sensors->batt.percentage));
+  LOG_DBG("Soil: %.0f %%", DOUBLE_PROMO_OK(100 * sensors->soil.percentage));
   LOG_DBG("Photo: %u lx (%d mV)", sensors->photo.brightness,
           sensors->photo.adc_read.millivolts);
-  LOG_DBG("Temp: %f oC", sensors->shtc3.temp_c);
-  LOG_DBG("Humi: %.0f %%", 100 * sensors->shtc3.rel_humi);
+  LOG_DBG("Temp: %f oC", DOUBLE_PROMO_OK(sensors->shtc3.temp_c));
+  LOG_DBG("Humi: %.0f %%", DOUBLE_PROMO_OK(100 * sensors->shtc3.rel_humi));
   LOG_DBG("--------------------------------------------------");
 
   return 0;

@@ -46,7 +46,7 @@ int prst_shtc3_read(prst_shtc3_read_t *out) {
   out->temp_c = -45 + 175 * ((float)((buff[0] << 8) | buff[1])) / (1 << 16);
   out->rel_humi = ((float)((buff[3] << 8) | buff[4])) / UINT16_MAX;
 
-  LOG_DBG("Read temp: %f oC (%d)", out->temp_c, (int)out->temp_c);
-  LOG_DBG("Read humi: %.0f %%", 100.0 * out->rel_humi);
+  LOG_DBG("Read temp: %f oC (%d)", DOUBLE_PROMO_OK(out->temp_c), (int)out->temp_c);
+  LOG_DBG("Read humi: %.0f %%", DOUBLE_PROMO_OK(100.0f * out->rel_humi));
   return 0;
 }

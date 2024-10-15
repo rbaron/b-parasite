@@ -21,4 +21,6 @@
 
 #define UNUSED_OK(expr) (void)expr;
 
+#define DOUBLE_PROMO_OK(expr) (double)(expr)
+
 #endif  // _PRST_MACROS_H_
