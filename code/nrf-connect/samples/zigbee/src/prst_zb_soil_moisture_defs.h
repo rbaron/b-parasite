@@ -26,11 +26,11 @@ void prst_zcl_soil_moisture_init_client(void);
 
 #define ZB_SET_ATTR_DESCR_WITH_PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID(data_ptr) \
   {                                                                              \
-    PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,                                     \
-        ZB_ZCL_ATTR_TYPE_U16,                                                    \
-        ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,             \
-        (void*)data_ptr                                                          \
-  }
+      PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,                                   \
+      ZB_ZCL_ATTR_TYPE_U16,                                                      \
+      ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,               \
+      (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                        \
+      (void*)data_ptr}
 
 #define PRST_ZB_ZCL_DECLARE_SOIL_MOISTURE_ATTRIB_LIST(attr_list, value)                   \
   ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, PRST_ZB_ZCL_SOIL_MOISTURE) \
