@@ -1,0 +1,13 @@
+board:
+  name: bparasite
+  socs:
+    - name: nrf52833
+    - name: nrf52840
+  revision:
+    format: major.minor.patch
+    default: "2.0.0"
+    revisions:
+      - name: "1.0.0"
+      - name: "1.1.0"
+      - name: "1.2.0"
+      - name: "2.0.0"
