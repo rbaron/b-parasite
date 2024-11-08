@@ -64,6 +64,6 @@ int main(void) {
     int32_t soil_val_mv = soil_buf;
     RET_IF_ERR(adc_raw_to_millivolts_dt(&adc_soil_spec, &soil_val_mv));
 
-    LOG_INF("%.2f;%u", batt_val_mv / 1000.0f, soil_buf);
+    LOG_INF("%.2f;%u", DOUBLE_PROMO_OK(batt_val_mv / 1000.0f), soil_buf);
   }
 }
