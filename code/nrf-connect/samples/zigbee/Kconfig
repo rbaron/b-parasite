@@ -13,6 +13,10 @@ config PRST_ZB_BUILD_DATE
   string "Zigbee basic cluster build date attribute. Max 16 bytes."
   default ""
 
+config PRST_ZB_SOFTWARE_VERSION
+  string "Zigbee basic cluster software version attribute. Max 16 bytes."
+  default ""
+
 config PRST_ZB_MODEL_ID
   string "Zigbee basic cluster model id attribute. Max 32 bytes."
   default "b-parasite"
