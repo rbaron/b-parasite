@@ -34,6 +34,7 @@ static int prst_loop(prst_sensors_t *sensors) {
 int main(void) {
   __ASSERT(!prst_init(), "Error in prst_init()");
   prst_led_flash(2);
+  LOG_INF("Sleep duration: %d\n", CONFIG_PRST_SLEEP_DURATION_MSEC);
   prst_sensors_t sensors;
   while (true) {
     __ASSERT(!prst_loop(&sensors), "Error in prst_loop()");
