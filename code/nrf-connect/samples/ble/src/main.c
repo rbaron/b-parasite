@@ -41,10 +41,10 @@ int main(void) {
     LOG_INF("Payload Encoding: BTHOME_V1");
   } else if (IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BPARASITE_V2)) {
     LOG_INF("Payload Encoding: BPARASITE_V2");
-  } 
+  }
 
   LOG_INF("Sleep duration: %d", CONFIG_PRST_SLEEP_DURATION_MSEC);
- 
+
   prst_sensors_t sensors;
   while (true) {
     __ASSERT(!prst_loop(&sensors), "Error in prst_loop()");
