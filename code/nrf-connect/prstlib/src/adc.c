@@ -97,7 +97,8 @@ static inline float get_soil_moisture_percent(float battery_voltage,
   const float wet = eval_poly(wet_coeffs, x);
   const float percent = (raw_adc_output - dry) / (wet - dry);
   LOG_DBG("Read soil moisture 2: %.2f | Raw %u | Batt: %.2f | Dry: %.2f | Wet: %.2f",
-          100.0f * percent, raw_adc_output, x, dry, wet);
+          DOUBLE_PROMO_OK(100 * percent),
+          raw_adc_output, DOUBLE_PROMO_OK(x), DOUBLE_PROMO_OK(dry), DOUBLE_PROMO_OK(wet));
   return percent;
 }
 
@@ -177,7 +178,7 @@ int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out) {
   const float current_sun = 3.59e-3f;
   const float current = out->adc_read.voltage / phototransistor_resistor;
   out->brightness = MAX(0, MIN(lux_sun * current / current_sun, UINT16_MAX));
-  LOG_DBG("Read phototransistor: %u lx | %.2f V", out->brightness, out->adc_read.voltage);
+  LOG_DBG("Read phototransistor: %u lx | %.2f V", out->brightness, DOUBLE_PROMO_OK(out->adc_read.voltage));
 
 #elif DT_NODE_EXISTS(DT_NODELABEL(ldr))
   RET_IF_ERR(gpio_pin_set_dt(&ldr_enable_dt, 1));
@@ -201,7 +202,7 @@ int prst_adc_photo_read(float battery_voltage, prst_adc_photo_sensor_t* out) {
   const float pow_value = 1.5832f;
   out->brightness =
       MAX(0, MIN(mult_value / powf(photo_resistance, pow_value), UINT16_MAX));
-  LOG_DBG("Read LDR: %u lx | %.2f V", out->brightness, out->adc_read.voltage);
+  LOG_DBG("Read LDR: %u lx | %.2f V", out->brightness, DOUBLE_PROMO_OK(out->adc_read.voltage));
 
 #endif
 

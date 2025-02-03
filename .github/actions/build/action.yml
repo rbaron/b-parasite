@@ -4,9 +4,9 @@ inputs:
   sample-dir:
     description: "Sample directory to build"
     required: true
-  board:
-    description: "Board definition to use"
-    default: bparasite_nrf52840
+  soc:
+    description: "SoC to use"
+    default: nrf52840
   revision:
     description: "Board revision use"
     default: "2.0.0"
@@ -18,10 +18,10 @@ runs:
   steps:
     - run: |
         docker run --rm -v ${GITHUB_WORKSPACE}:/repo \
-          nordicplayground/nrfconnect-sdk:v2.5-branch \
+          nordicplayground/nrfconnect-sdk:v2.7-branch \
           west build \
-            --build-dir /repo/${{ inputs.sample-dir }}/build \
+            --build-dir /repo/${{ inputs.sample-dir }}/build_${{ inputs.soc }}_${{ inputs.revision }} \
             --pristine \
-            --board ${{ inputs.board }}@${{ inputs.revision }} \
+            --board bparasite@${{ inputs.revision }}/${{ inputs.soc }} \
             /repo/${{ inputs.sample-dir }} -- ${{ inputs.cmake-extra }}
       shell: bash

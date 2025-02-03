@@ -29,6 +29,7 @@ void prst_zcl_soil_moisture_init_client(void);
     PRST_ZB_ZCL_ATTR_SOIL_MOISTURE_VALUE_ID,                                     \
         ZB_ZCL_ATTR_TYPE_U16,                                                    \
         ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,             \
+        (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                      \
         (void*)data_ptr                                                          \
   }
 
