@@ -22,6 +22,20 @@ static int prst_init() {
   return 0;
 }
 
+static void dump_config() {
+#if IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BTHOME_V2)
+  LOG_INF("Payload encoding: BTHOME_V2");
+#elif IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BTHOME_V1)
+  LOG_INF("Payload encoding: BTHOME_V1");
+#elif IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BPARASITE_V2)
+  LOG_INF("Payload encoding: BPARASITE_V2");
+#else
+#error "Unhandled CONFIG_PRST_BLE_ENCODING_ choice in dump_config()"
+#endif
+
+  LOG_INF("Sleep duration: %d ms", CONFIG_PRST_SLEEP_DURATION_MSEC);
+}
+
 static int prst_loop(prst_sensors_t *sensors) {
   RET_IF_ERR(prst_sensors_read_all(sensors));
   RET_IF_ERR(prst_ble_adv_set_data(sensors));
@@ -35,15 +49,7 @@ int main(void) {
   __ASSERT(!prst_init(), "Error in prst_init()");
   prst_led_flash(2);
 
-  if (IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BTHOME_V2)) {
-    LOG_INF("Payload Encoding: BTHOME_V2");
-  } else if (IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BTHOME_V1)) {
-    LOG_INF("Payload Encoding: BTHOME_V1");
-  } else if (IS_ENABLED(CONFIG_PRST_BLE_ENCODING_BPARASITE_V2)) {
-    LOG_INF("Payload Encoding: BPARASITE_V2");
-  }
-
-  LOG_INF("Sleep duration: %d", CONFIG_PRST_SLEEP_DURATION_MSEC);
+  dump_config();
 
   prst_sensors_t sensors;
   while (true) {
