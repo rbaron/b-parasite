@@ -39,6 +39,13 @@ Available options in `Kconfig`. Notable options:
 * `CONFIG_PRST_ZB_SLEEP_DURATION_SEC`: amount of time (in seconds) the device sleeps between reading all sensors and updating its clusters
 * `CONFIG_PRST_ZB_PARENT_POLL_INTERVAL_SEC`: amount of time (in seconds) the device waits between polling its parent for data
 
+### Over the air (OTA) updates
+The firmware is prepared for accepting over the air updates. You need to set the toggle `CONFIG_ZIGBEE_OTA` in the `prj.conf` to `y` to compile OTA functionality in the firmware.
+
+Once the toggle is set, during compilation there will be a *.zigbee file generated as well, which is the firmware update file. This needs to be provided to your zigbee coordinator, so that it can be discovered by your deployed and paired parasites. The version `CONFIG_MCUBOOT_IMGTOOL_SIGN_VERSION` needs to be increased to allow the device to recognize the firmware file as an actual update.
+
+Some helpful information on how to provide an firmware update via Home Assistant and ZHA integration can be found in the [Home Assistant forums](https://community.home-assistant.io/t/zha-ota-firmware-update-upgrade/488960).
+
 ## Home Assistant Integration
 This firmware sample has only been tested with Home Assistant, using one of the following integrations.
 
