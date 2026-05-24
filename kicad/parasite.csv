@@ -1,5 +1,5 @@
 Comment,Designator,Footprint,LCSC
-"Battery_Cell","BT1","kicad:BatteryHolder_Keystone_3002_1x2032",""
+"Battery_Holder","BT1","kicad:BatteryHolder_Keystone_3002_1x2032","C964829"
 "1n","C1","Capacitor_SMD:C_0402_1005Metric","C1523"
 "100n","C2","Capacitor_SMD:C_0402_1005Metric","C1525"
 "12p","C3,C4","Capacitor_SMD:C_0402_1005Metric","C1547"
